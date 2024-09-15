@@ -1,6 +1,19 @@
+from typing import List
+
 from src.models.yolo_detection_model import YOLODetectionModel
 
-def inference(image_path: str):
-    model = YOLODetectionModel(model_path='yolov8.pt')
-    results = model([image_path])  # Perform inference on a single image
-    return results
+
+class Inferer:
+    def __init__(self, model_path: str):
+        self.model = YOLODetectionModel(model_path=model_path)
+
+    def infer(self, image_paths: List[str]):
+        results = []
+        for image_path in image_paths:
+            result = self.model.predict(source=image_path)
+            results.append(result)
+        return results
+
+    def infer_image(self, image_path: str):
+        results = self.model.predict(source=image_path)
+        return results
