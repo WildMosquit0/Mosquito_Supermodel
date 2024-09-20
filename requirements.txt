@@ -1,3 +1,4 @@
 pytorch-lightning
 pytest
 ultralytics
+torch==2.4.1

@@ -1,16 +1,23 @@
 import torch
 import pytorch_lightning as pl
-from typing import Any
+from abc import ABC, abstractmethod
 
-class YOLOBaseModel(pl.LightningModule):
-    def __init__(self, model: torch.nn.Module, num_classes: int):
+class YOLOBaseModel(pl.LightningModule, ABC):
+    def __init__(self, model: torch.nn.Module):
         super(YOLOBaseModel, self).__init__()
         self.model = model
-        self.num_classes = num_classes
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor):
         return self.model(x)
 
-    def configure_optimizers(self) -> torch.optim.Optimizer:
+    @abstractmethod
+    def training_step(self, batch, batch_idx):
+        pass
+
+    @abstractmethod
+    def validation_step(self, batch, batch_idx):
+        pass
+
+    def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
         return optimizer
