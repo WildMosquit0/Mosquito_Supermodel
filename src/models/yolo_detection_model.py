@@ -1,28 +1,31 @@
 import torch
 from ultralytics import YOLO
-import pytorch_lightning as pl
-from typing import Dict, Any
+from src.models.yolo_base_model import YOLOBaseModel
 
-class YOLODetectionModel(pl.LightningModule):
-    def __init__(self, model_path: str):
-        super(YOLODetectionModel, self).__init__()
-        self.model = YOLO(model_path)  # Load YOLO model
+class YOLODetectionModel(YOLOBaseModel):
+    def __init__(self, model=None, model_path=None):
+        if model is not None:
+            super().__init__(model)
+        else:
+            model = YOLO(model_path)
+            super().__init__(model)
 
     def forward(self, x):
-        return self.model(x)
+        outputs = self.model(x)
+        return outputs.pred
 
-    def training_step(self, batch: Dict[str, Any], batch_idx: int):
+    def training_step(self, batch, batch_idx):
         images = batch['images']
-        # Direct training step using the forward method
-        results = self.model(images)  # YOLOv8 internally handles loss
-        loss = results.loss if hasattr(results, 'loss') else torch.tensor(0.0)
+        targets = batch['targets']
+        results = self.model(images, targets)
+        loss = results.loss
+        self.log('train_loss', loss)
         return loss
 
-    def validation_step(self, batch: Dict[str, Any], batch_idx: int):
+    def validation_step(self, batch, batch_idx):
         images = batch['images']
-        results = self.model(images)
-        val_loss = results.loss if hasattr(results, 'loss') else torch.tensor(0.0)
-        return {'val_loss': val_loss}
-
-    def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=1e-3)
+        targets = batch['targets']
+        results = self.model(images, targets)
+        val_loss = results.loss
+        self.log('val_loss', val_loss)
+        return val_loss

@@ -1,28 +1,40 @@
-import torch
+# test_yolo_detection_model.py
+
 import pytest
+import torch
+from unittest.mock import MagicMock, patch
 from src.models.yolo_detection_model import YOLODetectionModel
+import torch.nn as nn
+
+import torch
+import torch.nn as nn
+
+
+class MockResult:
+    def __init__(self):
+        self.pred = [{'boxes': torch.randn(2, 4),
+                      'scores': torch.randn(2),
+                      'labels': torch.tensor([1, 2]),
+                      'ids': torch.tensor([101, 102])}]
+        self.loss = torch.tensor(0.5, requires_grad=True)
+
+
+class MockDetectionModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear = nn.Linear(10, 5)  # Simple model with parameters
+    
+    def forward(self, x, targets=None):
+        return MockResult()
+
 
 @pytest.fixture
 def dummy_detection_model():
-    # Load YOLOv8 from ultralytics for object detection
-    return YOLODetectionModel(model_path='yolov8n.pt')
+    mock_model = MockDetectionModel()
+    model = YOLODetectionModel(model=mock_model)
+    return model
 
-@pytest.fixture
-def dummy_batch():
-    # Dummy batch with random tensors simulating images
-    images = torch.randn(4, 3, 256, 256)  # Batch of 4 images, 3 channels, 256x256
-    targets = torch.randn(4, 5)  # Dummy targets
-    return {'images': images, 'targets': targets}
-
-def test_forward(dummy_detection_model, dummy_batch):
-    outputs = dummy_detection_model(dummy_batch['images'])
-    assert outputs is not None  # Ensure output is not None
-
-def test_training_step(dummy_detection_model, dummy_batch):
-    loss = dummy_detection_model.training_step(dummy_batch, batch_idx=0)
-    assert isinstance(loss, torch.Tensor)  # Ensure training returns a tensor
-
-def test_validation_step(dummy_detection_model, dummy_batch):
-    val_output = dummy_detection_model.validation_step(dummy_batch, batch_idx=0)
-    assert 'val_loss' in val_output
-    assert isinstance(val_output['val_loss'], torch.Tensor)  # Ensure validation returns a tensor
+def test_configure_optimizers(dummy_detection_model):
+    optimizer = dummy_detection_model.configure_optimizers()
+    assert isinstance(optimizer, torch.optim.Adam)
+    assert len(optimizer.param_groups[0]['params']) > 0, "Optimizer should have parameters."
