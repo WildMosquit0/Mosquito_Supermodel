@@ -1,14 +1,16 @@
+# src/models/yolo_base_model.py
+
 import torch
 import pytorch_lightning as pl
 from abc import ABC, abstractmethod
 
 class YOLOBaseModel(pl.LightningModule, ABC):
-    def __init__(self, model: torch.nn.Module):
+    def __init__(self):
         super(YOLOBaseModel, self).__init__()
-        self.model = model
 
-    def forward(self, x: torch.Tensor):
-        return self.model(x)
+    @abstractmethod
+    def forward(self, x):
+        pass
 
     @abstractmethod
     def training_step(self, batch, batch_idx):

@@ -1,18 +1,33 @@
+# src/models/yolo_detection_model.py
+
 import torch
 from ultralytics import YOLO
 from src.models.yolo_base_model import YOLOBaseModel
 
 class YOLODetectionModel(YOLOBaseModel):
-    def __init__(self, model=None, model_path=None):
+    def __init__(self, model_path: str = None, task: str = 'detect', model: torch.nn.Module = None):
+        super(YOLODetectionModel, self).__init__()
+        self.task = task
         if model is not None:
-            super().__init__(model)
+            self.model = model
+        elif model_path is not None:
+            if self.task == 'detect':
+                # Initialize YOLO model for detection inference
+                self.model = YOLO(model_path, task=self.task)
+            else:
+                # Initialize YOLO model for training
+                self.model = YOLO(model_path)
         else:
-            model = YOLO(model_path)
-            super().__init__(model)
+            raise ValueError("Either model or model_path must be provided.")
 
     def forward(self, x):
-        outputs = self.model(x)
-        return outputs.pred
+        if self.task == 'detect':
+            # Use the 'predict' method for inference
+            outputs = self.model.predict(x, verbose=False)
+        else:
+            # Use the model directly for training
+            outputs = self.model(x)
+        return outputs
 
     def training_step(self, batch, batch_idx):
         images = batch['images']

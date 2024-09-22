@@ -7,9 +7,9 @@ import torch.nn as nn
 
 class ConcreteYOLOModel(YOLOBaseModel):
     def __init__(self):
-        # Use a simple model with parameters
-        dummy_model = nn.Linear(10, 5)  # Input features: 10, Output features: 5
-        super().__init__(dummy_model)
+        super().__init__()
+        # Assign the dummy model after calling super().__init__()
+        self.model = nn.Linear(10, 5)  # Input features: 10, Output features: 5
 
     def forward(self, x):
         return self.model(x)
