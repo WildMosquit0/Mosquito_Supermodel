@@ -1,5 +1,3 @@
-# src/models/yolo_tracking_model.py
-
 import torch
 from ultralytics import YOLO
 from src.models.yolo_base_model import YOLOBaseModel
@@ -11,26 +9,23 @@ class YOLOTrackingModel(YOLOBaseModel):
         if model is not None:
             self.model = model
         elif model_path is not None:
-            if self.task == 'track':
-                # Initialize YOLO model for tracking inference
-                self.model = YOLO(model_path, task=self.task)
-            else:
-                # Initialize YOLO model for training
-                self.model = YOLO(model_path)
+            self.model = YOLO(model_path)  # Initialize the YOLOv8 model
         else:
             raise ValueError("Either model or model_path must be provided.")
 
-    def forward(self, x):
+        self.model.to(self._device)  # Move model to the device
+
+    def forward(self, x, persist=True):
+        x = x.to(self._device)  # Ensure input is on the correct device
         if self.task == 'track':
-            # Use the 'track' method for inference
-            outputs = self.model.track(x, verbose=False)
+            # Use the `track()` method for tracking
+            outputs = self.model.track(source=x, persist=persist)
         else:
-            # Use the model directly for training
             outputs = self.model(x)
         return outputs
-
+    
     def training_step(self, batch, batch_idx):
-        images = batch['images']
+        images = batch['images'].to(self._device)
         tracks = batch['tracks']
         results = self.model(images, tracks)
         loss = results.loss
@@ -38,7 +33,7 @@ class YOLOTrackingModel(YOLOBaseModel):
         return loss
 
     def validation_step(self, batch, batch_idx):
-        images = batch['images']
+        images = batch['images'].to(self._device)
         tracks = batch['tracks']
         results = self.model(images, tracks)
         val_loss = results.loss

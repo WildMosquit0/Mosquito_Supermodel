@@ -11,23 +11,24 @@ class YOLODetectionModel(YOLOBaseModel):
         if model is not None:
             self.model = model
         elif model_path is not None:
-            if self.task == 'detect':
-                # Initialize YOLO model for detection inference
-                self.model = YOLO(model_path, task=self.task)
-            else:
-                # Initialize YOLO model for training
-                self.model = YOLO(model_path)
+            self.model = YOLO(model_path)
         else:
             raise ValueError("Either model or model_path must be provided.")
 
+        # Move the model to the device defined in YOLOBaseModel
+        self.model.to(self._device)
+
     def forward(self, x):
+        # Ensure input tensor is on the correct device
+        x = x.to(self.device)
         if self.task == 'detect':
-            # Use the 'predict' method for inference
             outputs = self.model.predict(x, verbose=False)
         else:
-            # Use the model directly for training
             outputs = self.model(x)
         return outputs
+    
+    def predict(self, source: str):
+        return self.model.predict(source)
 
     def training_step(self, batch, batch_idx):
         images = batch['images']
