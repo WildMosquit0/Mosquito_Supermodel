@@ -1,0 +1,7 @@
+{
+    "model_path": "yolov8n.pt",
+    "task": "track",
+    "output_dir": "./tracking_output",
+    "images_dir": "src/tests/images"
+  }
+  
