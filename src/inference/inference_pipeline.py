@@ -1,39 +1,37 @@
-import cv2
-import os
-from ultralytics import YOLO
-import torch
-from typing import List
+import argparse
+from typing import Any, Dict
 from src.utils.config import load_config
+from src.inference.inferer import Inferer
+from src.postprocess.saver import ResultsParser
 
-class Inferer:
-    def __init__(self, config: dict):
-        self.model = YOLO(config["model_path"])
-        self.task = config["task"]
-        self.output_dir = config["output_dir"]
-        self.images_dir = config["images_dir"]
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Run YOLO inference with tracking or detection.")
+    parser.add_argument('--config', type=str, default="config.json", help='Path to the JSON configuration file.')
+    return parser.parse_args()
 
-        if not os.path.exists(self.output_dir):
-            os.makedirs(self.output_dir)
+def main() -> None:
+    args = parse_args()
+    
+    config: Dict[str, Any] = load_config(args.config)
 
-        self.model.to('cuda' if torch.cuda.is_available() else 'cpu')
-
-    def infer(self, persist: bool = True) -> List:
-        if self.task == 'track':
-            results = self.model.track(source=self.images_dir, persist=persist)
-        else:
-            results = self.model.predict(source=self.images_dir)
-
-        for idx, result in enumerate(results):
-            annotated_img = result.plot()
-            save_path = os.path.join(self.output_dir, f"annotated_{idx}.jpg")
-            cv2.imwrite(save_path, annotated_img)
-
-        return results
-
-if __name__ == "__main__":
-    config = load_config("config.json")
-    inferer = Inferer(config)
+    inferer = Inferer(
+        model_path=config["model"].get("weights"),
+        task=config["model"].get("task"),             
+        output_dir=config["output"].get("output_dir"),
+        images_dir=config["input"].get("images_dir"),         
+        save_animations=config["output"].get("save_animations") 
+    )
+    
     results = inferer.infer()
 
-    for idx, result in enumerate(results):
-        print(f"Result for image {idx}: {result}")
+    parser = ResultsParser(
+        results=results, 
+        output_dir=inferer.output_dir, 
+        csv_filename=config["output"].get("csv_filename"),
+        task=config["model"].get("task")
+    )
+    
+    parser.parse_and_save()  
+
+if __name__ == "__main__":
+    main()
