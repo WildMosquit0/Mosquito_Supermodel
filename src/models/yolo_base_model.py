@@ -3,12 +3,13 @@ import pytorch_lightning as pl
 from abc import ABC, abstractmethod
 
 class YOLOBaseModel(pl.LightningModule, ABC):
-    def __init__(self, model: torch.nn.Module):
+    def __init__(self):
         super(YOLOBaseModel, self).__init__()
-        self.model = model
+        self._device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    def forward(self, x: torch.Tensor):
-        return self.model(x)
+    @abstractmethod
+    def forward(self, x):
+        pass
 
     @abstractmethod
     def training_step(self, batch, batch_idx):

@@ -1,0 +1,15 @@
+{
+    "model": {
+      "weights": "yolov8n.pt",
+      "task": "track"
+    },
+    "input": {
+      "images_dir": "src/tests/images"
+    },
+    "output": {
+      "output_dir": "output",
+      "save_animations": true,
+      "csv_filename": "results.csv"
+    }
+  }
+  
