@@ -1,10 +1,10 @@
 {
     "model": {
-      "weights": "yolov8n.pt",
+      "weights": "best.pt",
       "task": "track"
     },
     "input": {
-      "images_dir": "src/tests/images"
+      "images_dir": "/home/ziv/workspace/Mosquito_Supermodel/benchmark/images"
     },
     "output": {
       "output_dir": "output",
