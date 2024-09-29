@@ -1,13 +1,13 @@
 {
     "model": {
       "weights": "best.pt",
-      "task": "track"
+      "task": "detect"
     },
     "input": {
       "images_dir": "/home/ziv/workspace/Mosquito_Supermodel/benchmark/images"
     },
     "output": {
-      "output_dir": "output",
+      "output_dir": "/home/ziv/workspace/Mosquito_Supermodel/benchmark/images_output",
       "save_animations": true,
       "csv_filename": "results.csv"
     }

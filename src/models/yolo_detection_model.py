@@ -15,11 +15,9 @@ class YOLODetectionModel(YOLOBaseModel):
         else:
             raise ValueError("Either model or model_path must be provided.")
 
-        # Move the model to the device defined in YOLOBaseModel
         self.model.to(self._device)
 
     def forward(self, x):
-        # Ensure input tensor is on the correct device
         x = x.to(self.device)
         if self.task == 'detect':
             outputs = self.model.predict(x, verbose=False)
