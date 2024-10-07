@@ -5,16 +5,15 @@ from ultralytics.engine.results import Results
 
 
 class ResultsParser:
-    def __init__(self, results: List[Results], output_dir: str = './output', csv_filename: str = 'results.csv', task: str = 'detection'  ) -> None:
+    def __init__(self, results: List[Results], output_dir: str = './output', task: str = 'detection'  ) -> None:
         self.results = results
         self.output_dir = output_dir
-        self.csv_filename = csv_filename
 
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
 
     def parse_and_save(self):
-        csv_file_path = os.path.join(self.output_dir, self.csv_filename)
+        csv_file_path = os.path.join(self.output_dir, 'results.csv')
 
         with open(csv_file_path, mode='w', newline='') as csv_file:
             writer = csv.writer(csv_file)

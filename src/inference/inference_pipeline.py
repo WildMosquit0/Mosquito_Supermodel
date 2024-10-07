@@ -27,7 +27,6 @@ def main() -> None:
     parser = ResultsParser(
         results=results, 
         output_dir=inferer.output_dir, 
-        csv_filename=config["output"].get("csv_filename"),
         task=config["model"].get("task")
     )
     
