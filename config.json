@@ -10,6 +10,18 @@
   },
   "output": {
     "output_dir": "/home/ziv/workspace/Mosquito_Supermodel/sample/_output_yolo_11n",
-    "save_animations": true
+    "monitor_metric": "val_loss", 
+    "checkpoint_filename": "best-checkpoint",
+    "save_top_k": 1,  
+    "checkpoint_mode": "min"
+  },
+  "training": {
+    "epochs": 10,
+    "batch_size": 16,
+    "lr": 0.001,
+    "optimizer": "adam",
+    "gpus": 1,
+    "use_mixed_precision": true,
+    "early_stopping_patience": 3  
   }
 }
