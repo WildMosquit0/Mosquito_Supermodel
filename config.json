@@ -1,15 +1,15 @@
 {
   "model": {
-    "weights": "yolo11x.pt",
+    "weights": "yolo11n.pt",
     "task": "detect",
     "conf_threshold": 0.1,
     "iou_threshold": 0.45
   },
   "input": {
-    "images_dir": "/home/ziv/workspace/Mosquito_Supermodel/sample/images"
+    "images_dir": "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images"
   },
   "output": {
-    "output_dir": "/home/ziv/workspace/Mosquito_Supermodel/sample/_output_yolo_11n",
+    "output_dir": "/home/ziv/workspace/Mosquito_Supermodel/train/v_0",
     "monitor_metric": "val_loss", 
     "checkpoint_filename": "best-checkpoint",
     "save_top_k": 1,  
@@ -23,5 +23,11 @@
     "gpus": 1,
     "use_mixed_precision": true,
     "early_stopping_patience": 3  
+  },
+  "hpo_params": {
+    "lr_range": [1e-5, 1e-1],          
+    "batch_size_range": [8, 64],       
+    "optimizers": ["adam", "sgd"],     
+    "budget": 10                       
   }
 }
