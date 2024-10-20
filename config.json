@@ -6,28 +6,38 @@
     "iou_threshold": 0.45
   },
   "input": {
-    "images_dir": "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images"
+    "train": "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images",
+    "val": "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images"
   },
   "output": {
     "output_dir": "/home/ziv/workspace/Mosquito_Supermodel/train/v_0",
-    "monitor_metric": "val_loss", 
+    "monitor_metric": "val_loss",
     "checkpoint_filename": "best-checkpoint",
-    "save_top_k": 1,  
+    "save_top_k": 1,
     "checkpoint_mode": "min"
   },
   "training": {
     "epochs": 10,
-    "batch_size": 16,
+    "batch_size": 128,
     "lr": 0.001,
     "optimizer": "adam",
     "gpus": 1,
     "use_mixed_precision": true,
-    "early_stopping_patience": 3  
+    "early_stopping_patience": 3
   },
   "hpo_params": {
-    "lr_range": [1e-5, 1e-1],          
-    "batch_size_range": [8, 64],       
-    "optimizers": ["adam", "sgd"],     
-    "budget": 10                       
+    "lr_range": [
+      1e-5,
+      1e-1
+    ],
+    "batch_size_range": [
+      8,
+      64
+    ],
+    "optimizers": [
+      "adam",
+      "sgd"
+    ],
+    "budget": 10
   }
 }

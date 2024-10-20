@@ -20,24 +20,21 @@ def setup_logger(config):
         return logger
 
     # Get logging parameters from config
-    log_level = config['logging'].get('log_level', 'INFO')
-    log_file = config['logging'].get('log_file', None)
     output_dir = config['output'].get('output_dir', './')  # Default to './' if not set
 
     # If no log file is provided, use the default in the output directory
-    if not log_file:
-        log_file = os.path.join(output_dir, 'logfile.log')
+    log_file = os.path.join(output_dir, 'logfile.log')
 
     # Set the log level
-    logger.setLevel(log_level)
+    logger.setLevel('INFO')
 
     # Create console handler
     console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(log_level)
+    console_handler.setLevel('INFO')
 
     # Create file handler if log_file is set
     file_handler = logging.FileHandler(log_file)
-    file_handler.setLevel(log_level)
+    file_handler.setLevel('INFO')
 
     # Define log format
     log_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')

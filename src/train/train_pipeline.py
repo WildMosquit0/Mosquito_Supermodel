@@ -1,11 +1,14 @@
 from src.utils.config import load_config, copy_config
 from src.utils.logger import setup_logger, logger
 from src.train.trainer import TrainerWrapper
+from src.utils.common import create_output_dir
 from src.train.hpo import HPO
 
 def run_training():
     # Load the configuration from the config file
     config = load_config("config.json")
+    create_output_dir(config.get('output').get('output_dir'))
+
     copy_config(config)
 
     # Set up the logger with the config
@@ -23,6 +26,7 @@ def run_hpo():
 
     # Load the configuration from the config file
     config = load_config("config.json")
+    create_output_dir(config.get('output').get('output_dir'))
 
     # Set up the logger with the config
     logger = setup_logger(config)

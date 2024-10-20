@@ -3,3 +3,4 @@ pytest
 ultralytics
 torch
 nevergrad
+scikit-learn
