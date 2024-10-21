@@ -26,18 +26,9 @@
     "early_stopping_patience": 3
   },
   "hpo_params": {
-    "lr_range": [
-      1e-5,
-      1e-1
-    ],
-    "batch_size_range": [
-      8,
-      64
-    ],
-    "optimizers": [
-      "adam",
-      "sgd"
-    ],
+    "lr_range": [1e-5, 1e-1],
+    "batch_size_range": [8, 64],
+    "optimizers": ["adam", "sgd"],
     "budget": 10
   }
 }

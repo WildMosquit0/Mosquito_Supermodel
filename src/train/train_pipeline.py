@@ -1,44 +1,28 @@
-from src.utils.config import load_config, copy_config
-from src.utils.logger import setup_logger, logger
-from src.train.trainer import TrainerWrapper
-from src.utils.common import create_output_dir
-from src.train.hpo import HPO
+import yaml
+from ultralytics import YOLO
 
-def run_training():
-    # Load the configuration from the config file
-    config = load_config("config.json")
-    create_output_dir(config.get('output').get('output_dir'))
+def load_yaml(filepath: str) -> dict:
+    with open(filepath, 'r') as file:
+        return yaml.safe_load(file)
 
-    copy_config(config)
+def run_training(use_hpo: bool = False) -> None:
+    # Load YAML configurations
+    data_config = load_yaml('path/to/data.yaml')
+    hyp_config = load_yaml('path/to/hyp.yaml') if use_hpo else None
 
-    # Set up the logger with the config
-    setup_logger(config)
-    logger.info("Starting standard training...")
+    # Load YOLO model
+    model = YOLO(data_config['model']['weights'])
 
-    # Initialize the trainer
-    trainer_wrapper = TrainerWrapper(config)
-
-    # Train the model
-    trainer_wrapper.train()
-
-def run_hpo():
-    logger.info("Starting hyperparameter optimization (HPO)...")
-
-    # Load the configuration from the config file
-    config = load_config("config.json")
-    create_output_dir(config.get('output').get('output_dir'))
-
-    # Set up the logger with the config
-    logger = setup_logger(config)
-    logger.info("Starting hyperparameter optimization (HPO)...")
-
-    # Initialize HPO process
-    hpo = HPO(config)
-
-    # Run hyperparameter optimization
-    hpo.optimize_hyperparameters()
+    # Training configuration from YAML
+    model.train(
+        data='path/to/data.yaml',
+        hyp=hyp_config if use_hpo else None,
+        epochs=data_config['training']['epochs'],
+        batch_size=data_config['training']['batch_size'],
+        imgsz=data_config['training'].get('imgsz', 640),
+        optimizer=data_config['training']['optimizer'],
+        save_dir=data_config['output']['output_dir']
+    )
 
 if __name__ == "__main__":
-    # You can switch between regular training and HPO here
-    run_training()  # For standard training
-    # run_hpo()  # For hyperparameter optimization
+    run_training(use_hpo=False)

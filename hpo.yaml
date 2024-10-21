@@ -1,0 +1,16 @@
+model:
+  weights: "yolo11n.pt"
+  task: "detect"
+
+data:
+  train: "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images"
+  val: "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images"
+  nc: 1
+  names: ["mosquito"]
+
+hpo_params:
+  epochs: 30         # Training epochs for each iteration
+  iterations: 300    # Total iterations for HPO
+  optimizer: "AdamW" # Optimizer
+lr0: 0.001
+batch_size: 128

@@ -1,4 +1,4 @@
-from src.utils.logger import logger
+from src.logger.logger import logger
 import torch
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
