@@ -21,5 +21,17 @@ class YOLOBaseModel(pl.LightningModule, ABC):
         pass
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=self.config['training'].get('lr', 1e-3))
+        optimizer_name = self.config['training'].get('optimizer', 'adam')
+        lr = self.config['training'].get('lr', 1e-3)
+
+        if optimizer_name == 'adam':
+            optimizer = torch.optim.Adam(self.parameters(), lr=lr)
+        elif optimizer_name == 'adamw':
+            optimizer = torch.optim.AdamW(self.parameters(), lr=lr)
+        elif optimizer_name == 'sgd':
+            optimizer = torch.optim.SGD(self.parameters(), lr=lr, momentum=0.9)
+        else:
+            raise ValueError(f"Unsupported optimizer: {optimizer_name}")
+
         return optimizer
+
