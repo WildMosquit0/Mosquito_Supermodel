@@ -3,7 +3,7 @@ from torch.utils.data import Dataset
 from PIL import Image
 import torch
 
-from src.utils.logger import logger
+from src.logger.logger import logger
 
 class YOLODataset(Dataset):
     """

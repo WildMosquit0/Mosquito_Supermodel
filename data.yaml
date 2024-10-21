@@ -1,0 +1,18 @@
+train: "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images"
+val: "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images"
+nc: 1  # Number of classes
+names: ["mosquito"]  # Class names
+
+model:
+  weights: "yolo11n.pt"  # Path to model weights
+  task: "detect"
+
+training:
+  epochs: 100
+  batch_size: 16
+  imgsz: 640
+  optimizer: "AdamW"
+
+output:
+  output_dir: "/home/ziv/workspace/Mosquito_Supermodel/train/v_0"
+
