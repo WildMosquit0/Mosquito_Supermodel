@@ -17,7 +17,7 @@ class YOLODetectionModel:
                 'val': self.config['input']['val']
             },
             epochs=self.config['training']['epochs'],
-            batch=self.config['training']['batch_size'],
+            batch=self.config['training']['batch'],
             imgsz=self.config['training'].get('img_size', 640),
             optimizer=self.config['training']['optimizer'],
             lr0=self.config['training']['lr'], 

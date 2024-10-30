@@ -1,24 +1,26 @@
 {
   "model": {
-    "weights": "yolo11n.pt",
+    "weights": "runs/detect/train5/weights/best.pt",
     "task": "detect",
     "conf_threshold": 0.1,
     "iou_threshold": 0.45
   },
   "input": {
-    "train": "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images",
-    "val": "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images"
+    "images_dir": "/home/bohbot/workspace/Mosquito_Supermodel/benchmark/Images",
+    "train": "/home/bohbot/workspace/Mosquito_Supermodel/benchmark/Images",
+    "val": "/home/bohbot/workspace/Mosquito_Supermodel/benchmark/Images"
   },
   "output": {
-    "output_dir": "/home/ziv/workspace/Mosquito_Supermodel/train/v_0",
+    "output_dir": "/home/bohbot/workspace/Mosquito_Supermodel/infer/v_0_all",
     "monitor_metric": "val_loss",
     "checkpoint_filename": "best-checkpoint",
     "save_top_k": 1,
-    "checkpoint_mode": "min"
+    "checkpoint_mode": "min",
+    "save_animations": true
   },
   "training": {
     "epochs": 10,
-    "batch_size": 128,
+    "batch": 128,
     "lr": 0.001,
     "optimizer": "adam",
     "gpus": 1,
@@ -27,7 +29,7 @@
   },
   "hpo_params": {
     "lr_range": [1e-5, 1e-1],
-    "batch_size_range": [8, 64],
+    "batch": [8, 64],
     "optimizers": ["adam", "sgd"],
     "budget": 10
   }

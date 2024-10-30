@@ -1,0 +1,5 @@
+names:
+- mosquito
+nc: 1
+train: /home/bohbot/workspace/Mosquito_Supermodel/benchmark/Images
+val: /home/bohbot/workspace/Mosquito_Supermodel/benchmark/Images

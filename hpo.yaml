@@ -3,14 +3,29 @@ model:
   task: "detect"
 
 data:
-  train: "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images"
-  val: "/home/ziv/workspace/Mosquito_Supermodel/benchmark/Images"
+  train: "/home/bohbot/workspace/Mosquito_Supermodel/benchmark/Images"
+  val: "/home/bohbot/workspace/Mosquito_Supermodel/benchmark/Images"
   nc: 1
   names: ["mosquito"]
 
 hpo_params:
-  epochs: 30         # Training epochs for each iteration
-  iterations: 300    # Total iterations for HPO
-  optimizer: "AdamW" # Optimizer
-lr0: 0.001
-batch_size: 128
+  epochs: 20
+  iterations: 50
+
+  optimizer:
+    values: ["SGD", "Adam", "AdamW"]
+
+lr0:
+  min: 0.0001
+  max: 0.01
+
+batch:
+  values: [128, 256]
+
+momentum:
+  min: 0.8
+  max: 0.99
+
+weight_decay:
+  min: 0.0
+  max: 0.0005

@@ -1,10 +1,7 @@
-# src/utils/logger.py
-
 import logging
 import os
 import sys
 
-# Create a global logger object (not yet configured)
 logger = logging.getLogger('GlobalLogger')
 
 def setup_logger(output_dir: str) -> logging.Logger:
@@ -22,3 +19,4 @@ def setup_logger(output_dir: str) -> logging.Logger:
     return logger
 
     return logger
+
