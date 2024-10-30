@@ -1,6 +1,6 @@
 import argparse
 from typing import Any, Dict
-from src.utils.config import load_config
+from src.config.utils import load_config
 from src.inference.inferer import Inferer
 from src.postprocess.saver import ResultsParser
 

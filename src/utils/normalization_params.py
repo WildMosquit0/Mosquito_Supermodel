@@ -24,13 +24,13 @@ class FlatImageDataset(Dataset):
             image = self.transform(image)
         return image
 
-def calculate_normalization_params(image_dir, batch_size=32, resize_size=(640, 640)):
+def calculate_normalization_params(image_dir, batch=32, resize_size=(640, 640)):
     """
     Calculate the mean and standard deviation of all images in a given flat directory.
 
     Args:
         image_dir (str): Directory containing the images.
-        batch_size (int): Batch size for loading the images. Default is 32.
+        batch (int): Batch size for loading the images. Default is 32.
         resize_size (tuple): Size to resize the images. Default is (640, 640).
 
     Returns:
@@ -46,7 +46,7 @@ def calculate_normalization_params(image_dir, batch_size=32, resize_size=(640, 6
     dataset = FlatImageDataset(image_dir, transform=transform)
     
     # Use DataLoader to load the images in batches
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    dataloader = DataLoader(dataset, batch=batch, shuffle=False)
 
     # Variables to store sum and sum of squares for each channel
     channel_sum = torch.zeros(3)
