@@ -1,11 +1,8 @@
 train: "/home/bohbot/ultralytics/datasets/mos/all_mos_new/images/train"
 val: "/home/bohbot/ultralytics/datasets/mos/all_mos_new/images/val"
 
-train_labels: "/home/bohbot/ultralytics/datasets/mos/all_mos_new/labels/train"
-val_labels: "/home/bohbot/ultralytics/datasets/mos/all_mos_new/labels/val"
-
 nc: 1 
-names: ["mosquito"]  
+names: ["mosquito"]
 
 model:
   weights: "yolo11n.pt" 
