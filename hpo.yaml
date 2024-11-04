@@ -11,7 +11,6 @@ data:
 hpo_params:
   epochs: 20
   iterations: 50
-
   optimizer:
     values: ["SGD", "Adam", "AdamW"]
 

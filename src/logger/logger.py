@@ -1,6 +1,8 @@
 import logging
 import os
-import sys
+from torch.utils.tensorboard import SummaryWriter
+from typing import Dict, Any
+
 
 logger = logging.getLogger('GlobalLogger')
 
@@ -18,5 +20,18 @@ def setup_logger(output_dir: str) -> logging.Logger:
     logger.addHandler(fh)
     return logger
 
-    return logger
+class Logger:
+    """Handles logging of hyperparameters and metrics for experiments."""
 
+    def __init__(self, log_dir: str):
+        self.writer = SummaryWriter(log_dir=log_dir)
+
+    def log_metrics(self, trial_number: int, metrics: Any) -> None:
+        """Logs metrics from a training run."""
+        metrics_dict = {'fitness': metrics.fitness, 'precision': metrics.box.map50, 'recall': metrics.box.map50_95}
+        for key, value in metrics_dict.items():
+            self.writer.add_scalar(f"Trial_{trial_number}/{key}", value)
+
+    def close(self) -> None:
+        """Closes the TensorBoard writer."""
+        self.writer.close()
