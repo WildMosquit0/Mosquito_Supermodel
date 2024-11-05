@@ -29,36 +29,50 @@ class HPOTrainer:
 
     def _objective(self, trial: optuna.Trial) -> float:
         """Defines the objective function for Optuna to optimize."""
-        # Suggest hyperparameters using Optuna based on hpo.yaml configuration
-        lr0 = trial.suggest_float("lr0", self.hyp_config["lr0"]["min"], self.hyp_config["lr0"]["max"], log=True)
-        batch = trial.suggest_categorical("batch", self.hyp_config["batch"]["values"])
-        optimizer = trial.suggest_categorical("optimizer", self.hyp_config["hpo_params"]["optimizer"]["values"])
-        momentum = trial.suggest_float("momentum", self.hyp_config["momentum"]["min"], self.hyp_config["momentum"]["max"])
-        weight_decay = trial.suggest_float("weight_decay", self.hyp_config["weight_decay"]["min"], self.hyp_config["weight_decay"]["max"])
-        epochs = self.hyp_config["hpo_params"]["epochs"]
+        try:
+            # Suggest hyperparameters using Optuna based on hpo.yaml configuration
+            lr0 = trial.suggest_float("lr0", self.hyp_config["lr0"]["min"], self.hyp_config["lr0"]["max"], log=True)
+            batch = trial.suggest_categorical("batch", self.hyp_config["batch"]["values"])
+            optimizer = trial.suggest_categorical("optimizer", self.hyp_config["hpo_params"]["optimizer"]["values"])
+            momentum = trial.suggest_float("momentum", self.hyp_config["momentum"]["min"], self.hyp_config["momentum"]["max"])
+            weight_decay = trial.suggest_float("weight_decay", self.hyp_config["weight_decay"]["min"], self.hyp_config["weight_decay"]["max"])
+            epochs = self.hyp_config["hpo_params"]["epochs"]
 
-        # Prepare data YAML file
-        data_yaml = create_data_yaml(self.hyp_config['data'])
+            # Prepare data YAML file
+            data_yaml = create_data_yaml(self.hyp_config['data'])
 
-        # Run training with the chosen hyperparameters
-        results = self.model.train(
-            data=data_yaml,
-            imgsz=self.data_config['training']['imgsz'],
-            epochs=epochs,
-            batch=batch,
-            lr0=lr0,
-            optimizer=optimizer,
-            momentum=momentum,
-            weight_decay=weight_decay,
-            project=self.output_dir,
-            name=self.experiment_name,
-            save=True
-        )
+            # Run training with the chosen hyperparameters
+            results = self.model.train(
+                data=data_yaml,
+                imgsz=self.data_config['training']['imgsz'],
+                epochs=epochs,
+                batch=batch,
+                lr0=lr0,
+                optimizer=optimizer,
+                momentum=momentum,
+                weight_decay=weight_decay,
+                project=self.output_dir,
+                name=self.experiment_name,
+                save=True
+            )
 
-        # Extract metrics and log them
-        metrics = results.metrics
-        fitness = metrics.fitness
-        self.logger.log_metrics(trial.number, metrics)  # Log metrics for analysis
-        trial.set_user_attr("fitness", fitness)  # Set additional trial attributes if needed
+            # Extract fitness and other metrics from results
+            fitness = results.fitness
+            precision = results.box.map50  # Replace with actual attribute if different
+            recall = results.box.map50_95  # Replace with actual attribute if different
 
-        return fitness
+            # Log metrics for analysis
+            metrics_dict = {
+                "fitness": fitness,
+                "precision": precision,
+                "recall": recall,
+            }
+            self.logger.log_metrics(trial.number, metrics_dict)
+
+            # Return the primary metric used for optimization
+            return fitness
+
+        except Exception as e:
+            logging.error(f"An error occurred during Optuna optimization: {e}")
+            raise
+
