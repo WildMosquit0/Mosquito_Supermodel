@@ -1,7 +1,7 @@
-data_path: "sample/_output_yolo_11n/results.csv"
-plot_output_path: "sample/_output_yolo_11n/plot.png"
-xlim: [500, 1500]
-ylim: [800,200]
+data_path: "src/tests/images/results.csv"
+plot_output_path: "src/tests/images/track/plot.png"
+xlim: [0, 300]
+ylim: [300,0]
 
-vector_output_path: "sample/_output_yolo_11n/vectors.csv"
-midpoint_output_path: "sample/_output_yolo_11n/midpoints.csv"
+vector_output_path: "src/tests/images/track/vectors.csv"
+midpoint_output_path: "ssrc/tests/images/track/midpoints.csv"

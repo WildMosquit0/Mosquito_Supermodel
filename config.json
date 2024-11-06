@@ -1,15 +1,15 @@
 {
   "model": {
-    "weights": "yolo11x.pt",
-    "task": "detect",
+    "weights": "yolo11n.pt",
+    "task": "track",
     "conf_threshold": 0.1,
-    "iou_threshold": 0.45
+    "iou_threshold": 0.2
   },
   "input": {
-    "images_dir": "/home/ziv/workspace/Mosquito_Supermodel/sample/images"
+    "images_dir": "src/tests/images"
   },
   "output": {
-    "output_dir": "/home/ziv/workspace/Mosquito_Supermodel/sample/_output_yolo_11n",
+    "output_dir": "src/tests/images",
     "save_animations": true
   }
 }

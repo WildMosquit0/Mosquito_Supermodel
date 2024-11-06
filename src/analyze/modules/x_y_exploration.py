@@ -16,15 +16,59 @@ class x_y_exploration(object):
         y2 = self.data['y2'].tolist()
         return x1, x2, y1, y2
 
+    def get_id(self):
+        """Extract IDs from the dataset."""
+        id = self.data['track_id'].tolist()
+        return id
+
+    def get_classes(self):
+        """Retrieve the class labels."""
+        classes = self.data['label'].tolist()
+        return classes
+
     def calculate_average(self, x1, y1, x2, y2):
         """Calculate the midpoint average of x and y coordinates."""
         x = [(x1[i] + x2[i]) / 2 for i in range(len(x1))]
         y = [(y1[i] + y2[i]) / 2 for i in range(len(y1))]
         return x, y
 
-    def plot_and_save_coordinates(self, x, y, output_path="plot.png", xlim=None, ylim=None):
-        """Plot and save coordinates as a scatter plot with optional limits."""
-        plt.scatter(x, y)
+    def save_vectors(self, x, y, id, classes, output_path):
+        """Save the calculated x and y vectors to a CSV file."""
+        vectors_df = pd.DataFrame({'x': x, 'y': y, 'id': id, 'classes': classes})
+        vectors_df.to_csv(output_path, index=False)
+
+    def plot_coords(self, x, y, id=None, classes=None, output_path="plot.png", xlim=None, ylim=None):
+        """Plot and save coordinates as a scatter plot with optional limits and unique colors for id or classes."""
+        
+        # Check if both id and classes are provided, and raise an error if so
+        if id is not None and classes is not None:
+            raise ValueError("You can choose only 'classes' or 'id', not both.")
+        
+        # Determine the coloring basis and set legend label accordingly
+        if classes is not None:
+            color_basis = classes
+            legend_label = "Class"
+        elif id is not None:
+            color_basis = id
+            legend_label = "ID"
+        else:
+            color_basis = None
+            legend_label = None
+
+        # Plot with color mapping if color_basis is provided
+        if color_basis is not None:
+            unique_values = list(set(color_basis))
+            color_map = {val: idx for idx, val in enumerate(unique_values)}
+            colors = [color_map[val] for val in color_basis]
+
+            # Scatter plot with colors and a dynamic legend label
+            scatter = plt.scatter(x, y, c=colors, cmap='viridis', label=legend_label)
+            colorbar = plt.colorbar(scatter, ticks=range(len(unique_values)), label=legend_label)
+            scatter.set_clim(-0.5, len(unique_values) - 0.5)
+        else:
+            # Plot without color mapping if neither id nor classes provided
+            plt.scatter(x, y)
+
         plt.xlabel("X")
         plt.ylabel("Y")
 
@@ -37,34 +81,26 @@ class x_y_exploration(object):
         plt.savefig(output_path)
         plt.close()
 
-    def save_vectors(self, x, y, output_path):
-        """Save the calculated x and y vectors to a CSV file."""
-        vectors_df = pd.DataFrame({'x': x, 'y': y})
-        vectors_df.to_csv(output_path, index=False)
 
     @classmethod
     def main(cls, config_path="config.yaml"):
         """Main function to execute all steps based on the config file."""
-        # Load configuration
         with open(config_path, "r") as config_file:
             config = yaml.safe_load(config_file)
         
-        # Retrieve paths from config
         datapath = config['data_path']
         plot_output_path = config['plot_output_path']
         vector_output_path = config['vector_output_path']
-        xlim = config.get('xlim', None)  # Get xlim from config, default to None if not provided
-        ylim = config.get('ylim', None)  # Get ylim from config, default to None if not provided
+        xlim = config.get('xlim', None)
+        ylim = config.get('ylim', None)
 
-        # Initialize class with the dataset path
         exploration = cls(datapath)
 
-        # Get coordinates and calculate midpoints
         x1, x2, y1, y2 = exploration.get_x_y_coordinates()
         mid_x, mid_y = exploration.calculate_average(x1, y1, x2, y2)
 
-        # Plot and save coordinates with axis limits if provided
-        exploration.plot_and_save_coordinates(mid_x, mid_y, plot_output_path, xlim=xlim, ylim=ylim)
+        ids = exploration.get_id() if 'track_id' in exploration.data.columns else None
+        classes = exploration.get_classes() if 'label' in exploration.data.columns else None
 
-        # Save vectors to a CSV file
-        exploration.save_vectors(mid_x, mid_y, vector_output_path)
+        exploration.plot_coords(mid_x, mid_y, output_path=plot_output_path, xlim=xlim, ylim=ylim)
+        exploration.save_vectors(mid_x, mid_y, ids, classes, vector_output_path)
