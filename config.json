@@ -6,7 +6,7 @@
     "iou_threshold": 0.2
   },
   "input": {
-    "images_dir": "src/tests/images"
+    "images_dir": "src/tests"
   },
   "output": {
     "output_dir": "src/tests/images",

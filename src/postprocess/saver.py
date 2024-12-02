@@ -18,11 +18,11 @@ class ResultsParser:
 
         with open(csv_file_path, mode='w', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow(['image_idx', 'image_name', 'box_idx', 'x1', 'y1', 'x2', 'y2', 'confidence', 'label', 'track_id'])
+            writer.writerow(['image_idx', 'image_name', 'box_idx', 'x', 'y', 'w', 'h', 'confidence', 'label', 'track_id'])
 
             for img_idx, result in enumerate(self.results):
                 image_name = os.path.basename(result.path)
-                boxes = result.boxes.xyxy.cpu().numpy()  # Bounding boxes
+                boxes = result.boxes.xywh.cpu().numpy()  # Bounding boxes
                 scores = result.boxes.conf.cpu().numpy()  # Confidence scores
                 labels = result.boxes.cls.cpu().numpy()  # Labels (class indices)
                 track_ids = result.boxes.id.cpu().numpy() if result.boxes.id is not None else None  # Track IDs for tracking tasks
@@ -32,3 +32,4 @@ class ResultsParser:
                     writer.writerow([img_idx, image_name, box_idx, *box, score, label, track_id])
 
         print(f"Results saved to {csv_file_path}")
+

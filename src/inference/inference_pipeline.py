@@ -30,7 +30,6 @@ def main(config_path=None):
     config = load_config(config_path)
     inferer = Inferer(config=config)
     results = inferer.infer()
-
     # Parse and save results
     parser = ResultsParser(results=results, config=config)
     parser.parse_and_save()

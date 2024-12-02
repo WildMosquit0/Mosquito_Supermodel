@@ -19,7 +19,6 @@ class Inferer:
         self.output_dir = os.path.join(config['output']['output_dir'], self.task)
         self.images_dir = config['input']['images_dir']
         self.save_animations = config['output'].get('save_animations', False)
-
         self.model = YOLO(model_path)
         self.model.to(self.device)
 
@@ -31,7 +30,9 @@ class Inferer:
                 source=self.images_dir, 
                 conf=self.conf_threshold, 
                 iou=self.iou_threshold,   
-                persist=persist
+                persist=persist,
+                save=self.save_animations,
+                filename = self.images_dir
             )
         else:
             results = self.model.predict(
