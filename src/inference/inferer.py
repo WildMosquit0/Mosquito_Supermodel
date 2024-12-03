@@ -32,13 +32,14 @@ class Inferer:
                 iou=self.iou_threshold,   
                 persist=persist,
                 save=self.save_animations,
-                filename = self.images_dir
+                name = self.images_dir
             )
         else:
             results = self.model.predict(
                 source=self.images_dir, 
                 conf=self.conf_threshold,  
-                iou=self.iou_threshold    
+                iou=self.iou_threshold,
+                save=self.save_animations    
             )
         
         if self.save_animations:

@@ -1,7 +1,0 @@
-data_path: "src/tests/images/results.csv"
-plot_output_path: "src/tests/images/track/plot.png"
-xlim: [0, 300]
-ylim: [300,0]
-
-vector_output_path: "src/tests/images/track/vectors.csv"
-midpoint_output_path: "ssrc/tests/images/track/midpoints.csv"

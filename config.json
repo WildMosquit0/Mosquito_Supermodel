@@ -9,7 +9,11 @@
     "images_dir": "src/tests"
   },
   "output": {
-    "output_dir": "src/tests/images",
+    "output_dir": "src/tests",
     "save_animations": true
+  },
+  "analysis": {
+    "csv_path": "src/tests",
+    "output_dir": "src/tests/plots"
   }
 }
