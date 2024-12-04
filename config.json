@@ -2,8 +2,9 @@
   "model": {
     "weights": "yolo11n.pt",
     "task": "track",
-    "conf_threshold": 0.1,
-    "iou_threshold": 0.2
+    "conf_threshold": 0.8,
+    "iou_threshold": 0.2,
+    "vid_stride":10
   },
   "input": {
     "images_dir": "src/tests"
@@ -12,8 +13,10 @@
     "output_dir": "src/tests",
     "save_animations": true
   },
-  "analysis": {
-    "csv_path": "src/tests",
-    "output_dir": "src/tests/plots"
+  "analyze": {
+    "csv_path": "src/tests/results.csv",
+    "output_dir": "src/tests/plots",
+    "id_OR_class": "label",
+    "true_axis":"true"
   }
 }
