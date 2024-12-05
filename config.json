@@ -18,5 +18,11 @@
     "output_dir": "src/tests/plots",
     "id_OR_class": "label",
     "true_axis":"true"
+  },
+  "average_visits": {
+    "time_intervals": 1,
+    "interval_unit": "minutes",
+    "fps": "30",
+    "output_dir": "src/tests/plots"
   }
 }
