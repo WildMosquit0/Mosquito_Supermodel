@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-from plotnine import ggplot, aes, geom_bar, geom_point, theme_minimal, labs, theme_classic
+from plotnine import ggplot, aes, geom_bar, theme_classic, labs
 from src.utils.config import load_config
 from src.utils.common import create_output_dir
 
@@ -19,63 +19,65 @@ class AverageVisits:
 
     def _calculate_time_intervals(self, df):
         """
-        Calculate the time intervals for the dataframe.
-        Args:
-            df (pd.DataFrame): Dataframe with a valid `image_idx` column.
-        Returns:
-            pd.DataFrame: Dataframe with an additional `time_interval` column.
+        Calculate the time intervals for each frame based on fps and time_intervals in seconds.
         """
         # Convert `image_idx` to a NumPy array
-        image_idx = pd.to_numeric(df["image_idx"], errors="coerce").to_numpy()
-        if np.isnan(image_idx).any():
+        df["image_idx"] = pd.to_numeric(df["image_idx"], errors="coerce")
+        if df["image_idx"].isnull().any():
             print("Warning: Some `image_idx` values were non-numeric and have been removed.")
-        image_idx = image_idx[~np.isnan(image_idx)]
+        df = df.dropna(subset=["image_idx"])
 
-        # Determine if `time_intervals` is in minutes
-        is_minutes = self.config["average_visits"].get("interval_unit", "seconds") == "minutes"
-        divisor = self.fps * self.time_intervals * (60 if is_minutes else 1)
-
+        # Calculate time intervals
+        divisor = self.fps * self.time_intervals
         if divisor == 0:
             raise ValueError("Divisor (fps * time_intervals) cannot be zero.")
 
-        # Perform the calculation
-        time_intervals = (image_idx / divisor).astype(int)
-        df = df.iloc[:len(image_idx)]
-        df["time_interval"] = time_intervals
-        print(f"Calculated time intervals based on {'minutes' if is_minutes else 'seconds'}.")
+        df["time_interval"] = (df["image_idx"] / divisor).astype(int)
+        print("Calculated time intervals based on seconds.")
         return df
 
-
     def _aggregate_trajectories(self, df):
-        """
-        Aggregate the trajectory counts per time interval.
-        """
         return (
             df.groupby(["time_interval", "image_name"])["track_id"]
             .nunique()  # Count unique `track_id` values per interval
             .reset_index(name="trajectory_count")
         )
 
+    def save_new_df(self, df):
+        """
+        Save the processed DataFrame to a CSV file.
+        """
+        output_csv = os.path.join(self.plot_path, "average_visits.csv")
+        create_output_dir(self.plot_path)  # Ensure the directory exists
+        df.to_csv(output_csv, index=False)
+        print(f"Results saved to {output_csv}")
+
     def _plot_results(self, df):
+        """
+        Plot the trajectory counts as a barplot.
+        """
         plot = (
             ggplot(df, aes(x="image_name", y="trajectory_count"))
             + geom_bar(stat="identity", fill="skyblue", alpha=0.7)
             + theme_classic()
             + labs(
-                title=f"Average Visits Per {self.time_intervals} Minutes",
-                x="Time Interval",
+                title=f"Trajectory Counts Per Image",
+                x="Image Name",
                 y="Trajectory Count",
             )
         )
-        create_output_dir(self.plot_path)
         output_path = os.path.join(self.plot_path, "average_visits.png")
         plot.save(output_path)
         print(f"Plot saved to {output_path}")
 
     def __call__(self):
+        """
+        Execute the pipeline: load data, calculate intervals, save results, and plot.
+        """
         df = self._load_data()
         df = self._calculate_time_intervals(df)
         aggregated_df = self._aggregate_trajectories(df)
+        self.save_new_df(aggregated_df)
         self._plot_results(aggregated_df)
 
 

@@ -4,7 +4,7 @@
     "task": "track",
     "conf_threshold": 0.8,
     "iou_threshold": 0.2,
-    "vid_stride":10
+    "vid_stride":3
   },
   "input": {
     "images_dir": "src/tests"
@@ -21,7 +21,7 @@
   },
   "average_visits": {
     "time_intervals": 1,
-    "interval_unit": "minutes",
+    "interval_unit": "seconds",
     "fps": "30",
     "output_dir": "src/tests/plots"
   }

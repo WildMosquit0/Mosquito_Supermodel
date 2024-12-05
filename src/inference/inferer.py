@@ -54,7 +54,7 @@ class Inferer:
             annotated_img = result.plot()
             image_name = os.path.basename(result.path)
             save_path = os.path.join(self.output_dir, image_name)
-            cv2.imwrite(save_path, annotated_img)
+            #cv2.imwrite(save_path, annotated_img)
 
 if __name__ == "__main__":
     inferer = Inferer(config_path='config.json')
