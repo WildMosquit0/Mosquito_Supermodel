@@ -26,7 +26,7 @@ class PlotXY:
             gg.labs(title="X vs Y", x="X", y="Y")+
             gg.theme_classic()
         )
-        if self.true_axis:
+        if self.true_axis is True:
             plot = (
                 plot +
                 gg.xlim(0, self.data['img_w'].iloc[0]) +
