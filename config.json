@@ -2,9 +2,9 @@
   "model": {
     "weights": "yolo11n.pt",
     "task": "track",
-    "conf_threshold": 0.8,
+    "conf_threshold": 0.85,
     "iou_threshold": 0.2,
-    "vid_stride":1
+    "vid_stride":10
   },
   "input": {
     "images_dir": "src/tests/vids"
@@ -17,11 +17,12 @@
     "csv_path": "src/tests/csvs/results.csv",
     "csv_results_dir": "src/tests/csvs",
     "plots_dir" : "src/tests/plots/analize",
-    "id_OR_class": "label",
-    "true_axis":"true"
+    "id_OR_class": "track_id", 
+    "id_OR_class_note": "track_id or label",
+    "true_axis":"ture"
   },
   "average_visits": {
-    "time_intervals": 1,
+    "time_intervals": 2,
     "interval_unit": "seconds",
     "fps": "30"
   },
