@@ -4,7 +4,7 @@
     "task": "track",
     "conf_threshold": 0.85,
     "iou_threshold": 0.2,
-    "vid_stride":10
+    "vid_stride":1
   },
   "input": {
     "images_dir": "src/tests/vids"
