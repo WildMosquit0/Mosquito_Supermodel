@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-from plotnine import ggplot, aes, geom_bar, theme_classic, labs
+from plotnine import ggplot, aes, geom_boxplot, theme_classic, labs, geom_point
 from src.utils.config import load_config
 from src.utils.common import create_output_dir
 
@@ -10,7 +10,8 @@ class AverageVisits:
     def __init__(self, config_path="config.json"):
         self.config = load_config(config_path)
         self.data_path = self.config['analyze']["csv_path"]
-        self.plot_path = self.config["analyze"]["output_dir"]
+        self.plot_path = self.config["analyze"]["plots_dir"]
+        self.results_output = self.config["analyze"]["csv_results_dir"]
         self.time_intervals = float(self.config["average_visits"]["time_intervals"])
         self.fps = float(self.config["average_visits"]["fps"])
 
@@ -44,21 +45,18 @@ class AverageVisits:
         )
 
     def save_new_df(self, df):
-        """
-        Save the processed DataFrame to a CSV file.
-        """
-        output_csv = os.path.join(self.plot_path, "average_visits.csv")
-        create_output_dir(self.plot_path)  # Ensure the directory exists
+        
+        output_csv = os.path.join(self.results_output, "average_visits.csv")
+        create_output_dir(self.results_output) 
         df.to_csv(output_csv, index=False)
         print(f"Results saved to {output_csv}")
 
     def _plot_results(self, df):
-        """
-        Plot the trajectory counts as a barplot.
-        """
+        
         plot = (
             ggplot(df, aes(x="image_name", y="trajectory_count"))
-            + geom_bar(stat="identity", fill="skyblue", alpha=0.7)
+            + geom_boxplot()
+            + geom_point(alpha=0.6)
             + theme_classic()
             + labs(
                 title=f"Trajectory Counts Per Image",
@@ -67,6 +65,7 @@ class AverageVisits:
             )
         )
         output_path = os.path.join(self.plot_path, "average_visits.png")
+        create_output_dir(self.plot_path)
         plot.save(output_path)
         print(f"Plot saved to {output_path}")
 

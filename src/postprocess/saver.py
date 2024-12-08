@@ -21,12 +21,13 @@ class ResultsParser:
             writer.writerow(['image_idx', 'box_idx', 'x', 'y', 'w', 'h', 'confidence', 'label', 'track_id','image_name','img_w','img_h'])
 
             for img_idx, result in enumerate(self.results):
-                image_name = os.path.basename(result.path)
-                boxes = result.boxes.xywh.cpu().numpy()  # Bounding boxes
+                image_name_with_inx = os.path.basename(result.path)
+                image_name = image_name_with_inx.split(".")[0]
+                boxes = result.boxes.xywh.cpu().numpy() 
                 original_width, original_height = result.orig_shape
-                scores = result.boxes.conf.cpu().numpy()  # Confidence scores
-                labels = result.boxes.cls.cpu().numpy()  # Labels (class indices)
-                track_ids = result.boxes.id.cpu().numpy() if result.boxes.id is not None else None  # Track IDs for tracking tasks
+                scores = result.boxes.conf.cpu().numpy() 
+                labels = result.boxes.cls.cpu().numpy()  
+                track_ids = result.boxes.id.cpu().numpy() if result.boxes.id is not None else None 
 
                 for box_idx, (box, score, label) in enumerate(zip(boxes, scores, labels)):
                     track_id = track_ids[box_idx] if track_ids is not None else None

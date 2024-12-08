@@ -16,3 +16,5 @@ def is_video_or_image(path: str) -> str:
         elif mime_type.startswith('video'):
             return 'video'
     return None
+
+

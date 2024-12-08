@@ -8,16 +8,17 @@ class PlotXY:
     def __init__(self, config_path="config.json"):
        
         self.config = load_config(config_path)
-        self.data_file = os.path.join(self.config['output']['output_dir'], 'results.csv')
-        self.plotpath = self.config['analyze']['output_dir']
+        self.data_path = self.config['analyze']["csv_path"]
+        self.plot_path = self.config["analyze"]["plots_dir"]
+        self.results_output = self.config["analyze"]["csv_results_dir"]
         self.true_axis = self.config['analyze']['true_axis']
         self.id_OR_class = self.config['analyze']['id_OR_class']
-        self.data = pd.read_csv(self.data_file)
+        self.data = pd.read_csv(self.data_path)
         self.data[self.id_OR_class] = self.data[self.id_OR_class].astype('category')
 
     def plot_coords(self):
         
-        create_output_dir(self.plotpath)
+        create_output_dir(self.plot_path)
 
         plot = (
             gg.ggplot(self.data, gg.aes(x='x', y='y', color=self.data[self.id_OR_class])) +
@@ -31,7 +32,7 @@ class PlotXY:
                 gg.xlim(0, self.data['img_w'].iloc[0]) +
                 gg.ylim(0, self.data['img_h'].iloc[0])
             )
-        output_path = os.path.join(self.plotpath, 'x_y.png')
+        output_path = os.path.join(self.plot_path, 'x_y.png')
         try:
             plot.save(output_path)
             print(f"Plot saved at {output_path}")
