@@ -1,5 +1,9 @@
 datasets/
 output/
+src/tests/mos/
+src/tests/plots/
+src/tests/csvs/
+runs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
