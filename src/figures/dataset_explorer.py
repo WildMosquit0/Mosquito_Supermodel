@@ -21,10 +21,12 @@ import torch
 from torchvision import transforms
 
 class ImageSetupAnalyzer:
-    def __init__(self, root_folder: str, thumbnail_size: tuple = (100, 100)) -> None:
+    def __init__(self, root_folder: str, output_folder: str, thumbnail_size: tuple = (100, 100)) -> None:
         self.root_folder = root_folder
+        self.output_folder = output_folder
         self.metadata: pd.DataFrame = pd.DataFrame()
         self.thumbnail_size = thumbnail_size
+        os.makedirs(self.output_folder, exist_ok=True)
 
     def extract_metadata(self, batch_size: int = 200) -> None:
         metadata_list = []
@@ -321,15 +323,11 @@ class ImageSetupAnalyzer:
         print(f"Interactive plot saved to {outpath}")
 
 
-
-
-
-
 if __name__ == "__main__":
     folder_path = "/home/bohbot/ultralytics/datasets/mos/all_mos_new/images/train"
     output_folder = "./output_images"
 
-    analyzer = ImageSetupAnalyzer(folder_path)
+    analyzer = ImageSetupAnalyzer(folder_path, output_folder)
     analyzer.extract_metadata()
     
     analyzer.plot_umap_pca_html(
