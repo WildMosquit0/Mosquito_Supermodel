@@ -331,12 +331,12 @@ if __name__ == "__main__":
     analyzer.extract_metadata()
     
     analyzer.plot_umap_pca_html(
-        method="UMAP",               # Choose "UMAP" or "PCA"
+        method="PCA",               # Choose "UMAP" or "PCA"
         n_components=2,              # Number of dimensions
         output_file=output_folder      # Output HTML file
     )
 
-    features_to_plot = ["Brightness", "Contrast", "Aspect_Ratio", "Entropy"]
+    features_to_plot = ["Brightness", "Contrast", "Aspect_Ratio"]
     analyzer.save_feature_distributions(features=features_to_plot, output_folder=output_folder)
     analyzer.save_correlation_matrix(output_folder=output_folder)
     analyzer.save_pca_plot(n_components=2, output_folder=output_folder)
