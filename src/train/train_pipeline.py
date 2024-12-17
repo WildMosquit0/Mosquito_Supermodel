@@ -8,7 +8,7 @@ def load_yaml(filepath: str) -> dict:
 def run_training(use_hpo: bool = False) -> None:
     # Load YAML configurations
     data_config = load_yaml('path/to/data.yaml')
-    hyp_config = load_yaml('path/to/hyp.yaml') if use_hpo else None
+    hyp_config = None # load_yaml('path/to/hyp.yaml') if use_hpo else None
 
     # Load YOLO model
     model = YOLO(data_config['model']['weights'])
