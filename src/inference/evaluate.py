@@ -17,4 +17,5 @@ validation_results = weights.val(
     batch=16, 
     conf=0.25, 
     iou=0.6, 
-    device="0")
+    device="0",
+    save_json=False)
