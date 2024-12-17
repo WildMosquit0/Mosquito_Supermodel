@@ -18,6 +18,3 @@ validation_results = weights.val(
     conf=0.25, 
     iou=0.6, 
     device="0")
-
-
-benchmark(weights, data, imgsz=640, half=False, device=0)
