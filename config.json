@@ -19,18 +19,19 @@
     "plots_dir" : "src/tests/plots/analize",
     "id_OR_class": "track_id", 
     "id_OR_class_note": "track_id or label",
-    "true_axis": true
+    "true_axis": false 
   },
   "average_visits": {
-    "time_intervals": 2,
+    "time_intervals": 3,
     "interval_unit": "seconds",
-    "fps": "1"
+    "fps": "30"
   },
 "duration": {
   "fps": "30"
 },
 "define_roi": {
         "file_path": "src/tests/mos_vids",
+
         "csv_path": "src/tests/csvs/results.csv",
         "output_dir": "src/tests/csvs",
         "get_inner_roi": true,

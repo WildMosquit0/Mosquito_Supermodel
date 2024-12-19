@@ -30,7 +30,7 @@ class PlotXY:
             plot = (
                 plot +
                 gg.xlim(0, self.data['img_w'].iloc[0]) +
-                gg.ylim(0, self.data['img_h'].iloc[0])
+                gg.ylim(self.data['img_h'].iloc[0],0)
             )
         output_path = os.path.join(self.plot_path, 'x_y.png')
         try:

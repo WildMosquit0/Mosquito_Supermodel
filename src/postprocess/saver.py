@@ -34,4 +34,3 @@ class ResultsParser:
                     writer.writerow([img_idx, box_idx, *box, score, label, track_id, image_name, original_height,original_width])
 
         print(f"Results saved to {csv_file_path}")
-
