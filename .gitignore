@@ -1,6 +1,6 @@
 datasets/
 output/
-src/tests/mos/
+src/tests/mos_vids/
 src/tests/plots/
 src/tests/csvs/
 runs/

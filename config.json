@@ -1,20 +1,20 @@
 {
   "model": {
-    "weights": "mosquito.pt",
+    "weights": "best.pt",
     "task": "track",
     "conf_threshold": 0.4,
     "iou_threshold": 0.2,
-    "vid_stride":10
+    "vid_stride":100
   },
   "input": {
-    "images_dir": "src/tests/mos"
+    "images_dir": "src/tests/mos_vids"
   },
   "output": {
     "output_dir": "src/tests/csvs",
     "save_animations": true
   },
   "analyze": {
-    "csv_path": "src/tests/csvs/roi_results.csv",
+    "csv_path": "src/tests/csvs/results.csv",
     "csv_results_dir": "src/tests/csvs",
     "plots_dir" : "src/tests/plots/analize",
     "id_OR_class": "track_id", 
@@ -30,7 +30,7 @@
   "fps": "30"
 },
 "define_roi": {
-        "file_path": "src/tests/mos/C3_R1_Cropped.avi",
+        "file_path": "src/tests/mos_vids",
         "csv_path": "src/tests/csvs/results.csv",
         "output_dir": "src/tests/csvs",
         "get_inner_roi": true,
