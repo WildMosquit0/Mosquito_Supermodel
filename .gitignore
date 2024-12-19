@@ -92,3 +92,8 @@ coverage/
 *.pth
 weights/
 checkpoints/
+
+# movies format and results
+*.csv
+*.png
+*.avi
