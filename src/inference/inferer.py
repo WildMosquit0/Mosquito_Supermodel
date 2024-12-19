@@ -19,7 +19,11 @@ class Inferer:
         self.output_dir = os.path.join(config['output']['output_dir'], self.task)
         self.images_dir = config['input']['images_dir']
         self.save_animations = config['output'].get('save_animations', False)
+<<<<<<< HEAD
         self.vid_stride = config['model'].get('vid_stride', 1)
+=======
+
+>>>>>>> 0738f393f5a7ca9b630af2796d119c284a60f75a
         self.model = YOLO(model_path)
         self.model.to(self.device)
 
@@ -31,17 +35,25 @@ class Inferer:
                 source=self.images_dir, 
                 conf=self.conf_threshold, 
                 iou=self.iou_threshold,   
+<<<<<<< HEAD
                 persist=persist,
                 save=self.save_animations,
                 vid_stride=self.vid_stride
+=======
+                persist=persist
+>>>>>>> 0738f393f5a7ca9b630af2796d119c284a60f75a
             )
         else:
             results = self.model.predict(
                 source=self.images_dir, 
                 conf=self.conf_threshold,  
+<<<<<<< HEAD
                 iou=self.iou_threshold,
                 save=self.save_animations,
                 vid_stride=self.vid_stride    
+=======
+                iou=self.iou_threshold    
+>>>>>>> 0738f393f5a7ca9b630af2796d119c284a60f75a
             )
         
         if self.save_animations:
@@ -54,7 +66,11 @@ class Inferer:
             annotated_img = result.plot()
             image_name = os.path.basename(result.path)
             save_path = os.path.join(self.output_dir, image_name)
+<<<<<<< HEAD
             #cv2.imwrite(save_path, annotated_img)
+=======
+            cv2.imwrite(save_path, annotated_img)
+>>>>>>> 0738f393f5a7ca9b630af2796d119c284a60f75a
 
 if __name__ == "__main__":
     inferer = Inferer(config_path='config.json')

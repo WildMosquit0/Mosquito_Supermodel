@@ -1,5 +1,6 @@
 {
   "model": {
+<<<<<<< HEAD
     "weights": "best.pt",
     "task": "track",
     "conf_threshold": 0.4,
@@ -37,4 +38,18 @@
         "choose_farme_for_video": 20
 
     }
+=======
+    "weights": "yolo11x.pt",
+    "task": "detect",
+    "conf_threshold": 0.1,
+    "iou_threshold": 0.45
+  },
+  "input": {
+    "images_dir": "/home/ziv/workspace/Mosquito_Supermodel/sample/images"
+  },
+  "output": {
+    "output_dir": "/home/ziv/workspace/Mosquito_Supermodel/sample/_output_yolo_11n",
+    "save_animations": true
+  }
+>>>>>>> 0738f393f5a7ca9b630af2796d119c284a60f75a
 }

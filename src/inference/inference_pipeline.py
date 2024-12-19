@@ -17,6 +17,7 @@ def parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
+<<<<<<< HEAD
 def main(config_path=None):
     """
     Main function to perform inference and save results.
@@ -33,3 +34,19 @@ def main(config_path=None):
     # Parse and save results
     parser = ResultsParser(results=results, config=config)
     parser.parse_and_save()
+=======
+
+def main() -> None:
+    args = parse_args()
+    config = load_config(args.config_path)
+    inferer = Inferer(config=config)
+    results = inferer.infer()
+
+    parser = ResultsParser(results=results, config=config)
+
+    parser.parse_and_save()
+
+
+if __name__ == "__main__":
+    main()
+>>>>>>> 0738f393f5a7ca9b630af2796d119c284a60f75a
