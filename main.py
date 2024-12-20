@@ -9,7 +9,7 @@ if __name__ == "__main__":
     config_path = "./config.json"
 
     # Step 1: Run inference pipeline (if applicable)
-    run_inference(config_path=config_path)
+    #run_inference(config_path=config_path)
     
     # Step 2: Initialize and execute PlotXY for data visualization
     explorer = PlotXY(config_path)

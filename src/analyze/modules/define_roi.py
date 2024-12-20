@@ -2,7 +2,22 @@ import cv2
 import pandas as pd
 import os
 import sys
-sys.path.append('/Users/evyatars/Documents/git/Mosquito_Supermodel_backup')
+
+# Get the current directory
+current_dir = os.path.abspath(os.getcwd())
+
+# Move up until "src" is in the directory name
+while True:
+    if 'src' in os.listdir(current_dir):
+        break
+    parent_dir = os.path.dirname(current_dir)
+    if parent_dir == current_dir:  # Reached the root directory
+        raise FileNotFoundError("Directory 'src' not found.")
+    current_dir = parent_dir
+
+# Append to sys.path
+sys.path.append(current_dir)
+print(f"Added to sys.path: {current_dir}")
 from src.utils.config import load_config
 from src.utils.common import create_output_dir
 
