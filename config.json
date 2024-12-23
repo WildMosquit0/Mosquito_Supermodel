@@ -7,7 +7,7 @@
     "vid_stride":1
   },
   "input": {
-    "images_dir": "src/tests/mery_track"
+    "images_dir": "src/tests/vid"
   },
   "output": {
     "output_dir": "src/tests/csvs",
@@ -22,12 +22,12 @@
     "true_axis": true 
   },
   "average_visits": {
-    "time_intervals": 1,
+    "time_intervals": 10,
     "interval_unit": "seconds",
-    "fps": "6"
+    "fps": "25"
   },
 "duration": {
-  "fps": "6"
+  "fps": "25"
 },
 "define_roi": {
         "file_path": "src/tests/vid",
