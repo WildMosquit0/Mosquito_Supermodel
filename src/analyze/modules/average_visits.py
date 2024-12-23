@@ -59,7 +59,7 @@ class AverageVisits:
             + geom_point(alpha=0.6)
             + theme_classic()
             + labs(
-                title=f"Trajectory Counts Per Image",
+                title=" ",
                 x="Image Name",
                 y="Trajectory Count",
             )

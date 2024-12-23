@@ -1,13 +1,13 @@
 {
   "model": {
-    "weights": "yolo11n.pt",
+    "weights": "best.pt",
     "task": "track",
-    "conf_threshold": 0.5,
+    "conf_threshold": 0.2,
     "iou_threshold": 0.2,
     "vid_stride":1
   },
   "input": {
-    "images_dir": "src/tests/vid"
+    "images_dir": "src/tests/mery_track"
   },
   "output": {
     "output_dir": "src/tests/csvs",
@@ -22,15 +22,15 @@
     "true_axis": true 
   },
   "average_visits": {
-    "time_intervals": 60,
+    "time_intervals": 1,
     "interval_unit": "seconds",
-    "fps": "2"
+    "fps": "6"
   },
 "duration": {
-  "fps": "2"
+  "fps": "6"
 },
 "define_roi": {
-        "file_path": "src/datasets/arad/croped_movies",
+        "file_path": "src/tests/vid",
 
         "csv_path": "src/tests/csvs/results.csv",
         "output_dir": "src/tests/csvs",

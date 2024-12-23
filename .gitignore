@@ -3,6 +3,7 @@ output/
 src/tests/mos_vids/
 src/tests/plots/
 src/tests/csvs/
+src/tests/mery_track
 runs/
 
 # Byte-compiled / optimized / DLL files
@@ -97,4 +98,5 @@ checkpoints/
 *.csv
 *.png
 *.avi
-*.mov
+IMG_7393.mov
+*.jpeg
