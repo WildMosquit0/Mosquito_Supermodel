@@ -24,7 +24,8 @@ class PlotXY:
             gg.ggplot(self.data, gg.aes(x='x', y='y', color=self.data[self.id_OR_class])) +
             gg.geom_point(size=3) +
             gg.labs(title="X vs Y", x="X", y="Y")+
-            gg.theme_classic()
+            gg.theme_classic()+
+            gg.theme(legend_position = "none")
         )
         if self.true_axis is True:
             plot = (

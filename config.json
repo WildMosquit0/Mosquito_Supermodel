@@ -2,9 +2,9 @@
   "model": {
     "weights": "best.pt",
     "task": "track",
-    "conf_threshold": 0.4,
+    "conf_threshold": 0.3,
     "iou_threshold": 0.2,
-    "vid_stride":100
+    "vid_stride":10
   },
   "input": {
     "images_dir": "src/datasets/arad/croped_movies"
@@ -14,7 +14,7 @@
     "save_animations": true
   },
   "analyze": {
-    "csv_path": "src/tests/csvs/roi_results.csv",
+    "csv_path": "src/tests/csvs/results.csv",
     "csv_results_dir": "src/tests/csvs",
     "plots_dir" : "src/tests/plots/analize",
     "id_OR_class": "track_id", 
@@ -22,12 +22,12 @@
     "true_axis": false 
   },
   "average_visits": {
-    "time_intervals": 3,
+    "time_intervals": 60,
     "interval_unit": "seconds",
-    "fps": "30"
+    "fps": "2"
   },
 "duration": {
-  "fps": "30"
+  "fps": "2"
 },
 "define_roi": {
         "file_path": "src/datasets/arad/croped_movies",
@@ -35,7 +35,7 @@
         "csv_path": "src/tests/csvs/results.csv",
         "output_dir": "src/tests/csvs",
         "get_inner_roi": true,
-        "choose_farme_for_video": 20
+        "choose_farme_for_video": 200
 
     }
 }

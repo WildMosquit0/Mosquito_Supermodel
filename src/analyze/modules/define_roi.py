@@ -123,7 +123,7 @@ class ROIDefiner:
 
             # Load CSV and filter objects
             csv_data = self.load_csv()
-            filtered_data = self.filter_objects_in_roi(image_name)
+            filtered_data = self.filter_objects_in_roi(image_name.split('.')[0])
             all_filtered_data = pd.concat([all_filtered_data, filtered_data])
 
         # Save all results to a single file
