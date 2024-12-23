@@ -2,12 +2,12 @@
   "model": {
     "weights": "yolo11n.pt",
     "task": "track",
-    "conf_threshold": 0.3,
+    "conf_threshold": 0.5,
     "iou_threshold": 0.2,
-    "vid_stride":10
+    "vid_stride":1
   },
   "input": {
-    "images_dir": "src/tests/vids"
+    "images_dir": "src/tests/vid"
   },
   "output": {
     "output_dir": "src/tests/csvs",
@@ -19,7 +19,7 @@
     "plots_dir" : "src/tests/plots/analize",
     "id_OR_class": "track_id", 
     "id_OR_class_note": "track_id or label",
-    "true_axis": false 
+    "true_axis": true 
   },
   "average_visits": {
     "time_intervals": 60,
