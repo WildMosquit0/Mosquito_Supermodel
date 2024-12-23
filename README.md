@@ -71,7 +71,7 @@ The **Mosquito Supermodel** project is designed for researchers, developers, and
 ## Features
 
 1. **Prediction and Tracking**
-   - Framework functions to predict and track mosquito movements using YOLOv8.
+   - Framework functions to predict and track mosquito movements using YOLOv11.
 
 2. **Analysis**
    - Tools for analyzing YOLOv8 output, providing detailed insights through CSV files and plots.
