@@ -1,10 +1,10 @@
 {
   "model": {
-    "weights": "best.pt",
+    "weights": "yolo11n.pt",
     "task": "track",
     "conf_threshold": 0.2,
     "iou_threshold": 0.2,
-    "vid_stride":1
+    "vid_stride":10
   },
   "input": {
     "images_dir": "src/tests/vid"
@@ -14,7 +14,7 @@
     "save_animations": true
   },
   "analyze": {
-    "csv_path": "src/tests/csvs/results.csv",
+    "csv_path": "src/tests/csvs/roi_results.csv",
     "csv_results_dir": "src/tests/csvs",
     "plots_dir" : "src/tests/plots/analize",
     "id_OR_class": "track_id", 
