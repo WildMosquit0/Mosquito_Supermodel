@@ -4,6 +4,8 @@ src/tests/mos_vids/
 src/tests/plots/
 src/tests/csvs/
 src/tests/mery_track
+src/tests/vid
+src/tests/vids
 runs/
 
 # Byte-compiled / optimized / DLL files
