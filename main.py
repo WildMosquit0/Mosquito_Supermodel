@@ -17,6 +17,6 @@ if __name__ == "__main__":
     duration = Duration(config_path)
     
     
-    explorer()
+    #sexplorer()
     average_visits()
-    duration()
+    #duration()
