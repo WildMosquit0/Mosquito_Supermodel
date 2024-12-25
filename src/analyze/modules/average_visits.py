@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-from plotnine import ggplot, aes, geom_boxplot, theme_classic, labs, geom_point
+from plotnine import ggplot, aes, geom_boxplot, theme_classic, labs, geom_point, geom_smooth
 from src.utils.config import load_config
 from src.utils.common import create_output_dir
 
@@ -71,15 +71,12 @@ class AverageVisits:
 
 
 
-    def save_new_df(self, df, filename):
-        """
-        Save a DataFrame to a CSV file with a specified filename.
-        """
-        output_csv = os.path.join(self.results_output, filename)
-        create_output_dir(self.results_output)  # Ensure directory exists
-        df.to_csv(output_csv, index=False)
+    def save_new_df(self, data,name):
+        
+        output_csv = os.path.join(self.results_output, f"{name}.csv")
+        create_output_dir(self.results_output) 
+        data.to_csv(output_csv, index=False)
         print(f"Results saved to {output_csv}")
-
 
     def box_plot_results(self, averave_visits):
         
@@ -103,8 +100,7 @@ class AverageVisits:
         
         plot = (
             ggplot(per_frame, aes(x="image_idx", y="trajectory_count",color='teratment_or_rep'))
-            + geom_boxplot()
-            + geom_point(alpha=0.6)
+            + geom_smooth(method='loess', span=0.3)
             + theme_classic()
             + labs(
                 title=" ",
@@ -124,11 +120,11 @@ class AverageVisits:
         df = self._load_data()
         df = self._does_it_teratment_or_rep(df)
         df = self._calculate_time_intervals(df)
-        aggregated_df = self._aggregate_trajectories(df)
-        self.save_new_df(averave_visits, "average_visits.csv")
-        self.save_new_df(per_frame, "per_frame.csv")
-        self.box_plot_results(aggregated_df)
-        self.time_plot_results()
+        average_visits,detections_vs_time = self._aggregate_trajectories(df)
+        self.save_new_df(data = average_visits,name = "average_visits")
+        self.save_new_df(data = detections_vs_time,name = "visits_vs_frames")
+        self.box_plot_results(average_visits)
+        self.time_plot_results(detections_vs_time)
 
 
 # Usage Example:
