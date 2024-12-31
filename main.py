@@ -19,4 +19,4 @@ if __name__ == "__main__":
     
     #explorer()
     average_visits()
-    #duration()
+    duration()
