@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-from plotnine import ggplot, aes, geom_boxplot, theme_classic, labs, geom_point, geom_smooth
+from plotnine import ggplot, aes, geom_boxplot, theme_classic, labs, geom_point, geom_smooth,geom_jitter
 from src.utils.config import load_config
 from src.utils.common import create_output_dir
 
@@ -58,15 +58,23 @@ class AverageVisits:
             .reset_index()
         )
         per_frame["trajectory_count"] = per_frame["track_id"].apply(len)
-
+        
         # Step 2: Aggregate these counts by time intervals and treatment/replicate
         averave_visits = (
             per_frame.groupby(["time_interval", "teratment_or_rep"], as_index=False)["trajectory_count"]
             .mean()
         )
 
+        #convert frame to minutes  
+        per_frame["time"] = per_frame["image_idx"] / self.fps / 60  # convert to minutes
         
-        return averave_visits, per_frame
+        per_time_interval = (
+            per_frame.groupby(['teratment_or_rep', 'time_interval'])
+            .agg(mean_trajectory_count=('trajectory_count', 'mean'),
+                se_trajectory_count=('trajectory_count', lambda x: np.std(x, ddof=1) / np.sqrt(len(x))))
+            .reset_index()
+)
+        return averave_visits, per_frame ,per_time_interval
 
 
 
@@ -83,7 +91,7 @@ class AverageVisits:
         plot = (
             ggplot(averave_visits, aes(x="teratment_or_rep", y="trajectory_count"))
             + geom_boxplot()
-            + geom_point(alpha=0.6)
+            + geom_jitter(alpha=0.6)
             + theme_classic()
             + labs(
                 title=" ",
@@ -99,12 +107,12 @@ class AverageVisits:
     def time_plot_results(self, per_frame):
         
         plot = (
-            ggplot(per_frame, aes(x="image_idx", y="trajectory_count",color='teratment_or_rep'))
-            + geom_smooth(method='loess', span=0.3)
+            ggplot(per_frame, aes(x="time", y="trajectory_count",color='teratment_or_rep'))
+            + geom_smooth(method='loess', span=0.1,se=True)
             + theme_classic()
             + labs(
                 title=" ",
-                x="time (frames)",
+                x="time (minutes)",
                 y="Trajectory's number",
             )
         )
@@ -120,11 +128,11 @@ class AverageVisits:
         df = self._load_data()
         df = self._does_it_teratment_or_rep(df)
         df = self._calculate_time_intervals(df)
-        average_visits,detections_vs_time = self._aggregate_trajectories(df)
+        average_visits,detections_vs_time, per_time_interval = self._aggregate_trajectories(df)
         self.save_new_df(data = average_visits,name = "average_visits")
-        self.save_new_df(data = detections_vs_time,name = "visits_vs_frames")
+        self.save_new_df(data = per_time_interval,name = "visits_vs_frames")
         self.box_plot_results(average_visits)
-        self.time_plot_results(detections_vs_time)
+        self.time_plot_results(per_time_interval)
 
 
 # Usage Example:

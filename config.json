@@ -14,7 +14,7 @@
     "save_animations": true
   },
   "analyze": {
-    "csv_path": "src/tests/csvs/arad_roi_results.csv",
+    "csv_path": "src/tests/arad_roi_results.csv",
     "csv_results_dir": "src/tests/csvs",
     "plots_dir" : "src/tests/plots/analize",
     "id_OR_class": "track_id", 
