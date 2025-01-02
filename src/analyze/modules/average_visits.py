@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-from plotnine import ggplot, aes, geom_boxplot, theme_classic, labs, geom_point, geom_smooth,geom_jitter
+from plotnine import ggplot, aes, geom_col, theme_classic, labs, geom_point, geom_line ,geom_jitter, geom_errorbar
 from src.utils.config import load_config
 from src.utils.common import create_output_dir
 
@@ -61,19 +61,34 @@ class AverageVisits:
         
         # Step 2: Aggregate these counts by time intervals and treatment/replicate
         averave_visits = (
-            per_frame.groupby(["time_interval", "teratment_or_rep"], as_index=False)["trajectory_count"]
-            .mean()
+            per_frame.groupby(["time_interval", "teratment_or_rep","image_name"], as_index=False)["trajectory_count"]
+            .nunique()
+            .reset_index()
         )
 
         #convert frame to minutes  
         per_frame["time"] = per_frame["image_idx"] / self.fps / 60  # convert to minutes
         
-        per_time_interval = (
-            per_frame.groupby(['teratment_or_rep', 'time_interval'])
-            .agg(mean_trajectory_count=('trajectory_count', 'mean'),
-                se_trajectory_count=('trajectory_count', lambda x: np.std(x, ddof=1) / np.sqrt(len(x))))
-            .reset_index()
-)
+        if self.teratment_or_rep == "treatment":
+            per_time_interval = (
+                per_frame.groupby(['teratment_or_rep', 'time_interval'])
+                .agg(
+                    mean_trajectory_count=('trajectory_count', 'mean'),
+                    se_trajectory_count=('trajectory_count', lambda x: np.std(x, ddof=1) / np.sqrt(len(x)))  # Standard Error
+                )
+                .reset_index()
+                )
+        else:
+            per_time_interval = (
+                per_frame.groupby(['teratment_or_rep', 'time_interval'])
+                .agg(
+                    mean_trajectory_count=('trajectory_count', 'mean')
+                )
+                .reset_index()
+            )
+        count=('trajectory_count', lambda x: np.std(x, ddof=1) / np.sqrt(len(x))
+                    .reset_index()
+            )   
         return averave_visits, per_frame ,per_time_interval
 
 
@@ -88,34 +103,61 @@ class AverageVisits:
 
     def box_plot_results(self, averave_visits):
         
+        mean_data = (
+        averave_visits.groupby("teratment_or_rep", as_index=False)
+        .agg(
+            trajectory_count=("trajectory_count", "mean"),
+            sem=("trajectory_count", lambda x: np.std(x, ddof=1) / np.sqrt(len(x)))  # Standard Error of Mean
+        )
+        )
+
+        # Create the plot
         plot = (
-            ggplot(averave_visits, aes(x="teratment_or_rep", y="trajectory_count"))
-            + geom_boxplot()
-            + geom_jitter(alpha=0.6)
+            ggplot()
+            # Add the bars for the mean values
+            + geom_col(mean_data, aes(x="teratment_or_rep", y="trajectory_count", fill="teratment_or_rep"),color = "black")
+            # Overlay the individual data points
+            + geom_jitter(averave_visits, aes(x="teratment_or_rep", y="trajectory_count"),color="black", width=0.2, alpha=0.8)
+            
             + theme_classic()
             + labs(
                 title=" ",
-                x="Image Name",
-                y="Trajectory Count",
+                x=" ",
+                y="Mean Trajectory Count",
+                fill = " "
             )
         )
+        if self.teratment_or_rep == "treatment":
+            plot += geom_errorbar(
+                mean_data,
+                aes(x="teratment_or_rep", ymin="trajectory_count", ymax="trajectory_count + sem"),
+                color="black",
+                width=0.2  # Width of error bar caps
+    )
+
         output_path = os.path.join(self.plot_path, "average_visits.png")
         create_output_dir(self.plot_path)
         plot.save(output_path)
         print(f"Plot saved to {output_path}")
 
-    def time_plot_results(self, per_frame):
+    def time_plot_results(self, per_time_interval):
         
         plot = (
-            ggplot(per_frame, aes(x="time", y="trajectory_count",color='teratment_or_rep'))
-            + geom_smooth(method='loess', span=0.1,se=True)
+            ggplot(per_time_interval, aes(x="time_interval", y="mean_trajectory_count",color='teratment_or_rep'))
+            + geom_point()
+            + geom_line()
             + theme_classic()
             + labs(
                 title=" ",
-                x="time (minutes)",
+                x="Time (minutes)",
                 y="Trajectory's number",
+                color=" "
             )
-        )
+        )       
+        if self.teratment_or_rep == "treatment":
+            plot += geom_errorbar(aes(ymin=per_time_interval["mean_trajectory_count"]-per_time_interval["se_trajectory_count"], 
+                                ymax=per_time_interval["mean_trajectory_count"]+per_time_interval["se_trajectory_count"])
+                           )
         output_path = os.path.join(self.plot_path, "average_visits_time.png")
         create_output_dir(self.plot_path)
         plot.save(output_path)
@@ -128,9 +170,9 @@ class AverageVisits:
         df = self._load_data()
         df = self._does_it_teratment_or_rep(df)
         df = self._calculate_time_intervals(df)
-        average_visits,detections_vs_time, per_time_interval = self._aggregate_trajectories(df)
+        average_visits,per_frame, per_time_interval = self._aggregate_trajectories(df)
         self.save_new_df(data = average_visits,name = "average_visits")
-        self.save_new_df(data = per_time_interval,name = "visits_vs_frames")
+        self.save_new_df(data = per_time_interval,name = "per_time_interval")
         self.box_plot_results(average_visits)
         self.time_plot_results(per_time_interval)
 
