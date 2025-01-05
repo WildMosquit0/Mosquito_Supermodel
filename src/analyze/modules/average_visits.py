@@ -72,12 +72,17 @@ class AverageVisits:
             )
         average_visits["treatment"] = average_visits["image_name"].str.split("_").str[0]
         
-        
+        summary = (
+            average_visits.groupby(self.teratment_or_rep)["mean_trajectory_count"]
+            .agg(["mean", "std", "count"])
+            .reset_index()
+        )
+        summary["se"] = summary["std"] / summary["count"]**0.5
+        summary["mean_plus_se"] = summary["mean"] + summary["se"]
 
 
 
-        return average_visits
-
+        return average_visits, summary
 
 
 
@@ -88,34 +93,16 @@ class AverageVisits:
         data.to_csv(output_csv, index=False)
         print(f"Results saved to {output_csv}")
 
-    def bar_plot_results(self, averave_visits):
-        summary = (
-            averave_visits.groupby(self.teratment_or_rep)["mean_trajectory_count"]
-            .agg(["mean", "std", "count"])
-            .reset_index()
-        )
-        summary["se"] = summary["std"] / summary["count"]**0.5  # Standard Error
-
+    def bar_plot_results(self, averave_visits,summary):
+        
         # Create the plot
         plot = (
             ggplot()
-            # Add the bars for the mean values
             + geom_col(
                 summary,
                 aes(x=self.teratment_or_rep, y="mean", fill=self.teratment_or_rep),
                 color="black"
             )
-            # Add the error bars
-            + geom_errorbar(
-                summary,
-                aes(
-                    x=self.teratment_or_rep,
-                    ymin="mean - se",
-                    ymax="mean + se"
-                ),
-                width=0.2
-            )
-            # Overlay the individual data points
             + geom_jitter(
                 averave_visits,
                 aes(x=self.teratment_or_rep, y="mean_trajectory_count"),
@@ -131,6 +118,18 @@ class AverageVisits:
                 fill=" "
             )
         )
+
+        # Add error bars if applicable
+        if self.teratment_or_rep == "treatment":
+            plot += geom_errorbar(
+                summary,
+                aes(
+                    x=self.teratment_or_rep,
+                    ymin="mean",
+                    ymax="mean_plus_se"
+                ),
+                width=0.2
+            )
        
 
         output_path = os.path.join(self.plot_path, "average_visits.png")
@@ -138,7 +137,7 @@ class AverageVisits:
         plot.save(output_path)
         print(f"Plot saved to {output_path}")
 
-    def time_plot_results(self, averave_visits):
+    def time_plot_results(self, averave_visits,summary):
         
         plot = (
             ggplot(averave_visits, aes(x="time_interval", y="mean_trajectory_count",color=self.teratment_or_rep))
@@ -157,9 +156,17 @@ class AverageVisits:
             )
         )       
         if self.teratment_or_rep == "treatment":
-            plot += geom_errorbar(aes(ymin=averave_visits["mean_trajectory_count"]-averave_visits["se_trajectory_count"], 
-                                ymax=averave_visits["mean_trajectory_count"]+ averave_visits["se_trajectory_count"])
-                           )
+            plot += geom_errorbar(
+                summary,
+                aes(
+                    x=self.teratment_or_rep,
+                    ymin="mean",
+                    ymax="mean_plus_se"
+                ),
+                width=0.2
+            )
+       
+                        
         output_path = os.path.join(self.plot_path, "average_visits_time.png")
         create_output_dir(self.plot_path)
         plot.save(output_path)
@@ -172,11 +179,11 @@ class AverageVisits:
         df = self._load_data()
         df = self._does_it_teratment_or_rep(df)
         df = self._calculate_time_intervals(df)
-        average_visits = self._aggregate_trajectories(df)
+        average_visits ,summary = self._aggregate_trajectories(df)
         self.save_new_df(data = average_visits,name = "average_visits")
         #self.save_new_df(data = per_time_interval,name = "per_time_interval")
-        self.bar_plot_results(average_visits)
-        #self.time_plot_results(per_time_interval)
+        self.bar_plot_results(average_visits,summary)
+        self.time_plot_results(average_visits, summary)
 
 
 # Usage Example:
