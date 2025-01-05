@@ -19,14 +19,14 @@
     "plots_dir" : "src/tests/plots/analize",
     "id_OR_class": "track_id", 
     "id_OR_class_note": "track_id or label",
-    "teratment_or_rep": "treatment", 
+    "teratment_or_rep": "image_name", 
     "teratment_or_rep_note": "treatment or image_name",
     "true_axis": true 
   },
   "average_visits": {
     "time_intervals": 60,
     "interval_unit": "seconds",
-    "fps": "4"
+    "fps": "3"
   },
 "duration": {
   "fps": "4"

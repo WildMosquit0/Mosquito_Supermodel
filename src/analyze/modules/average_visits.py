@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-from plotnine import ggplot, aes, geom_col, theme_classic, labs, geom_point, geom_line ,geom_jitter, geom_errorbar
+from plotnine import ggplot, aes, geom_col, theme_classic, labs, geom_point, geom_line ,geom_jitter, geom_errorbar,scale_x_continuous
 from src.utils.config import load_config
 from src.utils.common import create_output_dir
 
@@ -58,38 +58,25 @@ class AverageVisits:
             .reset_index()
         )
         per_frame["trajectory_count"] = per_frame["track_id"].apply(len)
-        
-        # Step 2: Aggregate these counts by time intervals and treatment/replicate
-        averave_visits = (
-            per_frame.groupby(["time_interval", "teratment_or_rep","image_name"], as_index=False)["trajectory_count"]
-            .nunique()
-            .reset_index()
-        )
 
         #convert frame to minutes  
         per_frame["time"] = per_frame["image_idx"] / self.fps / 60  # convert to minutes
-        
-        if self.teratment_or_rep == "treatment":
-            per_time_interval = (
-                per_frame.groupby(['teratment_or_rep', 'time_interval'])
-                .agg(
-                    mean_trajectory_count=('trajectory_count', 'mean'),
-                    se_trajectory_count=('trajectory_count', lambda x: np.std(x, ddof=1) / np.sqrt(len(x)))  # Standard Error
-                )
-                .reset_index()
-                )
-        else:
-            per_time_interval = (
-                per_frame.groupby(['teratment_or_rep', 'time_interval'])
+    
+        # calculates each all reps as treatment
+        average_visits = (
+                per_frame.groupby(['time_interval',"image_name"])
                 .agg(
                     mean_trajectory_count=('trajectory_count', 'mean')
                 )
                 .reset_index()
             )
-        count=('trajectory_count', lambda x: np.std(x, ddof=1) / np.sqrt(len(x))
-                    .reset_index()
-            )   
-        return averave_visits, per_frame ,per_time_interval
+        average_visits["treatment"] = average_visits["image_name"].str.split("_").str[0]
+        
+        
+
+
+
+        return average_visits
 
 
 
@@ -101,49 +88,60 @@ class AverageVisits:
         data.to_csv(output_csv, index=False)
         print(f"Results saved to {output_csv}")
 
-    def box_plot_results(self, averave_visits):
-        
-        mean_data = (
-        averave_visits.groupby("teratment_or_rep", as_index=False)
-        .agg(
-            trajectory_count=("trajectory_count", "mean"),
-            sem=("trajectory_count", lambda x: np.std(x, ddof=1) / np.sqrt(len(x)))  # Standard Error of Mean
+    def bar_plot_results(self, averave_visits):
+        summary = (
+            averave_visits.groupby(self.teratment_or_rep)["mean_trajectory_count"]
+            .agg(["mean", "std", "count"])
+            .reset_index()
         )
-        )
+        summary["se"] = summary["std"] / summary["count"]**0.5  # Standard Error
 
         # Create the plot
         plot = (
             ggplot()
             # Add the bars for the mean values
-            + geom_col(mean_data, aes(x="teratment_or_rep", y="trajectory_count", fill="teratment_or_rep"),color = "black")
+            + geom_col(
+                summary,
+                aes(x=self.teratment_or_rep, y="mean", fill=self.teratment_or_rep),
+                color="black"
+            )
+            # Add the error bars
+            + geom_errorbar(
+                summary,
+                aes(
+                    x=self.teratment_or_rep,
+                    ymin="mean - se",
+                    ymax="mean + se"
+                ),
+                width=0.2
+            )
             # Overlay the individual data points
-            + geom_jitter(averave_visits, aes(x="teratment_or_rep", y="trajectory_count"),color="black", width=0.2, alpha=0.8)
-            
+            + geom_jitter(
+                averave_visits,
+                aes(x=self.teratment_or_rep, y="mean_trajectory_count"),
+                color="black",
+                width=0.2,
+                alpha=0.8
+            )
             + theme_classic()
             + labs(
                 title=" ",
                 x=" ",
                 y="Mean Trajectory Count",
-                fill = " "
+                fill=" "
             )
         )
-        if self.teratment_or_rep == "treatment":
-            plot += geom_errorbar(
-                mean_data,
-                aes(x="teratment_or_rep", ymin="trajectory_count", ymax="trajectory_count + sem"),
-                color="black",
-                width=0.2  # Width of error bar caps
-    )
+       
 
         output_path = os.path.join(self.plot_path, "average_visits.png")
         create_output_dir(self.plot_path)
         plot.save(output_path)
         print(f"Plot saved to {output_path}")
 
-    def time_plot_results(self, per_time_interval):
+    def time_plot_results(self, averave_visits):
         
         plot = (
-            ggplot(per_time_interval, aes(x="time_interval", y="mean_trajectory_count",color='teratment_or_rep'))
+            ggplot(averave_visits, aes(x="time_interval", y="mean_trajectory_count",color=self.teratment_or_rep))
             + geom_point()
             + geom_line()
             + theme_classic()
@@ -153,10 +151,14 @@ class AverageVisits:
                 y="Trajectory's number",
                 color=" "
             )
+            + scale_x_continuous(
+                limits=[0, averave_visits["time_interval"].max()],
+                breaks=range(0, averave_visits["time_interval"].max() + 1,3)
+            )
         )       
         if self.teratment_or_rep == "treatment":
-            plot += geom_errorbar(aes(ymin=per_time_interval["mean_trajectory_count"]-per_time_interval["se_trajectory_count"], 
-                                ymax=per_time_interval["mean_trajectory_count"]+per_time_interval["se_trajectory_count"])
+            plot += geom_errorbar(aes(ymin=averave_visits["mean_trajectory_count"]-averave_visits["se_trajectory_count"], 
+                                ymax=averave_visits["mean_trajectory_count"]+ averave_visits["se_trajectory_count"])
                            )
         output_path = os.path.join(self.plot_path, "average_visits_time.png")
         create_output_dir(self.plot_path)
@@ -170,11 +172,11 @@ class AverageVisits:
         df = self._load_data()
         df = self._does_it_teratment_or_rep(df)
         df = self._calculate_time_intervals(df)
-        average_visits,per_frame, per_time_interval = self._aggregate_trajectories(df)
+        average_visits = self._aggregate_trajectories(df)
         self.save_new_df(data = average_visits,name = "average_visits")
-        self.save_new_df(data = per_time_interval,name = "per_time_interval")
-        self.box_plot_results(average_visits)
-        self.time_plot_results(per_time_interval)
+        #self.save_new_df(data = per_time_interval,name = "per_time_interval")
+        self.bar_plot_results(average_visits)
+        #self.time_plot_results(per_time_interval)
 
 
 # Usage Example:
