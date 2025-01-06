@@ -14,7 +14,7 @@
     "save_animations": true
   },
   "analyze": {
-    "csv_path": "src/work_space/roi_results.csv",
+    "csv_path": "src/work_space/csvs/roi_results.csv",
     "csv_results_dir": "src/work_space/csvs",
     "plots_dir" : "src/work_space/plots/analize",
     "id_OR_class": "track_id", 
