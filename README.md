@@ -35,8 +35,10 @@ The **Mosquito Supermodel** project is designed for researchers, developers, and
 ### Installation
 1. Clone this repository:
    ```bash
-   git clone -b feature/analyzer git@github.com:WildMosquit0/Mosquito_Supermodel.git
+   git clone -b test_lab_meeting git@github.com:WildMosquit0/Mosquito_Supermodel.git
+   cp -r work_space Mosquito_Supermodel/src
    cd Mosquito_Supermodel
+
    ```
 2. Install dependencies:
    ```bash
