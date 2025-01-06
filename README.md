@@ -37,6 +37,7 @@ The **Mosquito Supermodel** project is designed for researchers, developers, and
    ```bash
    git clone -b test_lab_meeting git@github.com:WildMosquit0/Mosquito_Supermodel.git
    cp -r work_space Mosquito_Supermodel/src
+   cp -r best.py Mosquito_Supermodel
    cd Mosquito_Supermodel
 
    ```
