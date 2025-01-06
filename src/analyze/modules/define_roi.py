@@ -130,6 +130,7 @@ class ROIDefiner:
         self.save_filtered_data(all_filtered_data, filename="roi_results.csv")
 
 # Instantiate and run the ROIDefiner class
-config_path = "./config.json"
-roi_definer = ROIDefiner(config_path)
-roi_definer()
+if __name__ == "__main__":
+    config_path = "./config.json"
+    roi_definer = ROIDefiner(config_path)
+    roi_definer()

@@ -3,22 +3,24 @@
     "weights": "best.pt",
     "task": "track",
     "conf_threshold": 0.2,
-    "iou_threshold": 0.2,
-    "vid_stride":5
+    "iou_threshold": 0.5,
+    "vid_stride":50
   },
   "input": {
-    "images_dir": "src/datasets/croped_movies/14"
+    "images_dir": "src/work_space"
   },
   "output": {
-    "output_dir": "src/datasets/croped_movies/14",
+    "output_dir": "src/work_space",
     "save_animations": true
   },
   "analyze": {
-    "csv_path": "src/tests/arad_roi_results.csv",
-    "csv_results_dir": "src/tests/csvs",
-    "plots_dir" : "src/tests/plots/analize",
+    "csv_path": "src/work_space/results.csv",
+    "csv_results_dir": "src/work_space/csvs",
+    "plots_dir" : "src/work_space/plots/analize",
     "id_OR_class": "track_id", 
     "id_OR_class_note": "track_id or label",
+
+    "_comment": "coohse to plot repetitions (image_name) or traetment",
     "teratment_or_rep": "image_name", 
     "teratment_or_rep_note": "treatment or image_name",
     "true_axis": true 
@@ -26,16 +28,16 @@
   "average_visits": {
     "time_intervals": 60,
     "interval_unit": "seconds",
-    "fps": "3"
+    "fps": "0.3"
   },
 "duration": {
   "fps": "4"
 },
 "define_roi": {
-        "file_path": "src/datasets/croped_movies/track",
+        "file_path": "src/work_space",
 
-        "csv_path": "src/datasets/croped_movies/merged_results.csv",
-        "output_dir": "src/tests/csvs",
+        "csv_path": "src/work_space/results.csv",
+        "output_dir": "src/work_space/csvs",
         "get_inner_roi": true,
         "choose_farme_for_video": 200
 

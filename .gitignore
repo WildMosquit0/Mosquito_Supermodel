@@ -6,6 +6,7 @@ src/tests/csvs/
 src/tests/mery_track
 src/tests/vid
 src/tests/vids
+src/work_space
 runs/
 
 # Byte-compiled / optimized / DLL files
