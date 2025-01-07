@@ -1,5 +1,5 @@
 from src.config.utils import ConfigLoader
-from src.hpo.utils import HPOParameterSpace, Logger, CallbackManager
+from src.hpo.utils import Logger, CallbackManager
 from src.hpo.trainers import StandardTrainer
 
 from ultralytics import YOLO
@@ -10,26 +10,25 @@ class YOLOTrainer:
         self.config_loader = config_loader
         self.use_hpo = use_hpo
         self.data_config = config_loader.get_data_config()
-        self.hyp_config = config_loader.get_hyp_config()
 
-        weights_path = self.hyp_config.get('model', {}).get('weights', 'yolov8n.pt')
+        self.config = self.config_loader.get_data_config()
+        weights_path = self.config['model'].get('weights', 'yolov5s.pt')
         self.model = YOLO(weights_path)
 
         self.logger = Logger(log_dir='runs/train/experiment')
         self.callback_manager = CallbackManager()
 
-    def train(self, hpo_space=None):
+    def train(self):
         trainer = StandardTrainer(
             model=self.model,
             data_config=self.data_config,
-            hyp_config=self.hyp_config,
             logger=self.logger
-        )
 
+        )
         trainer.train()
 
 
 if __name__ == '__main__':
     config_loader = ConfigLoader('data.yaml')
-    trainer = YOLOTrainer(config_loader, use_hpo=True)
+    trainer = YOLOTrainer(config_loader)
     trainer.train()
