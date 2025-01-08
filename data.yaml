@@ -1,21 +1,29 @@
-data: "/home/bohbot/Evyatar/yaml/all_mos.yaml"
-
-nc: 1 
-names: ["mosquito"]
+data:
+  path: "/home/bohbot/ultralytics/datasets/mos/all_mos_new" 
+  train: "images/train"  
+  val: "images/val"  
+  test: "images/test"  
+  nc: 1  
+  names: ["mosquito"] 
 
 model:
-  weights: "yolo11n.pt" 
+  weights: "yolo11l.pt" 
   task: "detect"
 
 training:
   epochs: 1
-  batch: 16
+  batch: 64
   imgsz: 640
   optimizer: "AdamW"
   lr0: 0.001
 
+  augmentations:
+    degrees: 45
+    translate: 0.1
+    scale: 0.1
+    shear: 0.1
+    
 
 output:
   output_dir: "/home/bohbot/workspace/Mosquito_Supermodel/train/trial_code"
   name: "v_0_all"
-

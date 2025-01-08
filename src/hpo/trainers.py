@@ -5,64 +5,8 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from PIL import Image
 import os
-import random
+import yaml
 import torch
-
-
-class CustomDataset(Dataset):
-    def __init__(self, image_paths: List[str], target_size: Tuple[int, int]):
-        self.image_paths = image_paths
-        self.target_size = target_size
-        self.transform = transforms.Compose([transforms.ToTensor()])
-
-    def resize_and_random_crop(self, image, annotations):
-        target_height, target_width = self.target_size
-        original_width, original_height = image.width, image.height
-        if original_height < target_height or original_width < target_width:
-            scale_factor = max(target_height / original_height, target_width / original_width)
-            new_width = int(original_width * scale_factor)
-            new_height = int(original_height * scale_factor)
-            image = image.resize((new_width, new_height), Image.BILINEAR)
-            annotations[:, 1:] *= torch.tensor([scale_factor, scale_factor, scale_factor, scale_factor])
-        if image.height > target_height and image.width > target_width:
-            top = random.randint(0, image.height - target_height)
-            left = random.randint(0, image.width - target_width)
-            image = image.crop((left, top, left + target_width, top + target_height))
-            annotations[:, 1] = (annotations[:, 1] * original_width - left) / target_width
-            annotations[:, 2] = (annotations[:, 2] * original_height - top) / target_height
-            annotations[:, 3] /= target_width / original_width
-            annotations[:, 4] /= target_height / original_height
-        annotations[:, 1:].clamp_(0, 1)
-        return image, annotations
-
-    def load_annotations(self, annotation_path: str) -> torch.Tensor:
-        annotations = []
-        with open(annotation_path, "r") as f:
-            for line in f.readlines():
-                parts = line.strip().split()
-                label = int(parts[0])
-                bbox = list(map(float, parts[1:]))
-                annotations.append([label] + bbox)
-        return torch.tensor(annotations)
-
-    def __getitem__(self, idx: int):
-        image_path = self.image_paths[idx]
-        image = Image.open(image_path).convert("RGB")
-        annotation_path = (
-            image_path.replace("images", "labels")
-            .replace(".jpg", ".txt")
-            .replace(".png", ".txt")
-        )
-        if not os.path.exists(annotation_path):
-            annotations = torch.empty((0, 5))
-        else:
-            annotations = self.load_annotations(annotation_path)
-        image, annotations = self.resize_and_random_crop(image, annotations)
-        transformed_image = self.transform(image)
-        return transformed_image, annotations
-
-    def __len__(self):
-        return len(self.image_paths)
 
 
 class StandardTrainer:
@@ -77,26 +21,29 @@ class StandardTrainer:
     def train(self):
         training_params = self.data_config.get("training", {})
         output_params = self.data_config.get("output", {})
-        data = self.data_config.get("data", {})
-        dataset_path = "/home/bohbot/ultralytics/datasets/mos/all_mos_new/images/train"
-        image_paths = [
-            os.path.join(dataset_path, f)
-            for f in os.listdir(dataset_path)
-            if f.endswith((".jpg", ".png", ".jpeg"))
-        ]
-        dataset = CustomDataset(
-            image_paths=image_paths,
-            target_size=(training_params["imgsz"], training_params["imgsz"]),
+        data_params = self.data_config.get("data", {})
+        temp_data_yaml_path = "/tmp/temp_data.yaml"
+        with open(temp_data_yaml_path, "w") as f:
+            yaml.dump(
+                {
+                    "train": os.path.join(data_params["path"], data_params["train"]),
+                    "val": os.path.join(data_params["path"], data_params["val"]),
+                    "test": os.path.join(
+                        data_params["path"], data_params.get("test", "")
+                    ),
+                    "nc": data_params["nc"],
+                    "names": data_params["names"],
+                },
+                f,
+            )
+        training_params["augmentations"] = self.add_random_crop(
+            training_params["augmentations"], training_params["imgsz"]
         )
-        dataloader = DataLoader(
-            dataset,
-            batch_size=training_params["batch"],
-            shuffle=True,
-            pin_memory=True,
-            num_workers=4,
-        )
+        augmentation_params = {
+            k: v for k, v in training_params["augmentations"].items()
+        }
         self.model.train(
-            data=data,
+            data=temp_data_yaml_path,
             epochs=training_params["epochs"],
             batch=training_params["batch"],
             imgsz=training_params["imgsz"],
@@ -106,4 +53,9 @@ class StandardTrainer:
             project=self.project,
             name=self.experiment_name,
             device=str(self.device),
+            **augmentation_params
         )
+
+    def add_random_crop(self, transform_dict: dict, size: int):
+        transform_dict['crop_fraction'] = (size, size)
+        return transform_dict
