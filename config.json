@@ -39,5 +39,12 @@
         "get_inner_roi": true,
         "choose_farme_for_video": 200
 
+    },
+"crop_movies": {
+        "input_dir": "runs/detect/track18",
+  
+        "start_seconds": 60,
+        "end_seconds": 240
+
     }
 }
