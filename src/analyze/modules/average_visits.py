@@ -13,7 +13,7 @@ class AverageVisits:
         self.results_output = self.config["analyze"]["csv_results_dir"]
         self.time_intervals = float(self.config["average_visits"]["time_intervals"])
         self.fps = float(self.config["average_visits"]["fps"])
-        
+        self.filter_time_intervals =  self.config['average_visits'].get('filter_time_intervals', "nan")
 
         self.data_path = self.config['analyze']["csv_path"]
         self.teratment_or_rep = self.config['analyze']['teratment_or_rep']
@@ -30,6 +30,32 @@ class AverageVisits:
         return df
         
 
+    def fill_na_time_intervals(self, df):
+        max_interval = df["time_interval"].max()
+
+        # Ensure every `teratment_or_rep` has all intervals
+        all_intervals = pd.DataFrame({
+            "time_interval": range(0, max_interval + 1)
+        })
+
+        results = []
+        for teratment_or_rep_value in df[self.teratment_or_rep].unique():
+            # Filter data for this specific `teratment_or_rep`
+            subset = df[df[self.teratment_or_rep] == teratment_or_rep_value]
+
+            # Merge with all intervals to ensure all time intervals are included
+            expanded = (
+                all_intervals.merge(subset, on="time_interval", how="left")
+                .fillna({"mean_trajectory_count": 0, self.teratment_or_rep: teratment_or_rep_value})
+            )
+
+            results.append(expanded)
+
+        # Combine results for all `teratment_or_rep` values
+        complete_df = pd.concat(results, ignore_index=True)
+        print("Ensured all `teratment_or_rep` values have complete time intervals.")
+        return complete_df
+    
     def _calculate_time_intervals(self, df):
         """
         Calculate the time intervals for each frame based on fps and time_intervals in seconds.
@@ -47,6 +73,9 @@ class AverageVisits:
 
         df["time_interval"] = (df["image_idx"] / divisor).astype(int)
         print("Calculated time intervals based on seconds.")
+
+        
+        
         return df
 
     def _aggregate_trajectories(self, df):
@@ -71,9 +100,15 @@ class AverageVisits:
                 .reset_index()
             )
         average_visits["treatment"] = average_visits["image_name"].str.split("_").str[0]
-        
+
+        average_visits = self.fill_na_time_intervals(average_visits)
+
         return average_visits
 
+    def _filter_time_intervals(self, df):
+        if self.filter_time_intervals != "nan":
+            df = df[df["time_interval"] <= self.filter_time_intervals]
+        return df
     def create_summary_stats_for_graphs(self,average_visits):
 
         summary_bar = (
@@ -94,8 +129,6 @@ class AverageVisits:
         summary_time["mean_lower_se"] = summary_time["mean"] - summary_time["se"]
 
         return summary_bar, summary_time
-
-
 
 
     def save_new_df(self, data,name):
@@ -184,6 +217,9 @@ class AverageVisits:
         plot.save(output_path)
         print(f"Plot saved to {output_path}")
 
+    #def fix_csv_for_0_detection(self, average_visits):
+
+        
     def __call__(self):
         """
         Execute the pipeline: load data, calculate intervals, save results, and plot.
@@ -192,6 +228,7 @@ class AverageVisits:
         df = self._does_it_teratment_or_rep(df)
         df = self._calculate_time_intervals(df)
         average_visits = self._aggregate_trajectories(df)
+        average_visits = self._filter_time_intervals(average_visits)
         summary_bar, summary_time = self.create_summary_stats_for_graphs(average_visits)
         self.save_new_df(data = average_visits,name = "average_visits")
         #self.save_new_df(data = per_time_interval,name = "per_time_interval")
