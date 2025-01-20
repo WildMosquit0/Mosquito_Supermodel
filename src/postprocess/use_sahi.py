@@ -3,10 +3,10 @@ from ultralytics import YOLO
 import os
 # SAHI Prediction with your specific arguments
 
-model = "/home/bohbot/Evyatar/runs/detect/most_update_batch3/weights/best.pt"
-source = "/home/bohbot/Evyatar/runs/small"
+model = "/home/bohbot/Evyatar/runs/detect/sahi_1_l/weights/best.pt"
+source = "/home/bohbot/Evyatar/runs/sugar.avi"
 
-conf = 0.4
+conf = 0.25
 
 
 #from sahi.slicing import slice_image
