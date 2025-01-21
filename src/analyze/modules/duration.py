@@ -9,11 +9,11 @@ from src.utils.common import create_output_dir
 
 
 class Duration:
-    def __init__(self, config_path="config.json"):
-        self.config = load_config(config_path)
-        self.data_path = self.config['analyze']["csv_path"]
-        self.plot_path = self.config["analyze"]["plots_dir"]
-        self.results_output = self.config["analyze"]["csv_results_dir"]
+    def __init__(self, config):
+        self.config = config
+        self.data_path = self.config["input_csv"]
+        self.plot_path = f"{self.config['output_dir']}/plots"
+        self.results_output = self.config["output_dir"]
         self.time_intervals = float(self.config["average_visits"]["time_intervals"])
         self.fps = float(self.config["average_visits"]["fps"])
 
