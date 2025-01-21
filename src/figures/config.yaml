@@ -1,0 +1,4 @@
+paths:
+  image_path: "src/tests/images"       # Replace with the actual image folder path
+  annotation_path: "src/tests/labels" # Replace with the actual annotations folder path
+  save_path: "src/tests/plots_figure1"    # Replace with the folder to save plots

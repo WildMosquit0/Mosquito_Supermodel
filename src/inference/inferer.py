@@ -19,7 +19,7 @@ class Inferer:
         self.output_dir = os.path.join(config['output']['output_dir'], self.task)
         self.images_dir = config['input']['images_dir']
         self.save_animations = config['output'].get('save_animations', False)
-
+        self.vid_stride = config['model'].get('vid_stride', 1)
         self.model = YOLO(model_path)
         self.model.to(self.device)
 
@@ -31,13 +31,17 @@ class Inferer:
                 source=self.images_dir, 
                 conf=self.conf_threshold, 
                 iou=self.iou_threshold,   
-                persist=persist
+                persist=persist,
+                save=self.save_animations,
+                vid_stride=self.vid_stride
             )
         else:
             results = self.model.predict(
                 source=self.images_dir, 
                 conf=self.conf_threshold,  
-                iou=self.iou_threshold    
+                iou=self.iou_threshold,
+                save=self.save_animations,
+                vid_stride=self.vid_stride    
             )
         
         if self.save_animations:
@@ -50,7 +54,7 @@ class Inferer:
             annotated_img = result.plot()
             image_name = os.path.basename(result.path)
             save_path = os.path.join(self.output_dir, image_name)
-            cv2.imwrite(save_path, annotated_img)
+            #cv2.imwrite(save_path, annotated_img)
 
 if __name__ == "__main__":
     inferer = Inferer(config_path='config.json')

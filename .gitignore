@@ -4,6 +4,14 @@ output_images/
 *:Zone.Identifier*
 datasets/
 output/
+src/tests/mos_vids/
+src/tests/plots/
+src/tests/csvs/
+src/tests/mery_track
+src/tests/vid
+src/tests/vids
+runs/
+plots/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -92,3 +100,9 @@ coverage/
 *.pth
 weights/
 checkpoints/
+
+# movies format and results
+*.csv
+*.png
+*.avi
+*.jpeg

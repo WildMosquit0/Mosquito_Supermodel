@@ -17,17 +17,19 @@ def parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
+def main(config_path=None):
+    """
+    Main function to perform inference and save results.
+    If config_path is provided, it uses that instead of parsing command-line arguments.
+    """
+    if config_path is None:
+        args = parse_args()  # Use command-line arguments if config_path is not provided
+        config_path = args.config
 
-def main() -> None:
-    args = parse_args()
-    config = load_config(args.config_path)
+    # Load configuration
+    config = load_config(config_path)
     inferer = Inferer(config=config)
     results = inferer.infer()
-
+    # Parse and save results
     parser = ResultsParser(results=results, config=config)
-
     parser.parse_and_save()
-
-
-if __name__ == "__main__":
-    main()

@@ -2,5 +2,4 @@ pytorch-lightning
 pytest
 ultralytics
 torch
-nevergrad
-scikit-learn
+plotnine
