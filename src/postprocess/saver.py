@@ -22,8 +22,8 @@ from ultralytics.engine.results import Results
 class ResultsParser:
     def __init__(self, results: List[Results], config: dict) -> None:
         self.results = results
-        self.output_dir = config['output']['output_dir']
-        self.csv_filename = config['output'].get('csv_filename', 'results.csv')
+        self.output_dir = f"{config['output_dir']}/{config['model']['task']}"
+        self.csv_filename = config.get('csv_filename', 'results.csv')
 
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)

@@ -1,10 +1,10 @@
 model: 
-    weights: "https://drive.google.com/file/d/197Loxax03ptQBNzg8UvKNvfKAWLRCzaC/view?usp=drive_link"
+    weights: "best.pt"
     task: "track"
     conf_threshold: 0.2
     iou_threshold: 0.2
     vid_stride: 5
 
-images_dir: "src/datasets/croped_movies/14"
-output_dir: "src/datasets/croped_movies/14"
+images_dir: "/home/bohbot/Evyatar/runs/track_test"
+output_dir: "src/datasets/test"
 save_animations: true
