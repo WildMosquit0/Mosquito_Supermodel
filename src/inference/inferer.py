@@ -5,12 +5,19 @@ from ultralytics import YOLO
 import torch
 from typing import List, Dict
 from src.utils.common import create_output_dir
+from src.utils.google_utils import download_weights
+
+def get_model_weights(model_path):
+    if not os.path.isfile(model_path):
+        model_path = download_weights(model_path)
+    return model_path
+
 
 class Inferer:
     def __init__(self, config: Dict) -> None:
         self.config = config
         
-        model_path = config['model']['weights']
+        model_path = get_model_weights(config['model']['weights'])
         self.task = config['model']['task']
         self.conf_threshold = config['model'].get('conf_threshold', 0.5)  # Confidence threshold default is 0.5
         self.iou_threshold = config['model'].get('iou_threshold', 0.45)  # IoU threshold default is 0.45

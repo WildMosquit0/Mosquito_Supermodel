@@ -1,0 +1,23 @@
+task:
+  plotxy: true
+  average_visits: true
+  duration: true
+
+analyze:
+  csv_path: "src/tests/arad_roi_results.csv"
+  csv_results_dir: "src/tests/csvs"
+
+plotxy:
+  plots_dir: "src/tests/plots/analize"
+  id_OR_class: "track_id" # "track_id or label" 
+  teratment_or_rep: "image_name" # "treatment or image_name"
+  true_axis: true 
+
+average_visits: 
+  time_intervals: 60,
+  interval_unit: "seconds" # seconds or minutes
+  fps: 3,
+  filter_time_intervals: 27
+
+duration: 
+  fps: 4

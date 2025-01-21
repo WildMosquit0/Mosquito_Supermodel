@@ -96,8 +96,6 @@ coverage/
 .idea/
 
 # Model weights
-*.pt
-*.pth
 weights/
 checkpoints/
 
