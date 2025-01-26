@@ -10,7 +10,7 @@ loss_figure:
 
 
 case_study:
-  model_path: "/home/wildmosquit0/git/bestModel/best_l.pt"
+  model_path: "/home/wildmosquit0/git/best.pt"
   base_dir: "/home/wildmosquit0/git/model_exp/setups"
   yaml_template_path: "/home/wildmosquit0/git/val.yaml"
   save_dir: "/home/wildmosquit0/git/model_exp/results"

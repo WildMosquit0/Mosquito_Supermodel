@@ -3,6 +3,7 @@ import yaml
 import os
 import pandas as pd
 import yaml
+import numpy as np
 
 def update_yaml_file(file_path, updates):
     with open(file_path, 'r') as file:
@@ -46,15 +47,15 @@ def validate_all_folders(config_path):
         with open(yaml_path, 'w') as yaml_file:
             yaml.safe_dump(updates, yaml_file)
 
-        metrics = model.val(data=yaml_path)
+        metrics = model.val(data=yaml_path, name = f"val_{folder}")
 
         metrics_data.append({
-            'Folder': folder,
-            'mAP50-95': metrics.box.map,
-            'mAP50': metrics.box.map50,
-            'mAP75': metrics.box.map75,
-             'Precision': metrics.box.p,  
-            'Recall': metrics.box.r
+            'setup': folder,
+            'mAP50-95': np.round(metrics.box.map,2),
+            'mAP50': np.round(metrics.box.map50,2),
+            'mAP75': np.round(metrics.box.map75,2),
+             'Precision': np.round(metrics.box.p,2), 
+            'Recall': np.round(metrics.box.r,2)
 
 
         })
