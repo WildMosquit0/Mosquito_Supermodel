@@ -4,9 +4,10 @@ import os
 # SAHI Prediction with your specific arguments
 
 model = "/home/wildmosquit0/git/bestModel/test_different_models/sahi_l_1_more_300e_200.pt"
-source = "/home/wildmosquit0/git/model_exp/peers/2023-07-07_10-47-35_cropped_m.mp4"
+source = "/home/wildmosquit0/git/model_exp/peers/2021-10-22_16-35-35_cropped_m.mp4"
 
-conf = 0.25
+
+conf = 0.45
 
 
 #from sahi.slicing import slice_image
@@ -21,31 +22,30 @@ conf = 0.25
 #    overlap_height_ratio=0.2,
 #    overlap_width_ratio=0.2,
 #    )
-#
 
-#new_source = "run"
-#sahi_predict(
-#    model_type="ultralytics",  # Use the model type specific to your YOLO version
-#    model_path= model,
-#    model_device="cuda:0",  # Set to 'cuda:0' if using GPU
-#    model_confidence_threshold=conf,
-#    source=source,  # Path to directory containing images
-#    slice_height=640,
-#    slice_width=640,
-#    overlap_height_ratio=0.2,
-#    overlap_width_ratio=0.2
-#)
-#
+new_source = "run"
+sahi_predict(
+    model_type="ultralytics",  # Use the model type specific to your YOLO version
+    model_path= model,
+    model_device="cuda:0",  # Set to 'cuda:0' if using GPU
+    model_confidence_threshold=conf,
+    source=source,  # Path to directory containing images
+    slice_height=640,
+    slice_width=640,
+    overlap_height_ratio=0.2,
+    overlap_width_ratio=0.2
+    
+)
 
-## Load the YOLO model
-model = YOLO(model)
+
+# Load the YOLO model
+odel = YOLO(model)
 # Perform prediction
 results = model.predict(
     source=source,
     conf=conf,  # Confidence threshold for predictions
+    iou = 0.8,
     save=True,
     imgsz=640,  # Save the results
-    line_width = 1,
-    show_labels = False,
-    show_conf = False
+    line_width = 2
 )
