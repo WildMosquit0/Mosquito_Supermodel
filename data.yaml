@@ -5,7 +5,7 @@ names: ["mosquito"]
 
 model:
   weights: "yolo11n.pt" 
-  task: "detect"
+  task: "track"
 
 training:
   epochs: 1
