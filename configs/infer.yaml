@@ -1,15 +1,12 @@
-model: 
-    weights: "/home/wildmosquit0/git/bestModel/test_different_models/sahi_l_1_more_300e_200.pt"
-    task: "slice"  # Change to "slice" when using SAHI
+model:
+    weights: /home/wildmosquit0/git/bestModel/test_different_models/sahi_l_1_more_300e_200.pt
+    task: track
     conf_threshold: 0.2
     iou_threshold: 0.2
     vid_stride: 5
-
-    # SAHI-specific settings
 sahi:
-    slice_size: 640  # Adjust based on object size (default 256)
-    overlap_ratio: 0.2  # Overlap between slices (default 0.2)
-
-images_dir: "/home/wildmosquit0/git/model_exp/peers/3-2-2023_rep2_m.mp4"
-output_dir: "src/datasets/test"
-save_animations: False
+    slice_size: 640
+    overlap_ratio: 0.2
+images_dir: /home/wildmosquit0/git/model_exp/peers/IMG_4078.mp4
+output_dir: src/datasets
+save_animations: true

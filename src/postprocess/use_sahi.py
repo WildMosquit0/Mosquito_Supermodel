@@ -4,7 +4,7 @@ import os
 # SAHI Prediction with your specific arguments
 
 model = "/home/wildmosquit0/git/bestModel/test_different_models/sahi_l_1_more_300e_200.pt"
-source = "/home/wildmosquit0/git/model_exp/peers/2021-10-22_16-35-35_cropped_m.mp4"
+source = "/home/wildmosquit0/git/model_exp/peers/3-2-2023_rep2_m.mp4"
 
 
 conf = 0.45

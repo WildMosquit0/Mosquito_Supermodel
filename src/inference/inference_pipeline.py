@@ -13,6 +13,7 @@ def run_inference(config: Dict[str, Any]) -> None:
         # Pass the already-obtained SAHI results to a new CSV-saving method.
         parser.parse_and_save_slice(results)
         if config.get('save_animations', False):
-            save_sahi_animation(config)
+            save_sahi_animation(config).run()
+
     else:
         parser.parse_and_save()
