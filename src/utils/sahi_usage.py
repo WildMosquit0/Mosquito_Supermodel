@@ -78,6 +78,7 @@ class sahi_usage:
         for idx, obj_pred in enumerate(object_predictions):
             x, y, w, h = obj_pred.bbox.to_xywh()
             confidence = obj_pred.score.value
+            source_identifier = source_identifier.split('.')[0]
             predictions.append((idx, x, y, w, h, confidence, source_identifier, frame_index, img_height, img_width))
         return predictions
 
@@ -89,7 +90,7 @@ class sahi_usage:
             print(f"Failed to open video file: {video_path}")
             return all_predictions
 
-        frame_index = 0
+        idx = frame_index = 0
         while True:
             ret, frame = cap.read()
             if not ret:
@@ -99,9 +100,10 @@ class sahi_usage:
                 continue
             object_predictions = self.sahi_predict(frame, detection_model)
             source_id = os.path.basename(video_path)
-            preds = self.extract_predictions(frame, object_predictions, source_id, frame_index=frame_index)
+            preds = self.extract_predictions(frame, object_predictions, source_id, frame_index=idx)
             all_predictions.extend(preds)
             frame_index += 1
+            idx += 1
         cap.release()
         return all_predictions
 
@@ -167,6 +169,7 @@ class sahi_usage:
         detection_model = self.load_model()
         file_list, _ = self.get_file_list(source)
         all_predictions = []
+        frame_index = 0
         for file_path in file_list:
             file_lower = file_path.lower()
             is_video = file_lower.endswith(('.mp4', '.avi', '.mov', '.mkv'))
@@ -181,8 +184,9 @@ class sahi_usage:
                     print(f"Warning: Unable to read image {file_path}")
                     continue
                 object_predictions = self.sahi_predict(image, detection_model)
-                preds = self.extract_predictions(image, object_predictions, os.path.basename(file_path), frame_index=None)
+                preds = self.extract_predictions(image, object_predictions, os.path.basename(file_path), frame_index=frame_index)
                 all_predictions.extend(preds)
+                frame_index += 1
         all_predictions.sort(key=lambda x: x[6])
         all_predictions = self.apply_nms(all_predictions)
         return all_predictions

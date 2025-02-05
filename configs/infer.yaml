@@ -3,7 +3,7 @@ model:
     task: "slice"  # Change to "slice" when using SAHI
     conf_threshold: 0.2
     iou_threshold: 0.2
-    vid_stride: 50
+    vid_stride: 5
 
     # SAHI-specific settings
 sahi:

@@ -1,10 +1,10 @@
-input_csv: "src/tests/arad_roi_results.csv"
-output_dir: "/home/bohbot/Evyatar/git/Mosquito_Supermodel/src/datasets/test"
+input_csv: "src/datasets/test/slice/results.csv"
+output_dir: "src/datasets/test"
 
 task:
   plotxy: true
-  average_visits: true
-  duration: true
+  average_visits: True
+  duration: False
 
 plotxy:
   id_OR_class: "track_id" # "track_id or label" 
@@ -12,9 +12,9 @@ plotxy:
   true_axis: true 
 
 average_visits: 
-  time_intervals: 60
+  time_intervals: 3
   interval_unit: "seconds" # seconds or minutes
-  fps: 3
+  fps: 29
   filter_time_intervals: 27
 
 duration: 

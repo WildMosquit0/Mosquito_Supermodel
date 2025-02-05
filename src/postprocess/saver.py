@@ -3,7 +3,8 @@ import os
 import yaml
 from typing import List
 from ultralytics.engine.results import Results
-from src.utils.sahi_usage import sahi_usage  # Adjust import based on your project structure
+from src.utils.sahi_usage import sahi_usage  
+
 
 class ResultsParser:
     def __init__(self, results: List[Results], config: dict):
@@ -78,18 +79,13 @@ class ResultsParser:
             for pred in predictions:
                 (box_idx, x, y, w, h, confidence,
                  source_identifier, frame_index, img_h, img_w) = pred
-
-                if source_identifier not in image_idx_tracker:
-                    image_idx_tracker[source_identifier] = 0
-                image_idx = image_idx_tracker[source_identifier]
-                label = ""     # Default label
+                label = 1     # Default label
                 track_id = None  # Default track id
 
                 writer.writerow([
-                    image_idx, box_idx, x, y, w, h, confidence, label, track_id,
+                    frame_index, box_idx, x, y, w, h, confidence, label, track_id,
                     source_identifier, img_h, img_w
                 ])
-                image_idx_tracker[source_identifier] += 1
 
         print(f"Results saved to {csv_file_path}")
 
@@ -99,12 +95,12 @@ if __name__ == "__main__":
     with open("configs/infer.yaml", "r") as f:
         config = yaml.safe_load(f)
     # If you have ultralytics Results from a previous process:
-    # results = ... 
+    # results = ...     
     # rp = ResultsParser(results, config)
     # rp.parse_and_save()
     
     # For demonstration using SAHI-based predictions:
-    from src.utils.sahi_usage import sahi_usage
+    
     su = sahi_usage(config)
     # Run SAHI inference once to obtain predictions.
     predictions = su.run_command(config["images_dir"])
