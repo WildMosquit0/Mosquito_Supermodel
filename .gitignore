@@ -12,6 +12,7 @@ src/tests/vid
 src/tests/vids
 runs/
 plots/
+src/example
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

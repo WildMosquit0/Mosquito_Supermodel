@@ -2,11 +2,11 @@ import cv2
 import pandas as pd
 import os
 import sys
+import yaml
 
-# Get the current directory
+# Get the current directory and ensure "src" is in the path
 current_dir = os.path.abspath(os.getcwd())
 
-# Move up until "src" is in the directory name
 while True:
     if 'src' in os.listdir(current_dir):
         break
@@ -18,40 +18,59 @@ while True:
 # Append to sys.path
 sys.path.append(current_dir)
 print(f"Added to sys.path: {current_dir}")
-from src.utils.config import load_config
+
 from src.utils.common import create_output_dir
 
+
+def load_config_yaml(config_path):
+    """Load the YAML configuration file."""
+    with open(config_path, 'r') as file:
+        return yaml.safe_load(file)
+
+
 class ROIDefiner:
-    def __init__(self, config_path="config.json"):
-        self.config = load_config(config_path)
-        self.folder_path = self.config["define_roi"]["file_path"]
+    def __init__(self, config_path="configs/roi.yaml"):
+        """Initialize the ROI Definer using a YAML config."""
+        self.config = load_config_yaml(config_path)
+
+        # Updated to match the revised YAML structure:
+        self.folder_path = self.config["define_roi"]["folder_path"]
         self.csv_path = self.config["define_roi"]["csv_path"]
         self.output_dir = self.config["define_roi"]["output_dir"]
         self.get_inner_roi = self.config["define_roi"]["get_inner_roi"]
-        self.choose_frame_for_video = self.config["define_roi"]["choose_farme_for_video"]
+        
+        # Make sure the key matches the YAML ("choose_frame_for_video")
+        self.choose_frame_for_video = self.config["define_roi"]["choose_frame_for_video"]
+        
         self.roi = None
         self.current_frame = None
+        self.video = None
+        self.object_data = None
 
     def get_video_files(self):
         """Get a list of video files in the folder."""
-        return [
+        if not os.path.isdir(self.folder_path):
+            raise NotADirectoryError(f"folder_path is not a valid directory: {self.folder_path}")
+        
+        video_files = [
             os.path.join(self.folder_path, f)
             for f in os.listdir(self.folder_path)
             if f.lower().endswith(('.mp4', '.avi', '.mov', '.mkv', '.wmv'))
         ]
+        return video_files
 
     def load_video(self, filepath):
         """Load a video file."""
         self.video = cv2.VideoCapture(filepath)
         if not self.video.isOpened():
             raise ValueError(f"Unable to open the video file: {filepath}")
-        return filepath
 
     def choose_frame(self, frame_number=0):
         """Select a specific frame from the video."""
         if self.video is None:
             raise ValueError("No video file loaded. Cannot choose a frame.")
         
+        # Jump to the specified frame number
         self.video.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
         ret, frame = self.video.read()
         if ret:
@@ -61,9 +80,10 @@ class ROIDefiner:
 
     def select_roi(self, image):
         """Allow the user to define a region of interest (ROI) on an image."""
-        self.roi = cv2.selectROI("Select ROI", image, showCrosshair=True, fromCenter=False)
+        # This opens an interactive window. Press ENTER or SPACE to confirm ROI.
+        roi = cv2.selectROI("Select ROI", image, showCrosshair=True, fromCenter=False)
         cv2.destroyAllWindows()
-        return self.roi
+        return roi
 
     def define_roi_for_video(self, filepath):
         """Define ROI for a specific video."""
@@ -71,6 +91,7 @@ class ROIDefiner:
         frame_number = self.choose_frame_for_video
         self.choose_frame(frame_number)
         print(f"Displaying frame {frame_number} from video: {filepath}")
+        
         self.roi = self.select_roi(self.current_frame)
         return self.roi
 
@@ -87,18 +108,18 @@ class ROIDefiner:
         if self.roi is None:
             raise ValueError("ROI not defined. Please define an ROI before filtering objects.")
         
+        if self.object_data is None:
+            raise ValueError("CSV data not loaded. Please load the CSV before filtering objects.")
+
         x, y, w, h = self.roi
         x_start, y_start = x, y
         x_end, y_end = x + w, y + h
 
+        # Example: we expect columns ['image_name', 'x', 'y'] in your CSV
         filtered_data = self.object_data[
             (self.object_data['image_name'] == image_name) &
-            (
-                (self.object_data['x'] >= x_start) & 
-                (self.object_data['y'] >= y_start) & 
-                (self.object_data['x'] <= x_end) & 
-                (self.object_data['y'] <= y_end)
-            )
+            (self.object_data['x'] >= x_start) & (self.object_data['x'] <= x_end) &
+            (self.object_data['y'] >= y_start) & (self.object_data['y'] <= y_end)
         ]
         print(f"Filtered {len(filtered_data)} objects inside the ROI for image_name: {image_name}.")
         return filtered_data
@@ -113,23 +134,35 @@ class ROIDefiner:
     def __call__(self):
         """Process all videos in the folder."""
         video_files = self.get_video_files()
+        
+        # If no videos are found, print a message (optional).
+        if not video_files:
+            print(f"No video files found in {self.folder_path}.")
+            return
+        
+        # Load CSV data once
+        self.load_csv()
+        
         all_filtered_data = pd.DataFrame()
 
         for video_file in video_files:
             image_name = os.path.basename(video_file)
             print(f"Processing video: {image_name}")
-            roi = self.define_roi_for_video(video_file)
-            print(f"ROI for {image_name}: {roi}")
+            self.define_roi_for_video(video_file)
+            print(f"ROI for {image_name}: {self.roi}")
 
-            # Load CSV and filter objects
-            csv_data = self.load_csv()
-            filtered_data = self.filter_objects_in_roi(image_name.split('.')[0])
-            all_filtered_data = pd.concat([all_filtered_data, filtered_data])
+            # Filter objects inside this ROI
+            # We remove the extension from the image_name before comparing with 'image_name' in CSV
+            base_name = os.path.splitext(image_name)[0]
+            filtered_data = self.filter_objects_in_roi(base_name)
+            all_filtered_data = pd.concat([all_filtered_data, filtered_data], ignore_index=True)
 
         # Save all results to a single file
         self.save_filtered_data(all_filtered_data, filename="roi_results.csv")
 
+
 # Instantiate and run the ROIDefiner class
-config_path = "./config.json"
-roi_definer = ROIDefiner(config_path)
-roi_definer()
+if __name__ == "__main__":
+    config_path = "configs/roi.yaml"
+    roi_definer = ROIDefiner(config_path)
+    roi_definer()

@@ -8,6 +8,7 @@ import yaml
 from src.utils.common import create_output_dir
 from sahi.predict import get_prediction, get_sliced_prediction
 from sahi import AutoDetectionModel
+from src.utils.common import export_first_frame
 #
 #def ensure_weights():
 #    try:
@@ -39,13 +40,15 @@ class Inferer:
         self.output_dir = config['output_dir']
         self.images_dir = config['images_dir']
         self.save_animations = config.get('save_animations', False)
-        self.sliced_source_dir = os.path.join(self.output_dir, "sliced_images")
+        self.sliced_source_dir = os.path.join(self.output_dir)
         os.makedirs(self.sliced_source_dir, exist_ok=True)
         create_output_dir(self.output_dir)
 
         # Load YOLO model for tracking/predict tasks.
         self.model = YOLO(self.model_path)
         self.model.to(self.device)
+        export_first_frame(self.images_dir,self.output_dir,self.task)
+
 
     def infer(self, persist: bool = True) -> List:
         results = None
@@ -61,8 +64,8 @@ class Inferer:
                 exist_ok=True
             )
         elif self.task == 'slice':
-            # Delegate to SAHI-based inference
-            from src.utils.sahi_usage import sahi_usage  # Adjust import as needed.
+
+            from src.utils.sahi_usage import sahi_usage 
             sahi_inferer = sahi_usage(self.config)
             results = sahi_inferer.run_command(self.images_dir)
         else:

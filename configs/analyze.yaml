@@ -1,21 +1,27 @@
-input_csv: "src/datasets/test/slice/results.csv"
-output_dir: "src/datasets/test"
-
+input_csv: /home/wildmosquit0/git/Mosquito_Supermodel/src/example/output/track/results.csv
+#/home/wildmosquit0/git/Mosquito_Supermodel/src/example/output/slice/results.csv
+            
+output_dir: /home/wildmosquit0/git/Mosquito_Supermodel/src/example/output
 task:
-  plotxy: true
-  average_visits: True
-  duration: False
-
+    plotxy: false
+    average_visits: False
+    duration: false
+    heatmap: true
 plotxy:
-  id_OR_class: "track_id" # "track_id or label" 
-  teratment_or_rep: "image_name" # "treatment or image_name"
-  true_axis: true 
+    id_OR_class: track_id
+    teratment_or_rep: image_name
+    true_axis: True
+average_visits:
+    time_intervals: 1
+    interval_unit: seconds
+    fps: 2
+    filter_time_intervals: 27
+duration:
+    fps: 4
 
-average_visits: 
-  time_intervals: 3
-  interval_unit: "seconds" # seconds or minutes
-  fps: 29
-  filter_time_intervals: 27
-
-duration: 
-  fps: 4
+heatmap:
+    image_path: /home/wildmosquit0/git/Mosquito_Supermodel/src/example/output/track/2023-07-07_10-47-35_first_frame.jpg
+    true_axis: True
+    grid_size:
+    min_count:
+    

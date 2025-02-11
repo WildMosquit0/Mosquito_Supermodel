@@ -22,7 +22,7 @@ class PlotXY:
             
             plot = (
                 ggplot(image_data, aes(x='x', y='y', color=self.id_OR_class)) +
-                geom_point(size=3) +
+                geom_point(size=1) +
                 labs(title=f"X vs Y for {image_name}", x="X", y="Y") +
                 theme_classic() +
                 theme(legend_position="none")

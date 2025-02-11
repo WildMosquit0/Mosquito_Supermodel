@@ -44,7 +44,7 @@ class AverageVisits:
         return df
 
     def _aggregate_trajectories(self, df):
-        df["trajectory_count"] = df.groupby(["image_idx", "image_name", "teratment_or_rep", "time_interval"])["track_id"].transform("nunique")
+        df["trajectory_count"] = df.groupby(["image_idx", "image_name", "teratment_or_rep", "time_interval"])["box_idx"].transform("nunique")
         df["time"] = df["image_idx"] / self.fps / 60
 
         average_visits = (
