@@ -4,7 +4,8 @@ import yaml
 from typing import List
 from ultralytics.engine.results import Results
 from src.utils.sahi_usage import sahi_usage  
-
+from src.analyze.modules import sahi_tracker
+from src.utils.common import create_output_dir
 
 class ResultsParser:
     def __init__(self, results: List[Results], config: dict):
@@ -12,9 +13,8 @@ class ResultsParser:
         self.output_dir = os.path.join(config['output_dir'], config['model']['task'])
         self.csv_filename = config.get('csv_filename', 'results.csv')
         self.images_dir = config.get('images_dir')
-        
-        if not os.path.exists(self.output_dir):
-            os.makedirs(self.output_dir)
+        self.sahi_track = config.get('sahi', {}).get('track', 'false')
+        create_output_dir(self.output_dir)
 
     def parse_and_save(self):
         """
@@ -62,7 +62,7 @@ class ResultsParser:
         """
         Save SAHI-based predictions to CSV. Assumes predictions are provided as a list of tuples,
         each in the form:
-          (box_idx, x, y, w, h, confidence, source_identifier, frame_index, img_h, img_w)
+            (box_idx, x, y, w, h, confidence, source_identifier, frame_index, img_h, img_w)
         Since SAHI predictions do not include label or track_id, these columns are set to default values.
         CSV columns: image_idx, box_idx, x, y, w, h, confidence, label, track_id, image_name, img_h, img_w.
         """
@@ -78,7 +78,7 @@ class ResultsParser:
             ])
             for pred in predictions:
                 (box_idx, x, y, w, h, confidence,
-                 source_identifier, frame_index, img_h, img_w) = pred
+                    source_identifier, frame_index, img_h, img_w) = pred
                 label = 1     # Default label
                 track_id = None  # Default track id
 
@@ -86,6 +86,11 @@ class ResultsParser:
                     frame_index, box_idx, x, y, w, h, confidence, label, track_id,
                     source_identifier, img_h, img_w
                 ])
+
+        # --- Modified SAHI tracking call using the CSV file path 
+        if str(self.sahi_track).lower() == 'true':
+            sahi_tracker.main(csv_file_path,self.output_dir)
+
 
         print(f"Results saved to {csv_file_path}")
 

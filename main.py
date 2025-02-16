@@ -15,7 +15,7 @@ def main(task_name: str) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run YOLO inference with tracking, detection, or slicing.')
-    parser.add_argument('--task_name', choices=['infer', 'analyze'], default='analyze',  help='The task to be performed')
+    parser.add_argument('--task_name', choices=['infer', 'analyze'], default='infer',  help='The task to be performed')
     args = parser.parse_args()
 
     profiler = cProfile.Profile()

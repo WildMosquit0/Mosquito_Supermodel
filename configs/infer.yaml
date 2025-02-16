@@ -1,12 +1,14 @@
-model:
-    weights: /home/wildmosquit0/git/bestModel/test_different_models/sahi_l_1_more_300e_200.pt
-    task: track
-    conf_threshold: 0.25
-    iou_threshold: 0.2
-    vid_stride: 1000
-sahi:
-    slice_size: 640
-    overlap_ratio: 0.2
 images_dir: /home/wildmosquit0/git/model_exp/peers/2023-07-07_10-47-35.mp4
-output_dir: /home/wildmosquit0/git/Mosquito_Supermodel/src/example/output/
+model:
+  conf_threshold: 0.25
+  iou_threshold: 0.2
+  object_size: small
+  task: slice
+  vid_stride: 10000
+  weights: /home/wildmosquit0/git/bestModel/test_different_models/sahi_l_1_more_300e_200.pt
+output_dir: /home/wildmosquit0/git/Mosquito_Supermodel
+sahi:
+  overlap_ratio: 0.2
+  slice_size: 640
+  track: true
 save_animations: true

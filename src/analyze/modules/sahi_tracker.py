@@ -12,6 +12,7 @@ import time
 import matplotlib.pyplot as plt
 from filterpy.kalman import KalmanFilter
 from scipy.optimize import linear_sum_assignment
+from src.utils.common import create_output_dir
 
 np.random.seed(0)
 
@@ -179,7 +180,7 @@ def associate_detections_to_trackers(detections, trackers, iou_threshold=0.3):
 
     return matches, np.array(unmatched_detections), np.array(unmatched_trackers)
 
-class Sort(object):
+class sahi_tracker(object):
     """
     SORT tracker: creates and updates tracklets for object detections.
     """
@@ -189,6 +190,7 @@ class Sort(object):
         self.iou_threshold = iou_threshold
         self.trackers = []
         self.frame_count = 0
+        
 
     def update(self, dets=np.empty((0, 5))):
         """
@@ -239,14 +241,10 @@ class Sort(object):
 
 # ------------------ Main routine to load CSV, track, and plot ------------------
 
-def main():
-    # --- STEP 1: Load the CSV file ---
-    csv_file = 'results.csv'
+def main(csv_file='results.csv', output_dir='.'):
     try:
-        # Adjust the separator based on your file format.
-        # Here we assume a tab-separated file with header.
         df = pd.read_csv(csv_file, sep=',')
-        # Remove extra whitespace from column names (if any).
+        # Remove extra whitespace from column names (if any)
         df.columns = df.columns.str.strip()
     except Exception as e:
         print("Error reading CSV file:", e)
@@ -259,16 +257,14 @@ def main():
     df['frame'] = df['image_idx'] + 1
     df.sort_values('frame', inplace=True)
 
-    # --- STEP 3: Initialize SORT tracker ---
-    tracker = Sort(max_age=10000, min_hits=0, iou_threshold=0.001)
+    # --- STEP 3: Initialize the tracker ---
+    tracker = sahi_tracker(max_age=10000, min_hits=0, iou_threshold=0.001)
     
-    # This list will hold the output tracking results.
     output_tracks = []
 
     # --- STEP 4: Process detections frame by frame ---
     frames = sorted(df['frame'].unique())
     for frame in frames:
-        # Get all detections for the current frame.
         frame_data = df[df['frame'] == frame]
         dets = []
         for _, row in frame_data.iterrows():
@@ -281,24 +277,16 @@ def main():
             dets.append([x1, y1, x2, y2, score])
         dets = np.array(dets)
 
-        # Update the tracker with current frame detections.
         tracks = tracker.update(dets)
-
-        # For each track returned, print and store the result.
         for track in tracks:
+            # track format: [x1, y1, x2, y2, track_id]
             x1, y1, x2, y2, track_id = track
-            width = x2 - x1
-            height = y2 - y1
-            #print(f"Frame {int(frame)}: Track ID {int(track_id)}, BBox: ({x1:.2f}, {y1:.2f}, {width:.2f}, {height:.2f})")
-            output_tracks.append(
-                track_id
-            )
+            output_tracks.append(track_id)
 
-    # Save the tracking results to a CSV file.
+    # Append the track IDs to the DataFrame.
     df['track_id'] = output_tracks
-    df.to_csv('tracked_output.csv', index=False)
-    print("Tracking results saved to 'tracked_output.csv'.")
 
-
-if __name__ == '__main__':
-    main()
+    # Build the full output CSV file path.
+    output_csv = os.path.join(output_dir, 'tracked_output.csv')
+    df.to_csv(output_csv, index=False)
+    print("Tracking results saved to '{}'.".format(output_csv))

@@ -8,12 +8,14 @@ def run_inference(config: Dict[str, Any]) -> None:
     inferer = Inferer(config)
     results = inferer.infer(persist=True)
     parser = ResultsParser(results=results, config=config)
-    # For SAHI-based tasks, the Inferer.infer() already returns predictions.
+
+    # For SAHI-based tasks
     if config['model']['task'] == 'slice':
-        # Pass the already-obtained SAHI results to a new CSV-saving method.
+        # Pass the already-obtained SAHI results
         parser.parse_and_save_slice(results)
         if config.get('save_animations', False):
             save_sahi_animation(config).run()
+
 
     else:
         parser.parse_and_save()
