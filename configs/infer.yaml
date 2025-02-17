@@ -1,14 +1,14 @@
-images_dir: /home/wildmosquit0/git/model_exp/peers/2023-07-07_10-47-35.mp4
+images_dir: /home/bohbot/Evyatar/exp/Joni_showoff/full movies
 model:
-  conf_threshold: 0.25
+  conf_threshold: 0.2
   iou_threshold: 0.2
-  object_size: small
-  task: slice
-  vid_stride: 10000
-  weights: /home/wildmosquit0/git/bestModel/test_different_models/sahi_l_1_more_300e_200.pt
-output_dir: /home/wildmosquit0/git/Mosquito_Supermodel
+  object_size: big
+  task: predict
+  vid_stride: 1
+  weights: /home/bohbot/Evyatar/runs/detect/BFv112/weights/best.pt
+output_dir: /home/bohbot/Evyatar/exp/Joni_showoff
 sahi:
   overlap_ratio: 0.2
   slice_size: 640
-  track: true
+  track: false
 save_animations: true
