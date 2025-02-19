@@ -1,12 +1,12 @@
-images_dir: /home/bohbot/Evyatar/exp/Joni_showoff/full movies
+images_dir: /home/bohbot/Evyatar/exp/Joni_showoff/Rertiles
 model:
   conf_threshold: 0.2
   iou_threshold: 0.2
   object_size: big
   task: predict
   vid_stride: 1
-  weights: /home/bohbot/Evyatar/runs/detect/BFv112/weights/best.pt
-output_dir: /home/bohbot/Evyatar/exp/Joni_showoff
+  weights: /home/bohbot/Evyatar/exp/Joni_showoff/yolo11n.pt
+output_dir: /home/bohbot/Evyatar/exp/Joni_showoff/Rept
 sahi:
   overlap_ratio: 0.2
   slice_size: 640
