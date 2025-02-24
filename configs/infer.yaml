@@ -1,12 +1,12 @@
-images_dir: /home/bohbot/Evyatar/exp/Joni_showoff/Rertiles
+images_dir: /home/bohbot/workspace/projects/Arad/data/raw_data
 model:
   conf_threshold: 0.2
-  iou_threshold: 0.2
+  iou_threshold: 0.1
   object_size: big
-  task: predict
+  task: track
   vid_stride: 1
-  weights: /home/bohbot/Evyatar/exp/Joni_showoff/yolo11n.pt
-output_dir: /home/bohbot/Evyatar/exp/Joni_showoff/Rept
+  weights: /home/bohbot/workspace/weight/sahi_l_1_more_300e_200.pt
+output_dir: /home/bohbot/workspace/projects/Arad/data
 sahi:
   overlap_ratio: 0.2
   slice_size: 640
