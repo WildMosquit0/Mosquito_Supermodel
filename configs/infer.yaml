@@ -1,24 +1,12 @@
-<<<<<<< HEAD
 images_dir: /home/wildmosquit0/git/model_exp/setups/seperate/640X640/images/val
-=======
-images_dir: /home/bohbot/Evyatar/exp/Joni_showoff/Rertiles
->>>>>>> a020b29efe22565e8be2f4565b3563bfa331c677
 model:
   conf_threshold: 0.2
   iou_threshold: 0.2
-<<<<<<< HEAD
   object_size: Big
   task: Predict
   vid_stride: 10000
   weights:  /home/wildmosquit0/workspace/weights/sahi_l_1_more_300e_200.pt
 output_dir: /home/wildmosquit0/workspace/projects/supermodel/figures/figure 4 - banch mark
-=======
-  object_size: big
-  task: predict
-  vid_stride: 1
-  weights: /home/bohbot/Evyatar/exp/Joni_showoff/yolo11n.pt
-output_dir: /home/bohbot/Evyatar/exp/Joni_showoff/Rept
->>>>>>> a020b29efe22565e8be2f4565b3563bfa331c677
 sahi:
   overlap_ratio: 0.2
   slice_size: 640

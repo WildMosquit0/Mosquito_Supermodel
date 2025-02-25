@@ -51,3 +51,17 @@ def export_first_frame(input_path: Union[str, List[str]], output_dir: str,task: 
             cv2.imwrite(output_file_path, frame)
     
     return None
+
+
+def find_image_for_heat_map(directory, target_string):
+    # Find all files that contain the target string
+    directory_list = os.listdir(directory)
+
+    matches = [file for file in directory_list if target_string in file]
+    jpg_matches = [file for file in matches if file.endswith('.jpg')]
+
+    image_path = os.path.join(directory,jpg_matches[0])
+    if image_path:
+        return image_path
+    else:
+        return None
