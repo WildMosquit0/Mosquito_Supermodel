@@ -1,14 +1,14 @@
-images_dir: /home/wildmosquit0/git/model_exp/peers/2023-07-07_10-47-35.mp4
+images_dir: /home/wildmosquit0/git/model_exp/setups/seperate/640X640/images/val
 model:
   conf_threshold: 0.25
   iou_threshold: 0.2
-  object_size: small
-  task: slice
+  object_size: Big
+  task: Predict
   vid_stride: 10000
-  weights: /home/wildmosquit0/git/bestModel/test_different_models/sahi_l_1_more_300e_200.pt
-output_dir: /home/wildmosquit0/git/Mosquito_Supermodel
+  weights:  /home/wildmosquit0/workspace/weights/sahi_l_1_more_300e_200.pt
+output_dir: /home/wildmosquit0/workspace/projects/supermodel/figures/figure 4 - banch mark
 sahi:
   overlap_ratio: 0.2
   slice_size: 640
-  track: true
+  track: false
 save_animations: true

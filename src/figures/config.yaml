@@ -10,8 +10,8 @@ loss_figure:
 
 
 case_study:
-  model_path: "/home/wildmosquit0/git/best.pt"
-  base_dir: "/home/wildmosquit0/git/model_exp/setups/seperate"
+  model_path: /home/wildmosquit0/workspace/weights/sahi_l_1_more_300e_200.pt
+  base_dir: /home/wildmosquit0/workspace/data/model_exp/setups/seperate
   yaml_template_path: "/home/wildmosquit0/git/val.yaml"
-  save_dir: "/home/wildmosquit0/git/model_exp/results"
+  save_dir: /home/wildmosquit0/workspace/projects/supermodel/figures/figure_4_banch mark
   
