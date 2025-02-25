@@ -1,4 +1,5 @@
 import yaml
+import os
 import argparse
 import cProfile
 import pstats
@@ -7,11 +8,14 @@ from src.analyze.analysis_pipeline import run_analysis  # Ensure you have this i
 from src.utils.config import load_config
 
 def main(task_name: str) -> None:
-    config = load_config(f"configs/{task_name}.yaml")
+
+    conf_yaml_path =  os.path.abspath(f"configs/{task_name}.yaml")
+    config = load_config(conf_yaml_path)
+    
     if task_name == 'infer':
         run_inference(config)
     elif task_name == 'analyze':
-        run_analysis(config)
+        run_analysis(config,conf_yaml_path)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run YOLO inference with tracking, detection, or slicing.')

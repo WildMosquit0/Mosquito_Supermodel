@@ -24,15 +24,31 @@ class AverageVisits:
         return df
 
     def fill_na_time_intervals(self, df):
+        # Determine the maximum time interval
         max_interval = df["time_interval"].max()
+        # Create a DataFrame of all possible time intervals
         all_intervals = pd.DataFrame({"time_interval": range(0, max_interval + 1)})
-        df = df.set_index(["time_interval", self.teratment_or_rep])
-        complete_index = pd.MultiIndex.from_product(
-            [all_intervals["time_interval"], df.index.get_level_values(self.teratment_or_rep).unique()],
-            names=["time_interval", self.teratment_or_rep]
+        # Get the unique treatments from the column specified by self.teratment_or_rep
+        unique_treatments = df[self.teratment_or_rep].unique()
+        
+        # Create a complete grid of all time_interval and treatment combinations
+        complete_grid = (
+            pd.MultiIndex.from_product(
+                [all_intervals["time_interval"], unique_treatments],
+                names=["time_interval", self.teratment_or_rep]
+            )
+            .to_frame(index=False)
         )
-        df = df.reindex(complete_index, fill_value=0).reset_index()
+        
+        # Merge the complete grid with the original DataFrame using a left join.
+        # This preserves duplicate rows in the original data and fills in missing combinations.
+        df_filled = complete_grid.merge(df, on=["time_interval", self.teratment_or_rep], how="left")
+        
+        # Fill missing values with 0
+        df = df_filled.fillna(0)
+        
         return df
+
 
     def _calculate_time_intervals(self, df):
         df["image_idx"] = pd.to_numeric(df["image_idx"], errors="coerce")

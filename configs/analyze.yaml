@@ -1,6 +1,6 @@
 average_visits:
-  filter_time_intervals: 27
-  fps: 2
+  filter_time_intervals: 1620
+  fps: 25
   interval_unit: seconds
   time_intervals: 1
 duration:
@@ -10,14 +10,14 @@ heatmap:
   image_path: /home/wildmosquit0/workspace/projects/Arad/data/13_1_first_frame.jpg
   min_count: null
   true_axis: true
-input_csv: /home/wildmosquit0/workspace/projects/Arad/data/
+input_csv: /home/wildmosquit0/workspace/projects/Arad/data/results.csv
 output_dir: /home/wildmosquit0/workspace/projects/Arad/figures
-PlotXY:
+plotxy:
   id_OR_class: track_id
-  teratment_or_rep: image_name
+  teratment_or_rep: treatment
   true_axis: trues
 task:
-  average_visits: false
+  average_visits: true
   duration: false
-  heatmap: true
+  heatmap: false
   plotxy: false
