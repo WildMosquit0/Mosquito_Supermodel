@@ -12,7 +12,7 @@ def run_analysis(config,conf_yaml_path):
     if os.path.isdir(config['input_csv']):
             merged_data_path = data_merger(config['input_csv'])
             config['input_csv'] = merged_data_path
-            update_yaml(config, conf_yaml_path)
+            update_yaml(config, conf_yaml_path,'input_csv')
             
     if config['task']['plotxy']:
         explorer = PlotXY(config)

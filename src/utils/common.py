@@ -108,13 +108,13 @@ def data_merger(directory, filename="results"):
 
 
 
-def update_yaml(config, yaml_path):
+def update_yaml(config, yaml_path,filed):
     """Update the YAML file with the latest changes in the config."""
     with open(yaml_path, 'r') as file:
         data = yaml.safe_load(file)
 
     # Update the 'input_csv' key with the new path
-    data['input_csv'] = config['input_csv']
+    data[filed] = config[filed]
     
     # Write the updated data back to the YAML file
     with open(yaml_path, 'w') as file:

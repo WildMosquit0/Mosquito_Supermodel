@@ -18,8 +18,10 @@ class Heatmap:
         
          
         
-    def plot_heatmap(self):
-        name =  os.path.basename(self.data_path).split('.')[0]
+    def plot_heatmap(self,name = 'none'):
+
+        if name == 'none':
+            name =  os.path.basename(self.data_path).split('.')[0]
         create_output_dir(self.plot_path)
 
         fig, ax = plt.subplots(figsize=(10, 8))
@@ -62,6 +64,19 @@ class Heatmap:
                         self.frame_path = image_path
                         self.plot_heatmap()
         else:
-            self.data = pd.read_csv(self.data_path)
-            self.plot_heatmap()
+            df = pd.read_csv(self.data_path)
+            unique_image_names = df["image_name"].unique()
+            for img_name in unique_image_names:
+                # Filter for that image_name
+                subset = df[df["image_name"] == img_name].copy()
+                self.data = subset
+
+                # Find the matching image path
+                csv_folder = os.path.dirname(self.data_path)
+                image_path = find_image_for_heat_map(csv_folder, img_name)
+                self.frame_path = image_path
+
+                # Plot
+                self.plot_heatmap(name = img_name)
+            
         
