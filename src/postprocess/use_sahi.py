@@ -3,11 +3,11 @@ from ultralytics import YOLO
 import os
 # SAHI Prediction with your specific arguments
 
-model = "/home/wildmosquit0/git/bestModel/test_different_models/sahi_l_1_more_300e_200.pt"
-source = "/home/wildmosquit0/git/model_exp/peers/3-2-2023_rep2_m.mp4"
+model = "yolo11x.pt"
+source = " /home/wildmosquit0/workspace/data/images/Joni_reptilians/baylor.mp4"
 
 
-conf = 0.45
+conf = 0.3
 
 
 #from sahi.slicing import slice_image
@@ -39,13 +39,13 @@ sahi_predict(
 
 
 # Load the YOLO model
-odel = YOLO(model)
-# Perform prediction
-results = model.predict(
-    source=source,
-    conf=conf,  # Confidence threshold for predictions
-    iou = 0.8,
-    save=True,
-    imgsz=640,  # Save the results
-    line_width = 2
-)
+#odel = YOLO(model)
+## Perform prediction
+#results = model.predict(
+#    source=source,
+#    conf=conf,  # Confidence threshold for predictions
+#    iou = 0.8,
+#    save=True,
+#    imgsz=640,  # Save the results
+#    line_width = 2
+#)
