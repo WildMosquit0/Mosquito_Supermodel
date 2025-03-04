@@ -196,7 +196,7 @@ def on_tab_switch():
 #                     Build the CustomTkinter Window                     #
 # ---------------------------------------------------------------------- #
 app = ctk.CTk()
-app.title("Simple Config GUI")
+app.title("Mosquito Detector")
 app.geometry("800x500")
 
 # Make the main window stretch nicely

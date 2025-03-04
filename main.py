@@ -10,16 +10,16 @@ import os
 def main(task_name: str) -> None:
     config = load_config(f"configs/{task_name}.yaml")
     if task_name == 'infer':
-        source = config.get('images_dir', '')
-        flag = os.path.basename(source)
-        if flag.find(".") <= 0:
-            vid_names = os.listdir(config.get("images_dir",""))
-            for vid_name in vid_names:
-                    export_name = vid_name.split(".")[0]
-                    config["images_dir"] = os.path.join(source, vid_name)
-                    config["csv_filename"] = f"{export_name}_results.csv"
-                    run_inference(config)
-        else:
+        #source = config.get('images_dir', '')
+        #flag = os.path.basename(source)
+        #if flag.find(".") <= 0:
+        #    vid_names = os.listdir(config.get("images_dir",""))
+        #    for vid_name in vid_names:
+        #            export_name = vid_name.split(".")[0]
+        #            config["images_dir"] = os.path.join(source, vid_name)
+        #            config["csv_filename"] = f"{export_name}_results.csv"
+        #            run_inference(config)
+        #else:
             run_inference(config)
 
     elif task_name == 'analyze':
