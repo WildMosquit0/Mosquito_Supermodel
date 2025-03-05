@@ -5,7 +5,7 @@ paths:
 
 
 loss_figure:
-  csv_path: "/home/wildmosquit0/git/bestModel/sahi_1_l/results.csv"
+  csv_path: "/home/wildmosquit0/workspace/weights/mosquitoes/exp1_less_crop_2002/results.csv"
   save_folder: "/home/wildmosquit0/git/Mosquito_Supermodel/src/figure/traning_data"
 
 
