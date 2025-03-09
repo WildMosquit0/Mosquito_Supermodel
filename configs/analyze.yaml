@@ -1,8 +1,8 @@
 average_visits:
-  filter_time_intervals: 27
-  fps: 2
-  interval_unit: seconds
-  time_intervals: 1
+  filter_time_intervals: 1440
+  fps:  0.05
+  interval_unit: minutes
+  time_intervals: 180
 duration:
   fps: 4
 heatmap:
@@ -10,14 +10,14 @@ heatmap:
   image_path: /home/wildmosquit0/git/Mosquito_Supermodel/src/example/output/track/2023-07-07_10-47-35_first_frame.jpg
   min_count: null
   true_axis: true
-input_csv: /home/wildmosquit0/git/Mosquito_Supermodel/src/example/output/track/results.csv
-output_dir: /home/wildmosquit0/git/Mosquito_Supermodel/src/example/output
+input_csv: /home/bohbot/workspace/projects/neta/Predict
+output_dir: /home/bohbot/workspace/projects/neta
 plotxy:
   id_OR_class: track_id
-  teratment_or_rep: image_name
+  teratment_or_rep: treatment
   true_axis: true
 task:
-  average_visits: false
+  average_visits: true
   duration: false
   heatmap: true
-  plotxy: false
+  plotxy: true

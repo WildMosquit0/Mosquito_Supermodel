@@ -1,14 +1,14 @@
-images_dir: /home/wildmosquit0/workspace/data/model_exp/peers/3-2-2023_rep2_cropped_m.mp4
+images_dir: /home/bohbot/workspace/images/neta
 model:
-  conf_threshold: 0.3
-  iou_threshold: 0.1
-  object_size: small
-  task: slice
-  vid_stride: 1
-  weights: /home/wildmosquit0/workspace/weights/mosquitoes/exp1_less_crop_2002.pt
-output_dir: /home/wildmosquit0/workspace/test_infer
+  conf_threshold: 0.2
+  iou_threshold: 0.2
+  object_size: Big
+  task: Predict
+  vid_stride: 2
+  weights:  /home/bohbot/Evyatar/runs/detect/sahi_1_l/weights/best.pt
+output_dir: /home/bohbot/workspace/projects/neta
 sahi:
   overlap_ratio: 0.2
   slice_size: 640
-  track: true
+  track: false
 save_animations: true
