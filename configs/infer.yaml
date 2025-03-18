@@ -1,14 +1,14 @@
-images_dir: /home/wildmosquit0/git/model_exp/setups/seperate/640X640/images/val
+images_dir: /home/wildmosquit0/workspace/data/Neta/short_vids copy
 model:
   conf_threshold: 0.2
   iou_threshold: 0.2
   object_size: Big
   task: Predict
-  vid_stride: 10000
-  weights:  /home/wildmosquit0/workspace/weights/sahi_l_1_more_300e_200.pt
-output_dir: /home/wildmosquit0/workspace/projects/supermodel/figures/figure 4 - banch mark
+  vid_stride: 10
+  weights:  /home/wildmosquit0/workspace/weights/mosquitoes/exp1_less_crop_2002/weights/best.pt
+output_dir: /home/wildmosquit0/workspace/data/Neta
 sahi:
   overlap_ratio: 0.2
   slice_size: 640
   track: false
-save_animations: true
+save_animations: false

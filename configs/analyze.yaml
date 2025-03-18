@@ -7,17 +7,17 @@ duration:
   fps: 4
 heatmap:
   grid_size: null
-  image_path: /home/wildmosquit0/workspace/projects/Arad/data 
+  image_path: /home/wildmosquit0/workspace/data/Neta/Predict/shortened_control_1_first_frame.jpg
   min_count: null
   true_axis: true
-input_csv: /home/wildmosquit0/workspace/projects/Arad/data/results.csv
-output_dir: /home/wildmosquit0/workspace/projects/Arad/figures
+input_csv: /home/wildmosquit0/workspace/data/Neta/Predict/results.csv
+output_dir: /home/wildmosquit0/workspace/data/Neta
 plotxy:
   id_OR_class: track_id
   treatment_or_rep: image_name
   true_axis: trues
 task:
-  average_visits: true
+  average_visits: false
   duration: false
   heatmap: true
   plotxy: false
