@@ -1,14 +1,14 @@
-images_dir: /home/wildmosquit0/workspace/data/model_exp/peers/3-2-2023_rep2_cropped_m.mp4
+images_dir: /home/wildmosquit0/workspace/projects/Neta/Trap/movies
 model:
-  conf_threshold: 0.3
-  iou_threshold: 0.1
-  object_size: small
-  task: slice
-  vid_stride: 1
-  weights: /home/wildmosquit0/workspace/weights/mosquitoes/exp1_less_crop_2002.pt
-output_dir: /home/wildmosquit0/workspace/test_infer
+  conf_threshold: 0.7
+  iou_threshold: 0.5
+  object_size: big
+  task: predict
+  vid_stride: 5000
+  weights: /home/wildmosquit0/workspace/weights/mosquitoes/nectar.pt
+output_dir: /home/wildmosquit0/workspace/projects/Neta/Trap
 sahi:
   overlap_ratio: 0.2
   slice_size: 640
   track: true
-save_animations: true
+save_animations: false
