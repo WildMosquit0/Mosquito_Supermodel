@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 images_dir: /home/wildmosquit0/workspace/projects/Neta/Trap/movies
 model:
   conf_threshold: 0.7
@@ -12,3 +13,19 @@ sahi:
   slice_size: 640
   track: true
 save_animations: false
+=======
+images_dir: /home/bohbot/workspace/images/neta
+model:
+  conf_threshold: 0.2
+  iou_threshold: 0.2
+  object_size: Big
+  task: Predict
+  vid_stride: 2
+  weights:  /home/bohbot/Evyatar/runs/detect/sahi_1_l/weights/best.pt
+output_dir: /home/bohbot/workspace/projects/neta
+sahi:
+  overlap_ratio: 0.2
+  slice_size: 640
+  track: false
+save_animations: true
+>>>>>>> 8ea519ff9a382c3e3a027359a3340d822a8ed02f
