@@ -5,7 +5,7 @@ import os
 
 # Global variables for interactive ROI selection
 center = None
-radius =400  # Default radius
+radius = 400  # Default radius
 image = None
 clone = None
 selected_rois = {}  # Dictionary to store ROIs per image
@@ -53,14 +53,30 @@ def filter_csv(csv_path, selected_rois):
     if not {"image_name", "x", "y"}.issubset(df.columns):
         raise ValueError("CSV file must contain 'image_name', 'x', and 'y' columns.")
 
+    # Convert columns to expected types
+    df["image_name"] = df["image_name"].astype(str)
+    df["x"] = pd.to_numeric(df["x"], errors="coerce")
+    df["y"] = pd.to_numeric(df["y"], errors="coerce")
+
     filtered_dfs = []
     
     for image_name, (center, radius) in selected_rois.items():
-        img_df = df[df["image_name"] == image_name].copy()
+        # Remove extension before filtering (e.g., control_1.jpg → control_1)
+        base_name = os.path.splitext(image_name)[0]
+
+        img_df = df[df["image_name"].str.startswith(base_name)].copy()
+        
+        if img_df.empty:
+            print(f"⚠️ Warning: No matching rows for image {image_name} in CSV.")
+            continue
+
         img_df["distance"] = np.sqrt((img_df["x"] - center[0]) ** 2 + (img_df["y"] - center[1]) ** 2)
         
         # Keep only points within the circle
         img_filtered = img_df[img_df["distance"] <= radius].drop(columns=["distance"])
+        
+        if img_filtered.empty:
+            print(f"⚠️ No points inside the circle for {image_name}.")
         
         filtered_dfs.append(img_filtered)
 
@@ -80,7 +96,7 @@ def process_images(image_dir, csv_path, output_dir):
         img_path = os.path.join(image_dir, img_file)
         image = cv2.imread(img_path)
         if image is None:
-            print(f"Error loading {img_file}, skipping...")
+            print(f"❌ Error loading {img_file}, skipping...")
             continue
 
         clone = image.copy()
@@ -90,7 +106,7 @@ def process_images(image_dir, csv_path, output_dir):
         cv2.setMouseCallback("Select Circle ROI", draw_circle)
         cv2.createTrackbar("Radius", "Select Circle ROI", radius, 500, update_radius)
 
-        print(f"Processing {img_file}: Click to set the center, adjust radius, then press 'c' to confirm.")
+        print(f"🟢 Processing {img_file}: Click to set the center, adjust radius, then press 'c' to confirm.")
 
         while True:
             key = cv2.waitKey(1) & 0xFF
@@ -100,21 +116,23 @@ def process_images(image_dir, csv_path, output_dir):
         cv2.destroyAllWindows()
 
         # Store selected ROI for filtering
-        image_name = os.path.basename(img_file)
-        selected_rois[image_name] = (center, radius)
+        selected_rois[img_file] = (center, radius)
 
         # Crop circular region and save
         cropped = crop_circle(image, center, radius)
         cropped_path = os.path.join(output_dir, f"cropped_{img_file}")
         cv2.imwrite(cropped_path, cropped)
-        print(f"Saved cropped image: {cropped_path}")
+        print(f"✅ Saved cropped image: {cropped_path}")
 
     # Process CSV file
     filtered_data = filter_csv(csv_path, selected_rois)
-    filtered_csv_path = os.path.join(output_dir, "filtered_data.csv")
-    filtered_data.to_csv(filtered_csv_path, index=False)
     
-    print(f"Filtered CSV saved: {filtered_csv_path}")
+    if filtered_data.empty:
+        print("⚠️ No points matched any of the selected ROIs. Check filenames or coordinates.")
+    else:
+        filtered_csv_path = os.path.join(output_dir, "filtered_data.csv")
+        filtered_data.to_csv(filtered_csv_path, index=False)
+        print(f"✅ Filtered CSV saved: {filtered_csv_path}")
 
 if __name__ == "__main__":
     image_dir = "/home/wildmosquit0/workspace/projects/Neta/Trap/predict"  # Change to your image directory
