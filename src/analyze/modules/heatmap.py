@@ -13,7 +13,7 @@ class Heatmap:
         self.plot_path = os.path.join(self.config["output_dir"], "plots")
         self.frame_path =  self.config["heatmap"]["image_path"]
         self.grid_size = self.config.get("grid_size", 70)
-        self.min_count = self.config.get("min_count", 10)
+        self.min_count = self.config.get("min_count", 1)
         self.cmap = self.config.get("cmap", "plasma")
         
          

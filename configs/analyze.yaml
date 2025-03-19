@@ -6,9 +6,9 @@ average_visits:
 duration:
   fps: 4
 heatmap:
-  grid_size: null
-  image_path: /home/wildmosquit0/workspace/projects/Neta/Trap/predict
-  min_count: null
+  grid_size: 30
+  image_path: /home/wildmosquit0/workspace/projects/Neta/Trap
+  min_count: 1
   true_axis: true
 input_csv: /home/wildmosquit0/workspace/projects/Neta/Trap/filtered_data.csv
 output_dir: /home/wildmosquit0/workspace/projects/Neta/Trap/results
