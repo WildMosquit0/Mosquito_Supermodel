@@ -1,31 +1,15 @@
-<<<<<<< HEAD
-images_dir: /home/wildmosquit0/workspace/projects/Neta/Trap/movies
+images_dir: /home/bohbot/workspace/images/or49/trim
 model:
-  conf_threshold: 0.7
+  conf_threshold: 0.5
   iou_threshold: 0.5
   object_size: big
-  task: predict
-  vid_stride: 5000
-  weights: /home/wildmosquit0/workspace/weights/mosquitoes/nectar.pt
-output_dir: /home/wildmosquit0/workspace/projects/Neta/Trap
+  task: track
+  vid_stride: 2
+  weights: /home/bohbot/Evyatar/runs/detect/test_caht_parametrs2/weights/last.pt
+output_dir: /home/bohbot/workspace/project/or49
 sahi:
   overlap_ratio: 0.2
   slice_size: 640
   track: true
-save_animations: false
-=======
-images_dir: /home/bohbot/workspace/images/neta
-model:
-  conf_threshold: 0.2
-  iou_threshold: 0.2
-  object_size: Big
-  task: Predict
-  vid_stride: 2
-  weights:  /home/bohbot/Evyatar/runs/detect/sahi_1_l/weights/best.pt
-output_dir: /home/bohbot/workspace/projects/neta
-sahi:
-  overlap_ratio: 0.2
-  slice_size: 640
-  track: false
 save_animations: true
->>>>>>> 8ea519ff9a382c3e3a027359a3340d822a8ed02f
+/home/bohbot/workspace/images/supermodel/benchmark_crop/images/val/frame_2246_6_1024_512_1664_1152.png
