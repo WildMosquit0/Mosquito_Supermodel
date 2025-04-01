@@ -75,7 +75,7 @@ class Heatmap:
                 csv_folder = os.path.dirname(self.data_path)
                 image_path = find_image_for_heat_map(csv_folder, img_name)
                 self.frame_path = image_path
-
+            
                 # Plot
                 self.plot_heatmap(name = img_name)
             

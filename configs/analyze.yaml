@@ -7,17 +7,17 @@ duration:
   fps: 4
 heatmap:
   grid_size: 30
-  image_path: null
+  image_path: /home/bohbot/workspace/project/or49/track/
   min_count: 1
   true_axis: true
-input_csv: /home/bohbot/workspace/project/or49/track/results.csv
-output_dir: /home/bohbot/workspace/project/or49/results
+input_csv: /home/bohbot/workspace/project/or49/track/filtered_data.csv #/home/bohbot/workspace/project/or49/track/results.csv
+output_dir: /home/bohbot/workspace/project/or49/results_t
 plotxy:
   id_OR_class: track_id
-  treatment_or_rep: image_name
+  treatment_or_rep: treatment
   true_axis: true
 task:
-  average_visits: true
+  average_visits: false
   duration: false
-  heatmap: false
-  plotxy: true
+  heatmap: true
+  plotxy: false

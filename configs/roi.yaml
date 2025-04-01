@@ -1,6 +1,6 @@
 define_roi:
-  folder_path: /home/wildmosquit0/workspace/projects/Arad/data  # This is a directory
-  csv_path: /home/wildmosquit0/workspace/projects/Arad/data/results.csv
-  output_dir: /home/wildmosquit0/workspace/projects/Arad/data
+  folder_path: /home/bohbot/workspace/project/or49/track  # This is a directory
+  csv_path: /home/bohbot/workspace/project/or49/track/results.csv
+  output_dir: /home/bohbot/workspace/project/or49/track
   get_inner_roi: true
   choose_frame_for_video: 200
