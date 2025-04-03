@@ -5,7 +5,7 @@ import os
 
 # Global variables for interactive ROI selection
 center = None
-radius = 600  # Default radius
+
 image = None
 clone = None
 selected_rois = {}  # Dictionary to store ROIs per image
@@ -63,7 +63,7 @@ def filter_csv(csv_path, selected_rois):
     for image_name, (center, radius) in selected_rois.items():
         # Remove extension before filtering (e.g., control_1.jpg → control_1)
         base_name = os.path.splitext(image_name)[0]
-        base_name = base_name.split("_first_frame")[0]
+        base_name = base_name.split("_middle_frame")[0]
         img_df = df[df["image_name"].str.startswith(base_name)].copy()
         
         if img_df.empty:
@@ -135,8 +135,9 @@ def process_images(image_dir, csv_path, output_dir):
         print(f"✅ Filtered CSV saved: {filtered_csv_path}")
 
 if __name__ == "__main__":
-    image_dir = "/home/bohbot/workspace/project/or49/track"  # Change to your image directory
-    csv_path = "/home/bohbot/workspace/project/or49/track/results.csv"  # Change to your CSV file
-    output_dir = "/home/bohbot/workspace/project/or49"  # Directory to save cropped images and filtered CSV
+    radius = 500  # Default radius
+    image_dir = "/home/bohbot/workspace/project/all/"  # Change to your image directory
+    csv_path = "/home/bohbot/workspace/project/all/results.csv"  # Change to your CSV file
+    output_dir = "/home/bohbot/workspace/project/all/"  # Directory to save cropped images and filtered CSV
     
     process_images(image_dir, csv_path, output_dir)

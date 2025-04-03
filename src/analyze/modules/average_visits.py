@@ -77,15 +77,44 @@ class AverageVisits:
 
 
     def _aggregate_trajectories(self, df):
-        df["trajectory_count"] = df.groupby(["image_idx", "image_name", "treatment_or_rep", "time_interval"])["box_idx"].transform("nunique")
-        df["time"] = df["image_idx"] / self.fps / 60
+        df["image_idx"] = pd.to_numeric(df["image_idx"], errors="coerce")
+        df = df.dropna(subset=["image_idx"])
+        
+        use_track_id = self.config["average_visits"].get("use_track_id", True)
+        unit = self.config["average_visits"].get("interval_unit", "seconds")
+        conversion = 60 if unit == "minutes" else 1
 
-        average_visits = (
-            df.groupby(['time_interval', "image_name"], as_index=False)
-            .agg(mean_trajectory_count=('trajectory_count', 'mean'))
-        )
-        average_visits["treatment"] = average_visits["image_name"].str.split("_").str[0]
+        # Calculate time in desired units
+        time_interval_unit = self.time_intervals * conversion
+        df["time_interval"] = (df["image_idx"] / self.fps / time_interval_unit).astype(int) * self.time_intervals
+
+        if use_track_id:
+            # Ensure track_id exists and is numeric
+            df["track_id"] = pd.to_numeric(df["track_id"], errors="coerce")
+            df = df.dropna(subset=["track_id"])
+
+            average_visits = (
+                df.groupby(["time_interval", "image_name"], as_index=False)
+                .agg(mean_trajectory_count=("track_id", "nunique"))
+            )
+        else:
+            # Count box_idx per frame, then average over time intervals
+            df["box_idx"] = pd.to_numeric(df["box_idx"], errors="coerce")
+            df = df.dropna(subset=["box_idx"])
+
+            df["trajectory_count"] = df.groupby(["image_idx", "image_name", self.treatment_or_rep, "time_interval"])["box_idx"].transform("nunique")
+
+            average_visits = (
+                df.groupby(['time_interval', "image_name"], as_index=False)
+                .agg(mean_trajectory_count=('trajectory_count', 'mean'))
+            )
+
+        # Extract treatment or repetition from image_name
+        average_visits[self.treatment_or_rep] = average_visits["image_name"].str.split("_").str[0]
+
         return self.fill_na_time_intervals(average_visits)
+
+
 
     def _filter_time_intervals(self, df):
         if self.filter_time_intervals != "nan":
