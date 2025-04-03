@@ -1,4 +1,4 @@
-images_dir: /home/bohbot/workspace/images/borneol
+images_dir: /home/bohbot/workspace/images/or49/wt
 model:
   conf_threshold: 0.5
   iou_threshold: 0.5
@@ -6,7 +6,7 @@ model:
   task: track
   vid_stride: 2
   weights: /home/bohbot/Evyatar/runs/detect/test_caht_parametrs2/weights/last.pt
-output_dir: /home/bohbot/workspace/project/wt
+output_dir: /home/bohbot/workspace/project/wt_new
 sahi:
   overlap_ratio: 0.2
   slice_size: 640
