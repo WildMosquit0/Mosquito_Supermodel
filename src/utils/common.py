@@ -25,36 +25,36 @@ import cv2
 import os
 from typing import Union, List
 
-def export_first_frame(input_path: Union[str, List[str]], output_dir: str,task: str):
+#def export_first_frame(input_path: Union[str, List[str]], output_dir: str,task: str):
+#
+#    # Ensure input is a list
+#    if isinstance(input_path, str):
+#        video_paths = [input_path]
+#    else:
+#        video_paths = input_path
+#    
+#    if not os.path.exists(output_dir):
+#        os.makedirs(output_dir)
+#    
+#    saved_frames = []
+#    
+#    for video_path in video_paths:
+#        
+#        cap = cv2.VideoCapture(video_path)
+#        success, frame = cap.read()
+#        cap.release()
+#        
+#        if success:
+#            # Generate output path
+#            output_filename = os.path.splitext(os.path.basename(video_path))[0] + "_first_frame.jpg"
+#            output_file_path = os.path.join(output_dir,task, output_filename)
+#            cv2.imwrite(output_file_path, frame)
+#    
+#    return None
 
-    # Ensure input is a list
-    if isinstance(input_path, str):
-        video_paths = [input_path]
-    else:
-        video_paths = input_path
-    
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    
-    saved_frames = []
-    
-    for video_path in video_paths:
-        
-        cap = cv2.VideoCapture(video_path)
-        success, frame = cap.read()
-        cap.release()
-        
-        if success:
-            # Generate output path
-            output_filename = os.path.splitext(os.path.basename(video_path))[0] + "_first_frame.jpg"
-            output_file_path = os.path.join(output_dir,task, output_filename)
-            cv2.imwrite(output_file_path, frame)
-    
-    return None
 
-
-
-def export_middle_frame(input_path: Union[str, List[str]], output_dir: str, task: str):
+#export_middle_frame
+def export_first_frame(input_path: Union[str, List[str]], output_dir: str, task: str):
     video_paths = [input_path] if isinstance(input_path, str) else input_path
 
     task_dir = os.path.join(output_dir, task)
