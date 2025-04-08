@@ -8,17 +8,17 @@ duration:
   fps: 4
 heatmap:
   grid_size: 30
-  image_path: /home/bohbot/workspace/project/wt_vs_KO
+  image_path: /home/bohbot/workspace/project/wt_new/track
   min_count: 1
   true_axis: true
-input_csv: /home/bohbot/workspace/project/all/filtered_data.csv
-output_dir: /home/bohbot/workspace/project/03.04/all_f
+input_csv: /home/bohbot/workspace/project/wt_new/track/results.csv
+output_dir: /home/bohbot/workspace/project/03.04/testt
 plotxy:
   id_OR_class: track_id
   treatment_or_rep: treatment
   true_axis: true
 task:
-  average_visits: true
+  average_visits: false
   duration: false
-  heatmap: false
-  plotxy: true
+  heatmap: true
+  plotxy: false
