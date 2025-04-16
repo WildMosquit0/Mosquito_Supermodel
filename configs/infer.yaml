@@ -1,12 +1,12 @@
-images_dir: /home/bohbot/workspace/images/or49/trim
+images_dir: /home/bohbot/workspace/images/Gleb/v_cropped.mp4
 model:
-  conf_threshold: 0.5
-  iou_threshold: 0.5
+  conf_threshold: 0.2
+  iou_threshold: 0.2
   object_size: big
   task: track
-  vid_stride: 2
+  vid_stride: 5
   weights: /home/bohbot/Evyatar/runs/detect/test_caht_parametrs2/weights/last.pt
-output_dir: /home/bohbot/workspace/project/KO49
+output_dir: /home/bohbot/workspace/projects/Gleb
 sahi:
   overlap_ratio: 0.2
   slice_size: 640
