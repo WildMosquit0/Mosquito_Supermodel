@@ -1,6 +1,6 @@
 average_visits:
   filter_time_intervals: 10
-  fps: 15
+  fps: 6
   interval_unit: minutes
   time_intervals: 1
   use_track_id: true
@@ -8,17 +8,17 @@ duration:
   fps: 4
 heatmap:
   grid_size: 30
-  image_path: /home/bohbot/workspace/project/wt_new/track
+  image_path: /home/bohbot/workspace/projects/Gleb/track
   min_count: 1
   true_axis: true
-input_csv: /home/bohbot/workspace/project/wt_new/track/results.csv
-output_dir: /home/bohbot/workspace/project/03.04/testt
+input_csv: /home/bohbot/workspace/projects/Gleb/track/results.csv
+output_dir: /home/bohbot/workspace/projects/Gleb
 plotxy:
   id_OR_class: track_id
-  treatment_or_rep: treatment
+  treatment_or_rep: image_name
   true_axis: true
 task:
-  average_visits: false
+  average_visits: true
   duration: false
   heatmap: true
-  plotxy: false
+  plotxy: true
