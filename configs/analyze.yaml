@@ -8,11 +8,11 @@ duration:
   fps: 4
 heatmap:
   grid_size: 30
-  image_path: /home/bohbot/workspace/projects/Gleb/track
+  image_path: /home/bohbot/workspace/projects/Gleb/new_cam/track
   min_count: 1
   true_axis: true
-input_csv: /home/bohbot/workspace/projects/Gleb/track/results.csv
-output_dir: /home/bohbot/workspace/projects/Gleb
+input_csv: /home/bohbot/workspace/projects/Gleb/new_cam/track/results.csv
+output_dir: /home/bohbot/workspace/projects/Gleb/new_cam
 plotxy:
   id_OR_class: track_id
   treatment_or_rep: image_name
