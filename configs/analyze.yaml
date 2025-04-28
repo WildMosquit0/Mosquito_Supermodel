@@ -1,6 +1,6 @@
 average_visits:
   filter_time_intervals: 10
-  fps: 6
+  fps: 15
   interval_unit: minutes
   time_intervals: 1
   use_track_id: true
@@ -8,14 +8,14 @@ duration:
   fps: 4
 heatmap:
   grid_size: 30
-  image_path: /home/bohbot/workspace/projects/Gleb/new_cam/track
+  image_path: /home/bohbot/workspace/project/Dborneol/track
   min_count: 1
   true_axis: true
-input_csv: /home/bohbot/workspace/projects/Gleb/new_cam/track/results.csv
-output_dir: /home/bohbot/workspace/projects/Gleb/new_cam
+input_csv: /home/bohbot/workspace/project/Dborneol/all_crop/merged_filtered_data.csv
+output_dir: /home/bohbot/workspace/project/23.04/crop_test
 plotxy:
   id_OR_class: track_id
-  treatment_or_rep: image_name
+  treatment_or_rep: treatment
   true_axis: true
 task:
   average_visits: true
