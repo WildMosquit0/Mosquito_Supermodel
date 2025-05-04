@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from plotnine import ggplot, aes, geom_point, labs, theme_classic, theme, xlim,ylim
+from plotnine import ggplot, aes, geom_point, labs, theme_classic, theme, xlim,ylim,coord_fixed
 from src.utils.common import create_output_dir
 
 class PlotXY:
@@ -31,6 +31,7 @@ class PlotXY:
             if self.true_axis:
                 plot += xlim(0, image_data['img_w'].iloc[0])
                 plot +=ylim(image_data['img_h'].iloc[0], 0)
+                plot += coord_fixed( ratio=1)
                 
             
             output_path = os.path.join(self.plot_path, f'{image_name}_x_y.png')
