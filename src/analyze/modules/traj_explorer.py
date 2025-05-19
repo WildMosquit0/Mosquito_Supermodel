@@ -6,14 +6,15 @@ from src.utils.common import create_output_dir
 class PlotXY:
     def __init__(self, config):
         self.config = config
+        s = config['settings']
         self.data_path = self.config["input_csv"]
         self.plot_path = f"{self.config['output_dir']}/plots"
-
+        self.filter_max = s.get('filter_time_intervals', None)
         self.true_axis = self.config['plotxy']['true_axis']
         self.id_OR_class = self.config['plotxy']['id_OR_class']
         self.data = pd.read_csv(self.data_path)
         self.data[self.id_OR_class] = self.data[self.id_OR_class].astype('str')
-
+        self.data[self.id_OR_class] = self.data = self.data[(self.data[time_interval] >=)]
     def plot_coords(self):
         
         create_output_dir(self.plot_path)

@@ -1,5 +1,5 @@
 from src.analyze.modules.traj_explorer import PlotXY
-from src.analyze.modules.average_visits import AverageVisits
+from src.analyze.modules.visits import Visits
 from src.analyze.modules.duration import Duration
 from src.analyze.modules.distance import Distance
 from src.analyze.modules.heatmap import Heatmap
@@ -16,20 +16,26 @@ def run_analysis(config,conf_yaml_path):
             update_yaml(config, conf_yaml_path,'input_csv')
             
        # Run enabled tasks
-    if config['task']['average_visits']:
-        print("Running Average Visits analysis...")
-        avg_visits = AverageVisits(config)
-        avg_visits()
+    if config['task'].get('visits', False):
+       print("Running Average Visits analysis...")
+       visits = Visits(config)
+       df_visits = visits.compute()                   
+       sum_visits = visits.summarize(df_visits)       
+       visits.plot(df_visits,sum_visits)                         
     
     if config['task']['duration']:
         print("Running Duration analysis...")
-        duration = Duration(config)
-        duration()
+        dur = Duration(config)
+        df_dur = dur.compute()
+        sum_dur = dur.summarize(df_dur)
+        dur.plot(df_dur,sum_dur)
     
     if config['task'].get('distance', False):
         print("Running Distance Traveled analysis...")
-        distance = Distance(config)
-        distance()
+        dist = Distance(config)
+        df_dist = dist.compute()
+        sum_dist = dist.summarize(df_dist)
+        dist.plot(df_dist,sum_dist)
     
     if config['task']['heatmap']:
         print("Running Heatmap analysis...")
