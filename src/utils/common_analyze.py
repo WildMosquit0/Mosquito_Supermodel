@@ -13,7 +13,7 @@ def assign_intervals(
     df[idx_col] = pd.to_numeric(df[idx_col], errors="coerce")
     df = df.dropna(subset=[idx_col])
     step_secs = fps * interval_length * conversion
-    df["time_interval"] = (df[idx_col] / step_secs).astype(int) * interval_length
+    df["time_interval"] = np.floor(df[idx_col] / step_secs) * interval_length
     return df
 
 
@@ -23,12 +23,7 @@ def fill_0_values(
     time_col: str = 'time_interval',
     value_col: str = 'value'
 ) -> pd.DataFrame:
-    """
-    Given a DataFrame with columns [time_col, *group_cols, value_col],
-    ensure that for every unique combination of group_cols there is a row
-    at each time interval (from min to max, stepping by the interval size),
-    filling missing value_col entries with 0.
-    """
+    
     # 1. Identify your grouping keys (everything except time & value)
     group_cols = [c for c in df.columns if c not in [time_col, value_col]]
 

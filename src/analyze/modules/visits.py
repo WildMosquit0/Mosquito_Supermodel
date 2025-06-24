@@ -24,6 +24,7 @@ class Visits(BaseModule):
         self.interval = float(s['time_intervals'])
         self.unit = s.get('interval_unit', 'minutes')
         self.filter_max = s.get('filter_time_intervals', None)
+        self.unit   = s.get('interval_unit', 'minutes')
         self.data_path = config['input_csv']
         self.treatment_col = s.get('treatment_or_rep', 'treatment')
         self.use_track = ave_cfg.get('use_track_id', True)

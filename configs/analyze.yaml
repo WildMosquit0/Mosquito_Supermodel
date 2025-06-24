@@ -1,6 +1,6 @@
 settings:
- filter_time_intervals: 5
- fps: 15
+ filter_time_intervals: 9.5
+ fps: 12.5
  interval_unit: minutes
  time_intervals: 0.5
  use_track_id: true
@@ -21,7 +21,7 @@ heatmap:
   true_axis: true
 
 input_csv: /home/bohbot/workspace/project/Dborneol/all_crop/merged_filtered_data.csv
-output_dir: /home/bohbot/workspace/project/19.05
+output_dir: /home/bohbot/workspace/project/21
 save_csv: true
 plotxy:
   id_OR_class: track_id
@@ -34,3 +34,7 @@ task:
   distance: true  # Added new task
   heatmap: false
   plotxy: true
+
+
+
+  

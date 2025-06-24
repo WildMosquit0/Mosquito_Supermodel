@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from plotnine import ggplot, aes, geom_point, labs, theme_classic, theme, xlim,ylim,coord_fixed
 from src.utils.common import create_output_dir
+from src.utils.common_analyze import assign_intervals
 
 class PlotXY:
     def __init__(self, config):
@@ -9,12 +10,16 @@ class PlotXY:
         s = config['settings']
         self.data_path = self.config["input_csv"]
         self.plot_path = f"{self.config['output_dir']}/plots"
+        self.interval = float(s['time_intervals'])
         self.filter_max = s.get('filter_time_intervals', None)
+        self.fps = float(s['fps'])
+        self.unit = s.get('interval_unit', 'minutes')
         self.true_axis = self.config['plotxy']['true_axis']
         self.id_OR_class = self.config['plotxy']['id_OR_class']
         self.data = pd.read_csv(self.data_path)
         self.data[self.id_OR_class] = self.data[self.id_OR_class].astype('str')
-        self.data[self.id_OR_class] = self.data = self.data[(self.data[time_interval] >=)]
+        self.data = assign_intervals(self.data, 'image_idx', self.fps, self.interval, self.unit)
+        self.data = self.data[self.data["time_interval"] <= self.filter_max]
     def plot_coords(self):
         
         create_output_dir(self.plot_path)
