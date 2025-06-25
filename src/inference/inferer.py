@@ -8,7 +8,7 @@ import yaml
 from src.utils.common import create_output_dir
 from sahi.predict import get_prediction, get_sliced_prediction
 from sahi import AutoDetectionModel
-from src.utils.common import export_first_frame
+from src.utils.common import export_middle_frame
 #
 #def ensure_weights():
 #    try:
@@ -47,7 +47,7 @@ class Inferer:
         # Load YOLO model for tracking/predict tasks.
         self.model = YOLO(self.model_path)
         self.model.to(self.device)
-        export_first_frame(self.images_dir,self.output_dir,self.task)
+        export_middle_frame(self.images_dir,self.output_dir,self.task)
 
 
     def infer(self, persist: bool = True) -> List:

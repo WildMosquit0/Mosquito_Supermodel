@@ -25,7 +25,7 @@ import cv2
 import os
 from typing import Union, List
 
-#def export_first_frame(input_path: Union[str, List[str]], output_dir: str,task: str):
+#def export_middle_frame(input_path: Union[str, List[str]], output_dir: str,task: str):
 #
 #    # Ensure input is a list
 #    if isinstance(input_path, str):
@@ -54,7 +54,7 @@ from typing import Union, List
 
 
 #export_middle_frame
-def export_first_frame(input_path: Union[str, List[str]], output_dir: str, task: str):
+def export_middle_frame(input_path: Union[str, List[str]], output_dir: str, task: str):
     video_paths = [input_path] if isinstance(input_path, str) else input_path
 
     task_dir = os.path.join(output_dir, task)
