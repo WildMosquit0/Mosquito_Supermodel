@@ -7,7 +7,7 @@ from plotnine import (
 )
 from .base_module import BaseModule
 from src.utils.common import create_output_dir
-from src.utils.common_analyze import fill_0_values, assign_intervals,save_and_rename
+from src.utils.common_analyze import fill_0_values, assign_intervals,save_and_rename,check_groupby_dupication
 
 
 
@@ -26,8 +26,10 @@ class Visits(BaseModule):
         self.filter_max = s.get('filter_time_intervals', None)
         self.unit   = s.get('interval_unit', 'minutes')
         self.data_path = config['input_csv']
-        self.treatment_col = s.get('treatment_or_rep', 'treatment')
+        self.treatment_col = s.get('treatment_or_image_name', 'treatment')
         self.use_track = ave_cfg.get('use_track_id', True)
+        self.l = check_groupby_dupication(self.treatment_col)
+        
 
     def compute(self, df: pd.DataFrame = None) -> pd.DataFrame:
         if df is None:
@@ -41,7 +43,7 @@ class Visits(BaseModule):
             df['track_id'] = pd.to_numeric(df['track_id'], errors='coerce')
             df = df.dropna(subset=['track_id'])
             df_raw = (
-                df.groupby(['time_interval',"image_name", self.treatment_col])
+                df.groupby(self.l)
                   .agg(value=('track_id', 'nunique'))
                   .reset_index()
             )
@@ -79,7 +81,7 @@ class Visits(BaseModule):
             + labs(x='', y='Visits', title='Visits by Treatment')
             + theme_classic()
         )
-        p1.save(os.path.join(self.plot_path, 'visits_box.pdf'))
+        p1.save(os.path.join(self.plot_path, 'visits_box.jpg'))
 
         # time series
         p2 = (
@@ -97,6 +99,6 @@ class Visits(BaseModule):
                 aes(x='time_interval', ymin='lower', ymax='upper', color=self.treatment_col),
                 width=0.2
             )
-        p2.save(os.path.join(self.plot_path, 'visits_time.pdf'))
+        p2.save(os.path.join(self.plot_path, 'visits_time.jpg'))
 
         save_and_rename(df_box,df_time,self.dir,'visits')

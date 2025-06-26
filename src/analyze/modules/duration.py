@@ -8,7 +8,7 @@ from plotnine import (
     theme_classic, labs, scale_x_continuous
 )
 from .base_module import BaseModule
-from src.utils.common_analyze import fill_0_values, assign_intervals,save_and_rename
+from src.utils.common_analyze import fill_0_values, assign_intervals,save_and_rename,check_groupby_dupication_duration,check_groupby_dupication
 from src.utils.common import create_output_dir
 
 class Duration(BaseModule):
@@ -24,7 +24,9 @@ class Duration(BaseModule):
         self.unit   = s.get('interval_unit', 'minutes')
         self.filter_max = s.get('filter_time_intervals', None)
         self.data_path    = config['input_csv']
-        self.treatment_col = config['plotxy']['treatment_or_rep']
+        self.treatment_col = config['plotxy']['treatment_or_image_name']
+        self.ld = check_groupby_dupication_duration(self.treatment_col)
+        self.l = check_groupby_dupication(self.treatment_col)
 
     def compute(self, df: pd.DataFrame = None) -> pd.DataFrame:
         # 1) load
@@ -36,16 +38,14 @@ class Duration(BaseModule):
         df['track_id'] = pd.to_numeric(df['track_id'], errors='coerce')
         df = df.dropna(subset=['track_id'])
         agg = (
-            df.groupby([
-                  'track_id','image_name', self.treatment_col, 'time_interval'
-              ])
+            df.groupby(self.ld)
               .agg(start=('image_idx','min'), end=('image_idx','max'))
               .reset_index()
         )
         agg['duration_sec'] = (agg['end'] - agg['start'] + 1) / self.fps
         # 4) collapse to per-interval
         df_raw = (
-            agg.groupby(['time_interval', self.treatment_col, 'image_name'])
+            agg.groupby(self.l)
                .agg(value=('duration_sec','sum'))
                .reset_index()
         )
@@ -77,7 +77,7 @@ class Duration(BaseModule):
             + theme_classic()
             + labs(x='', y='Duration (s)', title='Duration by Treatment')
         )
-        p1.save(os.path.join(self.plot_path,'duration_box.pdf'))
+        p1.save(os.path.join(self.plot_path,'duration_box.jpg'))
 
         # time-series plot with conditional SE
         p2 = (
@@ -94,6 +94,6 @@ class Duration(BaseModule):
                 aes(x='time_interval', ymin='lower', ymax='upper'),
                 width=0.2
             )
-        p2.save(os.path.join(self.plot_path,'duration_time.pdf'))
+        p2.save(os.path.join(self.plot_path,'duration_time.jpg'))
 
         save_and_rename(df_box,df_time,self.dir,'duration')

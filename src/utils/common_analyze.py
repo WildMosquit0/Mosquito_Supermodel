@@ -78,3 +78,17 @@ def save_and_rename(
 
     df_box.to_csv(box_path, index=False)
     df_time.to_csv(time_path, index=False)
+
+def check_groupby_dupication(col_conf):
+    if "image_name" == col_conf:
+        l = ['time_interval','image_name']
+    else:
+        l = ['time_interval','image_name', 'treatment']
+    return l     
+
+def check_groupby_dupication_duration(col_conf):
+    if "image_name" == col_conf:
+        l = ['time_interval','image_name','track_id']
+    else:
+        l = ['time_interval','image_name', 'treatment','track_id']
+    return l

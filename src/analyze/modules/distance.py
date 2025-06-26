@@ -8,7 +8,7 @@ from plotnine import (
     theme_classic, labs, scale_x_continuous
 )
 from .base_module import BaseModule
-from src.utils.common_analyze import fill_0_values, assign_intervals, save_and_rename
+from src.utils.common_analyze import fill_0_values, assign_intervals, save_and_rename,check_groupby_dupication
 from src.utils.common import create_output_dir
 
 class Distance(BaseModule):
@@ -24,7 +24,8 @@ class Distance(BaseModule):
         self.unit   = s.get('interval_unit', 'minutes')
         self.filter_max = s.get('filter_time_intervals', None)
         self.data_path     = config['input_csv']
-        self.treatment_col = config['plotxy']['treatment_or_rep']
+        self.treatment_col = config['plotxy']['treatment_or_image_name']
+        self.l = check_groupby_dupication(self.treatment_col)
 
     def compute(self, df: pd.DataFrame = None) -> pd.DataFrame:
         # 1) load
@@ -42,7 +43,7 @@ class Distance(BaseModule):
         df['dist_px'] = np.sqrt(df['dx']**2 + df['dy']**2)
         # 4) collapse to per-interval
         df_raw = (
-            df.groupby(['time_interval', self.treatment_col, 'image_name'])
+            df.groupby(self.l)
               .agg(value=('dist_px','sum'))
               .reset_index()
         )
@@ -74,7 +75,7 @@ class Distance(BaseModule):
             + theme_classic()
             + labs(x='', y='Distance', title='Distance by Treatment')
         )
-        p1.save(os.path.join(self.plot_path,'distance_box.pdf'))
+        p1.save(os.path.join(self.plot_path,'distance_box.jpg'))
 
         # time-series plot
         p2 = (
@@ -91,7 +92,7 @@ class Distance(BaseModule):
                 aes(x='time_interval', ymin='lower', ymax='upper'),
                 width=0.2
             )
-        p2.save(os.path.join(self.plot_path,'distance_time.pdf'))
+        p2.save(os.path.join(self.plot_path,'distance_time.jpg'))
         
         save_and_rename(df_box,df_time,self.dir,'distance')
 
