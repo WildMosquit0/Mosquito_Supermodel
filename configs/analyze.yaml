@@ -3,7 +3,7 @@ heatmap:
   image_path: /home/bohbot/workspace/projects/test_1/frames
   min_count: 1
   true_axis: true
-input_csv: /home/bohbot/workspace/projects/test_1/results.csv
+input_csv: /home/bohbot/workspace/projects/test_1/roi_results.csv
 output_dir: /home/bohbot/workspace/projects/test_1
 plotxy:
   id_OR_class: class

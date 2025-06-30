@@ -1,6 +1,6 @@
 define_roi:
-  folder_path: /home/bohbot/workspace/project/or49/track  # This is a directory
-  csv_path: /home/bohbot/workspace/project/or49/track/results.csv
-  output_dir: /home/bohbot/workspace/project/or49/track
+  folder_path: /home/bohbot/workspace/projects/test_1/frames  # This is a directory
+  csv_path: /home/bohbot/workspace/projects/test_1/results.csv
+  output_dir: /home/bohbot/workspace/projects/test_1
   get_inner_roi: true
-  choose_frame_for_video: 200
+  choose_frame_for_video: 1
