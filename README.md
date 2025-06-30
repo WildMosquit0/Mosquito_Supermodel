@@ -2,19 +2,18 @@
 
 **Universal YOLO-based mosquito detection, slicing, tracking, and behavioral analysis pipeline**
 
-This repository provides a flexible, end-to-end deep learning pipeline for detecting and analyzing mosquito behavior using YOLO models (e.g., YOLOv8) with support for slicing, multi-video tracking, and postprocessing. Originally built for mosquito research, the tools are adaptable to similar tasks in entomology and small-object behavior tracking.
+This repository provides a flexible, end-to-end deep learning pipeline for detecting and analyzing mosquito behavior using YOLOv11 with support for slicing, multi-video tracking, and postprocessing.
 
 ---
 
 ## 🚀 Features
 
-- 🔍 **Inference** with YOLOv8 or YOLOv11
+- 🔍 **Inference** with YOLOv11
 - 🧩 **SAHI slicing** for small-object detection
 - 🧠 **Track ID continuity** across frames/videos
-- 📊 **Behavioral metrics**: visit count, duration, distance
+- 📊 **Behavioral metrics**: visit count, duration, distance (works only with tracking mode)
 - 📁 **Config-based execution** (no hardcoded paths)
 - 📈 **Plotting & heatmap visualization**
-- ⚙️ Modular design: `inference`, `analyze`, `train`, `track`, and `utils`
 
 ---
 
@@ -22,7 +21,7 @@ This repository provides a flexible, end-to-end deep learning pipeline for detec
 
 ```
 Mosquito_Supermodel/
-├── configs/              # YAML config files for inference, analysis, and ROI
+├── configs/              # YAML config files for inference, analysis
 ├── src/                  # Source code modules
 │   ├── inference/        # YOLO + SAHI inference logic
 │   ├── analyze/          # Visit/distance analysis
@@ -30,8 +29,6 @@ Mosquito_Supermodel/
 │   ├── utils/            # Common helpers
 ├── main.py               # Entry point for running inference or analysis
 ├── requirements.txt      # Pip-based dependencies
-├── environment.yml       # Conda environment
-└── README.md             # You're here!
 ```
 
 ---
@@ -72,17 +69,20 @@ The `infer` task runs YOLO-based detection (optionally with SAHI slicing) on eit
 **Expected input structure (for batch mode):**
 ```
 input_folder/
-├── deet_rep1.avi
-├── control_rep2.avi
-├── eugenol_rep3.avi
+├── deet_rep1.mp4
+├── deet_rep2.mp4
+├── deet_rep3.mp4
+├── control_rep1.mp4
+├── control_rep2.mp4
+├── control_rep3.mp4
 ```
 
 Each video must follow the format:
 ```
-<treatment>_repX.avi
+<treatment>_repX.x
 ```
 
-This naming convention helps automatically assign treatment labels during analysis.
+This naming convention helps automatically assign treatment and replicates during analysis.
 
 **Config option for automation:**
 ```yaml
@@ -136,11 +136,7 @@ Both tasks use your specified configuration in the `configs/` folder.
 
 ## 👤 Authors
 
-Developed by Evyatar Sar-Shalom and collaborators.  
+Developed by Evyatar Sar-Shalom and Ziv Kassner.  
 This branch was cleaned and prepared specifically for Clément’s use.
 
 ---
-
-## 📜 License
-
-MIT License (or specify your own).
