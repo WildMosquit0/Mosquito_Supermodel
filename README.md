@@ -1,113 +1,146 @@
+# 🦟 Mosquito Supermodel
 
-# Mosquito Supermodel
+**Universal YOLO-based mosquito detection, slicing, tracking, and behavioral analysis pipeline**
 
-The **Mosquito Supermodel** project aims to create a general detector for mosquitoes (any species) using the YOLO framework. This standalone open-source project provides accessible tools, including detector weights and training data, for anyone interested in detecting and exploring mosquito behaviors.
-
----
-
-## Table of Contents
-1. [Overview](#overview)
-2. [Setup and Installation](#setup-and-installation)
-3. [Usage](#usage)
-4. [Features](#features)
-5. [File Structure](#file-structure)
-6. [Contact](#contact)
-7. [Future Enhancements](#future-enhancements)
+This repository provides a flexible, end-to-end deep learning pipeline for detecting and analyzing mosquito behavior using YOLO models (e.g., YOLOv8) with support for slicing, multi-video tracking, and postprocessing. Originally built for mosquito research, the tools are adaptable to similar tasks in entomology and small-object behavior tracking.
 
 ---
 
-## Overview
+## 🚀 Features
 
-The **Mosquito Supermodel** project is designed for researchers, developers, and the general public, offering tools to detect mosquitoes and analyze their behavior. It is entirely open source, allowing anyone to:
-- Access the detector weights.
-- Explore and use the training data.
-- Perform mosquito detection and behavioral analysis.
-
----
-
-## Setup and Installation
-
-### Prerequisites
-- Python (version TBD)
-- Libraries specified in `requirements.txt`.
-- OpenCV library (install separately).
-
-### Installation
-1. Clone this repository:
-   ```bash
-   git clone -b feature/analyzer https://github.com/WildMosquit0/Mosquito_Supermodel.git
-   cd Mosquito_Supermodel
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   pip install opencv-python
-   ```
+- 🔍 **Inference** with YOLOv8 or YOLOv11
+- 🧩 **SAHI slicing** for small-object detection
+- 🧠 **Track ID continuity** across frames/videos
+- 📊 **Behavioral metrics**: visit count, duration, distance
+- 📁 **Config-based execution** (no hardcoded paths)
+- 📈 **Plotting & heatmap visualization**
+- ⚙️ Modular design: `inference`, `analyze`, `train`, `track`, and `utils`
 
 ---
 
-## Usage
+## 🗂️ Repository Structure
 
-### Configuration
-- The repository includes a JSON configuration file that controls all arguments, including:
-  - Prediction types (`predict` or `track`).
-  - Analysis parameters.
-- Default values are provided but can be adjusted for specific use cases, such as varying video frame rates.
-
-### Running the Project
-- To predict or track:
-  ```bash
-  python main.py
-  ```
-- Input formats:
-  - Video folder for prediction.
-  - CSV file for analysis.
-- Outputs:
-  - CSV files.
-  - Plots.
+```
+Mosquito_Supermodel/
+├── configs/              # YAML config files for inference, analysis, and ROI
+├── src/                  # Source code modules
+│   ├── inference/        # YOLO + SAHI inference logic
+│   ├── analyze/          # Visit/distance analysis
+│   ├── tracking/         # Track ID handling
+│   ├── utils/            # Common helpers
+├── main.py               # Entry point for running inference or analysis
+├── requirements.txt      # Pip-based dependencies
+├── environment.yml       # Conda environment
+└── README.md             # You're here!
+```
 
 ---
 
-## Features
+## 🧪 Setup Instructions
 
-1. **Prediction and Tracking**
-   - Framework functions to predict and track mosquito movements using YOLOv11.
+### 🔧 Conda (recommended)
+```bash
+conda env create -f environment.yml
+conda activate super_model
+```
 
-2. **Analysis**
-   - Tools for analyzing YOLOv8 output, providing detailed insights through CSV files and plots.
-
----
-
-## File Structure
-
-- **Main Files and Directories**:
-  - `vids/` or `images/`: Input video or image files.
-  - `main.py`: The main script for running predictions and analyses.
-  - Configuration files: JSON files controlling various project parameters.
-
-- **Modifications**:
-  - Users can modify any file if needed; there are no strict restrictions.
-  - Clear separation of functionality may be updated over time.
+### 📦 Pip (alternative)
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
 ---
 
-## Contact
+## ⚙️ Configuration
 
-For questions or issues, feel free to reach out via email:
+All processing is driven by YAML config files in the `configs/` folder:
 
-**Evyatar Sar-Shalom**  
-📧 [evyatar.sar-shalom@mail.huji.ac.il](mailto:evyatar.sar-shalom@mail.huji.ac.il)
+- `infer.yaml`: controls model weights, input path, and slicing
+- `analyze.yaml`: defines behavioral analysis rules
+- `roi.yaml`: region-of-interest parameters (if needed)
+
+---
+
+## 🧠 Inference and Analysis Pipeline
+
+### 🔹 `infer` task
+
+The `infer` task runs YOLO-based detection (optionally with SAHI slicing) on either a **single video** or a **folder containing multiple videos**.
+
+**Expected input structure (for batch mode):**
+```
+input_folder/
+├── deet_rep1.avi
+├── control_rep2.avi
+├── eugenol_rep3.avi
+```
+
+Each video must follow the format:
+```
+<treatment>_repX.avi
+```
+
+This naming convention helps automatically assign treatment labels during analysis.
+
+**Config option for automation:**
+```yaml
+change_analyze_conf: true
+```
+
+If enabled, the inference process will **automatically update `configs/analyze.yaml`** with the correct output paths — so you can run analysis without editing anything manually.
 
 ---
 
-## Future Enhancements
+### 🔹 `analyze` task
 
-- **Planned Features**:
-  - Uploading links to datasets and weights.
-  - Introducing a GUI interface for easier use.
+The `analyze` task processes the inference outputs to compute behavioral summaries.
 
-- **Project Updates**:
-  - Updates will occur occasionally.
-  - Users are encouraged to create their own branches for contributions or customizations.
+**Included features:**
+
+- 📊 Average number of visits per time interval
+- ⏱️ Sum or average **duration** of visits
+- 📏 Sum or average **distance** traveled
+- 🌡️ **Heatmaps** of visit concentration
+- 🔁 **X vs Y** scatter plots of mosquito positions
+
+Results are exported as a merged `.csv` file and relevant plots.
 
 ---
+
+## 🧠 Usage
+
+### Run Inference
+```bash
+python main.py --task_name infer
+```
+
+### Run Analysis
+```bash
+python main.py --task_name analyze
+```
+
+Both tasks use your specified configuration in the `configs/` folder.
+
+---
+
+## 📁 Output Files
+
+- `.csv` files: detection or tracking output
+- `results.csv`: merged summary
+- `videos/`, `frames/`, `csvs/`: organized subfolders
+- Heatmaps and summary plots (if analysis is enabled)
+
+---
+
+## 👤 Authors
+
+Developed by Evyatar Sar-Shalom and collaborators.  
+This branch was cleaned and prepared specifically for Clément’s use.
+
+---
+
+## 📜 License
+
+MIT License (or specify your own).
