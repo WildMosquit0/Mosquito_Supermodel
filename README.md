@@ -57,11 +57,11 @@ model:
 output_dir: path/to/save/project  # Created automatically if not exists
 
 sahi:
-  overlap_ratio: 0.2
-  slice_size: 640
-  track: false
+  slice_size: 640          # Slice each frame into 640×640 patches (recommended for this model)
+  overlap_ratio: 0.2       # 20% overlap between adjacent slices for better detection coverage
+  track: true              # Enable tracking across sliced frames
 
-save_animations: true  # Save predicted video
+save_animations: true      # Save predicted video
 change_analyze_conf: true  # Automatically update configs/analyze.yaml
 ```
 
