@@ -158,7 +158,6 @@ python main.py --task_name analyze
 
 ## 👤 Authors
 
-Developed by **Evyatar Sar-Shalom** and **Ziv Kassner**  
-This branch was prepared specifically for **Clément**.
+This branch was prepared specifically for **Clément Vinauger**.
 
 ---
