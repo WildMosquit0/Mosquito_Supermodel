@@ -93,7 +93,7 @@ input_csv: path/to/inference/results.csv  # Auto-filled if infer used with chang
 output_dir: path/to/output/folder
 
 settings:
-  interval_unit: minute  # or 'seconds'
+  interval_unit: minutes  # or 'seconds'
   filter_time_intervals: 15  # Limit duration of analysis
   fps: 25  # Original FPS ÷ vid_stride
 
