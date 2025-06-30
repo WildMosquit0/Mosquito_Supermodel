@@ -1,40 +1,25 @@
-settings:
- filter_time_intervals: 15
- fps: 15
- interval_unit: seconds
- time_intervals: 1
- use_track_id: true
- stat: sum
- treatment_or_image_name: image_name
-
-visits:
-  filter_time_intervals: 10
-  fps: 15
-  interval_unit: minutes
-  time_intervals: 1
-  use_track_id: true
-
 heatmap:
   grid_size: 30
-  image_path: /home/bohbot/workspace/projects/bigmosquito/track
+  image_path: /home/bohbot/workspace/projects/test_1/frames
   min_count: 1
   true_axis: true
-
-input_csv: /home/bohbot/workspace/projects/bigmosquito/track/results.csv
-output_dir: /home/bohbot/workspace/projects/bigmosquito/track
-save_csv: true
+input_csv: /home/bohbot/workspace/projects/test_1/results.csv
+output_dir: /home/bohbot/workspace/projects/test_1
 plotxy:
-  id_OR_class: track_id
+  id_OR_class: class
   treatment_or_image_name: image_name
   true_axis: true
-
+settings:
+  filter_time_intervals: 15
+  fps: 1
+  interval_unit: minute
+  stat: sum
+  time_intervals: 1
+  treatment_or_image_name: treatment
+  use_track_id: true
 task:
-  visits: true
-  duration: true  # Enabled
-  distance: true  # Added new task
+  distance: true
+  duration: true
   heatmap: true
   plotxy: true
-
-
-
-  
+  visits: true

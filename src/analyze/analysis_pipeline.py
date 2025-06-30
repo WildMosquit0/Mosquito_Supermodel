@@ -4,12 +4,14 @@ from src.analyze.modules.duration import Duration
 from src.analyze.modules.distance import Distance
 from src.analyze.modules.heatmap import Heatmap
 from src.utils.common import data_merger
-from src.utils.common import update_yaml
+from src.utils.config_ops import update_yaml
+from src.utils.config_ops import export_config
 
 import os
 
 def run_analysis(config,conf_yaml_path):
 
+    export_config(conf_yaml_path)
     if os.path.isdir(config['input_csv']):
             merged_data_path = data_merger(config['input_csv'])
             config['input_csv'] = merged_data_path

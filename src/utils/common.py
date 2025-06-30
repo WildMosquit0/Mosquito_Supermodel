@@ -59,6 +59,7 @@ def export_middle_frame(input_path: Union[str, List[str]], output_dir: str, task
 
 def find_image_for_heat_map(directory, target_string):
     # Find all files that contain the target string
+    directory = os.path.join(directory,'frames')
     directory_list = os.listdir(directory)
 
     matches = [file for file in directory_list if target_string in file]
@@ -114,16 +115,3 @@ def data_merger(directory, filename="results"):
 
 
 
-def update_yaml(config, yaml_path,filed):
-    """Update the YAML file with the latest changes in the config."""
-    with open(yaml_path, 'r') as file:
-        data = yaml.safe_load(file)
-
-    # Update the 'input_csv' key with the new path
-    data[filed] = config[filed]
-    
-    # Write the updated data back to the YAML file
-    with open(yaml_path, 'w') as file:
-        yaml.safe_dump(data, file)
-
-import pandas as pd

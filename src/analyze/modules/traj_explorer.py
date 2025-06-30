@@ -15,7 +15,7 @@ class PlotXY:
         self.fps = float(s['fps'])
         self.unit = s.get('interval_unit', 'minutes')
         self.true_axis = self.config['plotxy']['true_axis']
-        self.id_OR_class = self.config['plotxy']['id_OR_class']
+        self.id_OR_class = "label" if self.config['plotxy']['id_OR_class'] == "class" else "id"
         self.data = pd.read_csv(self.data_path)
         self.data[self.id_OR_class] = self.data[self.id_OR_class].astype('str')
         self.data = assign_intervals(self.data, 'image_idx', self.fps, self.interval, self.unit)

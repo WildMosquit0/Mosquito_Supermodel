@@ -59,13 +59,7 @@ class ResultsParser:
         print(f"Results saved to {csv_file_path}")
 
     def parse_and_save_slice(self, predictions: List[tuple]):
-        """
-        Save SAHI-based predictions to CSV. Assumes predictions are provided as a list of tuples,
-        each in the form:
-            (box_idx, x, y, w, h, confidence, source_identifier, frame_index, img_h, img_w)
-        Since SAHI predictions do not include label or track_id, these columns are set to default values.
-        CSV columns: image_idx, box_idx, x, y, w, h, confidence, label, track_id, image_name, img_h, img_w.
-        """
+        
         csv_file_path = os.path.join(self.output_dir, self.csv_filename)
         image_idx_tracker = {}
 

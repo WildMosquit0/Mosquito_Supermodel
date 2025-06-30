@@ -1,14 +1,15 @@
-images_dir: /home/bohbot/Evyatar/runs/bigmosquito.mp4
+images_dir: /home/bohbot/workspace/projects/borneol/row_data/DEE
 model:
   conf_threshold: 0.5
   iou_threshold: 0.5
   object_size: Big
   task: track
-  vid_stride: 2
+  vid_stride: 20
   weights:  /home/bohbot/Evyatar/runs/detect/test_caht_parametrs2/weights/last.pt
-output_dir: /home/bohbot/workspace/projects/bigmosquito
+output_dir: /home/bohbot/workspace/projects/test_1
 sahi:
   overlap_ratio: 0.2
   slice_size: 640
   track: false
 save_animations: true
+change_analyze_conf: true

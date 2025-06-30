@@ -36,7 +36,14 @@ def fill_0_values(
     min_int, max_int = intervals[0], intervals[-1]
 
     # 3. Build the full set of intervals
-    all_intervals = np.arange(min_int, max_int + step, step)
+
+    try:
+        all_intervals = np.arange(min_int, max_int + step, step)
+    except ValueError:
+        raise ValueError(
+        f"Invalid interval settings: cannot compute intervals from min={min_int} to max={max_int} with step={step}. "
+        f"Please check that 'fps', 'interval', and 'interval_unit' are correctly defined in your analyze config."
+    )
 
     # 4. Get every unique combo of the other grouping columns
     combos = df[group_cols].drop_duplicates()

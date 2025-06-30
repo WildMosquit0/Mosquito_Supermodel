@@ -19,7 +19,7 @@ class Visits(BaseModule):
         super().__init__(config)
         s = config['settings']
         self.dir = config['output_dir']
-        ave_cfg = config['visits']
+        
         self.fps = float(s['fps'])
         self.interval = float(s['time_intervals'])
         self.unit = s.get('interval_unit', 'minutes')
@@ -27,7 +27,7 @@ class Visits(BaseModule):
         self.unit   = s.get('interval_unit', 'minutes')
         self.data_path = config['input_csv']
         self.treatment_col = s.get('treatment_or_image_name', 'treatment')
-        self.use_track = ave_cfg.get('use_track_id', True)
+        self.use_track = s.get('use_track_id', True)
         self.l = check_groupby_dupication(self.treatment_col)
         
 

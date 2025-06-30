@@ -4,8 +4,10 @@ import argparse
 import cProfile
 import pstats
 from src.inference.inference_pipeline import run_inference
+from src.postprocess.infer_sngle_or_multi import inference_single_or_multi
 from src.analyze.analysis_pipeline import run_analysis  # Ensure you have this implemented
-from src.utils.config import load_config
+from src.utils.config_ops import load_config
+
 
 def main(task: str) -> None:
 
@@ -13,7 +15,7 @@ def main(task: str) -> None:
     config = load_config(conf_yaml_path)
     
     if task == 'infer':
-        run_inference(config)
+        inference_single_or_multi(config,conf_yaml_path)
     elif task == 'analyze':
         run_analysis(config,conf_yaml_path)
 
