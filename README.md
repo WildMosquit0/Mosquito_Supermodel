@@ -6,20 +6,20 @@ This repository provides a flexible, end-to-end deep learning pipeline for detec
 
 ---
 
-## 🚀 Features
+## Features
 
-- 🔍 **Inference** with YOLOv11
-- 🧩 **SAHI slicing** for small-object detection
-- 🧠 **Track ID continuity** across frames/videos
-- 📊 **Behavioral metrics** (visit count, duration, distance — available in tracking mode)
-- 📁 **Config-based execution** (no hardcoded paths)
-- 📈 **Plotting & heatmap visualization**
+-  **Inference** with YOLOv11
+-  **SAHI slicing** for small-object detection
+-  **Track ID continuity** across frames/videos
+-  **Behavioral metrics** (visit count, duration, distance — available in tracking mode)
+-  **Config-based execution** (no hardcoded paths)
+-  **Plotting & heatmap visualization**
 
 ---
 
-## 🧪 Setup Instructions
+## 📦 Setup Instructions
 
-### 📦 Pip
+### Pip
 ```bash
 python -m venv venv
 source venv/bin/activate
@@ -38,7 +38,7 @@ All operations are driven by YAML files in the `configs/` folder:
 
 ---
 
-## 🧠 Inference and Analysis Pipeline
+## Inference and Analysis Pipeline
 
 ### 🔹 `infer` task
 
@@ -124,17 +124,17 @@ task:
 
 ## 📈 Analysis Outputs
 
-- 📊 **Visits** per time interval
-- ⏱️ **Duration** of object presence
-- 📏 **Distance** traveled
-- 🌡️ **Heatmaps** showing visit density
-- 🔁 **X vs Y scatter plots** of object positions
+- **Visits** per time interval
+- **Duration** of object presence
+- **Distance** traveled
+- **Heatmaps** showing visit density
+- **X vs Y scatter plots** of object positions
 
 All results are saved as `.csv` summaries and visual plots in the configured output directory.
 
 ---
 
-## 🧠 Usage
+## Usage
 
 ### Run Inference
 ```bash
