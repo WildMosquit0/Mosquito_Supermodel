@@ -15,36 +15,15 @@ This repository provides a flexible, end-to-end deep learning pipeline for detec
 - 📁 **Config-based execution** (no hardcoded paths)
 - 📈 **Plotting & heatmap visualization**
 
----
 
-## 🗂️ Repository Structure
+## Setup Instructions
 
-```
-Mosquito_Supermodel/
-├── configs/              # YAML config files for inference, analysis
-├── src/                  # Source code modules
-│   ├── inference/        # YOLO + SAHI inference logic
-│   ├── analyze/          # Visit/distance analysis
-│   ├── tracking/         # Track ID handling
-│   ├── utils/            # Common helpers
-├── main.py               # Entry point for running inference or analysis
-├── requirements.txt      # Pip-based dependencies
-```
 
----
-
-## 🧪 Setup Instructions
-
-### 🔧 Conda (recommended)
-```bash
-conda env create -f environment.yml
-conda activate super_model
-```
-
-### 📦 Pip (alternative)
+###  Pip (alternative)
 ```bash
 python -m venv venv
 source venv/bin/activate
+cd path/to/Mosquito_Supermodel
 pip install -r requirements.txt
 ```
 
@@ -79,7 +58,7 @@ input_folder/
 
 Each video must follow the format:
 ```
-<treatment>_repX.x
+treatment_repX.x
 ```
 
 This naming convention helps automatically assign treatment and replicates during analysis.
