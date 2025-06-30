@@ -24,7 +24,7 @@ class Distance(BaseModule):
         self.unit   = s.get('interval_unit', 'minutes')
         self.filter_max = s.get('filter_time_intervals', None)
         self.data_path     = config['input_csv']
-        self.treatment_col = config['plotxy']['treatment_or_image_name']
+        self.treatment_col = s.get('treatment_or_image_name', 'treatment')
         self.l = check_groupby_dupication(self.treatment_col)
 
     def compute(self, df: pd.DataFrame = None) -> pd.DataFrame:

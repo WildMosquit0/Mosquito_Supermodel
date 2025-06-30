@@ -63,5 +63,9 @@ def sort_and_merge_outputs(config: Dict):
     output_path = os.path.join(output_dir, "results.csv")
     final_df.to_csv(output_path, index=False)
 
+    for folder in [videos_dir, frames_dir, csvs_dir,data_dir]:
+        if not os.listdir(folder):
+            os.rmdir(folder)
+
     print(f"Merged results saved to {output_path}")
     return output_path

@@ -179,7 +179,7 @@ def run_main():
     # Run main.py
     python_exe = sys.executable
     script_path = os.path.join(os.path.dirname(__file__), "main.py")
-    subprocess.run([python_exe, script_path, "--task_name", task_name])
+    subprocess.run([python_exe, script_path, "--task", task_name])
 
 def on_tab_switch():
     """

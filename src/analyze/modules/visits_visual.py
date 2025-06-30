@@ -16,6 +16,7 @@ class TrajectoryDarknessPlot:
         self.plot_path = f"{self.output_dir}/plots"
         # Retrieve fps from config under "trajectory_darkness", defaulting to 30 if not provided.
         self.fps = float(self.config["trajectory_darkness"].get("fps", 30))
+        self.time_unit = self.config["interval_unit"]
 
     def _load_data(self):
         # Load CSV and ensure 'image_idx' is numeric.
@@ -64,7 +65,7 @@ class TrajectoryDarknessPlot:
             + scale_color_gradient(low="white", high="black", limits=(0, global_max))
             + theme_classic()
             + labs(title=f"{image_name}_TDP",
-                    x="Time (minutes)",
+                    x=f"Time ({self.time_unit})",
                     y="",
                     color="Trajectory Count")
             + scale_y_continuous(breaks=[], expand=(0, 0), limits=(0.9, 1.1))  # No y-axis labels and fixed y-scale
