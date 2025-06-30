@@ -154,10 +154,6 @@ python main.py --task_name analyze
 - `videos/`, `frames/`, `csvs/`: organized intermediate outputs
 - `.png` plots: for visits, heatmaps, trajectories
 
----
 
-## 👤 Authors
 
-This branch was prepared specifically for **Clément Vinauger**.
 
----
