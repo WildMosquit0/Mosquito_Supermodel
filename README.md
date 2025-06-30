@@ -124,11 +124,11 @@ task:
 
 ## 📈 Analysis Outputs
 
-- **Visits** per time interval
-- **Duration** of object presence
-- **Distance** traveled
-- **Heatmaps** showing visit density
-- **X vs Y scatter plots** of object positions
+- **Visits** Count of trajectory visits per time interval
+- **Duration** Total or average presence time of trajectories per interval
+- **Distance** Total or average distance traveled per interval
+- **Heatmaps** Density of trajectories across the frame
+- **X vs Y scatter plots** Position distribution of detected objects over time
 
 All results are saved as `.csv` summaries and visual plots in the configured output directory.
 
