@@ -35,7 +35,6 @@ All processing is driven by YAML config files in the `configs/` folder:
 
 - `infer.yaml`: controls model weights, input path, and slicing
 - `analyze.yaml`: defines behavioral analysis rules
-- `roi.yaml`: region-of-interest parameters (if needed)
 
 ---
 
