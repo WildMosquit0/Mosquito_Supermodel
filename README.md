@@ -33,8 +33,8 @@ pip install -r requirements.txt
 
 All operations are driven by YAML files in the `configs/` folder:
 
-- `infer.yaml`: defines model weights, paths, task type, and slicing
-- `analyze.yaml`: defines analysis logic, visualization options, and metrics
+- `infer.yaml`: defines model weights, paths, task type
+- `analyze.yaml`: defines analysis logic
 
 ---
 
