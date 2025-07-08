@@ -80,7 +80,7 @@ class Inferer:
                 exist_ok=True
             )
        
-        self.logger.info(f"Results saved to: {self.output_dir}")
+        # self.logger.info(f"Results saved to: {self.output_dir}")
         return results
 
 

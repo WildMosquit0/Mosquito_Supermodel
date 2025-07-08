@@ -57,7 +57,7 @@ class ResultsParser:
 
                 image_idx_tracker[image_name] += 1
 
-        self.logger.info(f"Results saved to {csv_file_path}")
+        # self.logger.info(f"Results saved to {csv_file_path}")
 
     def parse_and_save_slice(self, predictions: List[tuple]):
         
@@ -87,7 +87,7 @@ class ResultsParser:
             sahi_tracker.main(csv_file_path,self.output_dir)
 
 
-        self.logger.info(f"Results saved to {csv_file_path}")
+        # self.logger.info(f"Results saved to {csv_file_path}")
 
 
 # --- Example Usage ---

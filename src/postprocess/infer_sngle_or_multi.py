@@ -21,6 +21,9 @@ def inference_single_or_multi(config,conf_yaml_path, logger):
     
     else:
         run_inference(config, logger)
+    
+    logger.info(f"Finished inference for {flag}. Now sorting and merging outputs.")
+    logger.info(f"Results will be saved to: {config['output_dir']}")
 
     sort_and_merge_outputs(config, logger)
     if update_analyze:

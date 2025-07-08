@@ -13,7 +13,9 @@ from src.utils.config_ops import load_config
 
 opened_files = set()
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-logger = logging.getLogger(__name__)
+
+logger = logging.getLogger("project_logger")
+logger.setLevel(logging.INFO)
 
 _original_open = builtins.open
 def logged_open(file, *args, **kwargs):
@@ -27,18 +29,29 @@ def logged_open(file, *args, **kwargs):
 
 builtins.open = logged_open
 
+def setup_logger(output_dir: str) -> None:
+    os.makedirs(output_dir, exist_ok=True)
+    log_file = os.path.join(output_dir, "project_runtime.log")
+
+    file_handler = logging.FileHandler(log_file)
+    file_handler.setLevel(logging.INFO)
+    file_formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+    file_handler.setFormatter(file_formatter)
+
+    stream_handler = logging.StreamHandler(sys.stdout)
+    stream_handler.setLevel(logging.INFO)
+    stream_formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+    stream_handler.setFormatter(stream_formatter)
+
+    if not logger.handlers:
+        logger.addHandler(file_handler)
+        logger.addHandler(stream_handler)
+
+    logger.info(f"Logger initialized. Writing logs to {log_file}")
+
 def main(task: str) -> None:
     conf_yaml_path = os.path.abspath(f"configs/{task}.yaml")
     config = load_config(conf_yaml_path)
-    os.makedirs(config['output_dir'], exist_ok=True)
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            logging.FileHandler(os.path.join(config['output_dir'], "project_runtime.log")),
-            logging.StreamHandler(sys.stdout)
-        ]
-    )
     logger.info(f"Loaded config: {conf_yaml_path}")
     logger.info(f"Starting task: {task}")
     if task == 'infer':
@@ -50,28 +63,38 @@ def main(task: str) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run YOLO inference with tracking, detection, or slicing.')
     parser.add_argument('--task', choices=['infer', 'analyze'], default='infer', help='The task to be performed')
+    parser.add_argument('--profile', action='store_true', help='Enable profiling with cProfile')
     args = parser.parse_args()
 
-    profiler = cProfile.Profile()
-    profiler.enable()
+    conf_yaml_path = os.path.abspath(f"configs/{args.task}.yaml")
+    config = load_config(conf_yaml_path)
+    setup_logger(config['output_dir'])
 
-    try:
+    if args.profile:
+        logger.info("Profiling enabled.")
+        profiler = cProfile.Profile()
+        profiler.enable()
+
+        try:
+            main(args.task)
+        finally:
+            profiler.disable()
+            stats = pstats.Stats(profiler)
+            stats.strip_dirs()
+            stats.sort_stats('cumtime')
+            logger.info("\n=== Top 10 slowest functions ===")
+            stats.print_stats(10)
+            logger.info("\n=== Python files from my project ===")
+            for module in sorted(sys.modules.keys()):
+                mod = sys.modules[module]
+                filepath = getattr(mod, '__file__', None)
+                if filepath and filepath.endswith(".py") and filepath.startswith(PROJECT_ROOT):
+                    rel_path = os.path.relpath(filepath, PROJECT_ROOT)
+                    logger.info(f"Loaded: {rel_path}")
+            if opened_files:
+                logger.info("\n=== Other files from my project accessed ===")
+                for f in sorted(opened_files):
+                    logger.info(f"Accessed: {f}")
+    else:
+        logger.info("Profiling disabled.")
         main(args.task)
-    finally:
-        profiler.disable()
-        stats = pstats.Stats(profiler)
-        stats.strip_dirs()
-        stats.sort_stats('cumtime')
-        logger.info("\n=== Top 10 slowest functions ===")
-        stats.print_stats(10)
-        logger.info("\n=== Python files from my project ===")
-        for module in sorted(sys.modules.keys()):
-            mod = sys.modules[module]
-            filepath = getattr(mod, '__file__', None)
-            if filepath and filepath.endswith(".py") and filepath.startswith(PROJECT_ROOT):
-                rel_path = os.path.relpath(filepath, PROJECT_ROOT)
-                logger.info(f"Loaded: {rel_path}")
-        if opened_files:
-            logger.info("\n=== Other files from my project accessed ===")
-            for f in sorted(opened_files):
-                logger.info(f"Accessed: {f}")
