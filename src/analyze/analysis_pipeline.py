@@ -9,7 +9,7 @@ from src.utils.config_ops import export_config
 
 import os
 
-def run_analysis(config,conf_yaml_path):
+def run_analysis(config,conf_yaml_path, logger):
 
     export_config(conf_yaml_path)
     if os.path.isdir(config['input_csv']):
@@ -19,33 +19,33 @@ def run_analysis(config,conf_yaml_path):
             
        # Run enabled tasks
     if config['task'].get('visits', False):
-       print("Running Average Visits analysis...")
+       logger.info("Running Average Visits analysis...")
        visits = Visits(config)
        df_visits = visits.compute()                   
        sum_visits = visits.summarize(df_visits)       
        visits.plot(df_visits,sum_visits)                         
     
     if config['task']['duration']:
-        print("Running Duration analysis...")
+        logger.info("Running Duration analysis...")
         dur = Duration(config)
         df_dur = dur.compute()
         sum_dur = dur.summarize(df_dur)
         dur.plot(df_dur,sum_dur)
     
     if config['task'].get('distance', False):
-        print("Running Distance Traveled analysis...")
+        logger.info("Running Distance Traveled analysis...")
         dist = Distance(config)
         df_dist = dist.compute()
         sum_dist = dist.summarize(df_dist)
         dist.plot(df_dist,sum_dist)
     
     if config['task']['heatmap']:
-        print("Running Heatmap analysis...")
+        logger.info("Running Heatmap analysis...")
         heatmap = Heatmap(config)
         heatmap()
     
     if config['task']['plotxy']:
-        print("Running PlotXY analysis...")
+        logger.info("Running PlotXY analysis...")
         plotxy = PlotXY(config)
         plotxy()
     

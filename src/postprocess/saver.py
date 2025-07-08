@@ -8,12 +8,13 @@ from src.analyze.modules import sahi_tracker
 from src.utils.common import create_output_dir
 
 class ResultsParser:
-    def __init__(self, results: List[Results], config: dict):
+    def __init__(self, results: List[Results], config: dict, logger):
         self.results = results
         self.output_dir = os.path.join(config['output_dir'], config['model']['task'])
         self.csv_filename = config.get('csv_filename', 'results.csv')
         self.images_dir = config.get('images_dir')
         self.sahi_track = config.get('sahi', {}).get('track', 'false')
+        self.logger = logger
         create_output_dir(self.output_dir)
 
     def parse_and_save(self):
@@ -56,7 +57,7 @@ class ResultsParser:
 
                 image_idx_tracker[image_name] += 1
 
-        print(f"Results saved to {csv_file_path}")
+        self.logger.info(f"Results saved to {csv_file_path}")
 
     def parse_and_save_slice(self, predictions: List[tuple]):
         
@@ -86,7 +87,7 @@ class ResultsParser:
             sahi_tracker.main(csv_file_path,self.output_dir)
 
 
-        print(f"Results saved to {csv_file_path}")
+        self.logger.info(f"Results saved to {csv_file_path}")
 
 
 # --- Example Usage ---

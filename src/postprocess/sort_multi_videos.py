@@ -3,7 +3,7 @@ import shutil
 import pandas as pd
 from typing import Dict
 
-def sort_and_merge_outputs(config: Dict):
+def sort_and_merge_outputs(config: Dict, logger):
     output_dir = config["output_dir"]
 
     # Create subfolders
@@ -20,7 +20,7 @@ def sort_and_merge_outputs(config: Dict):
                if os.path.isdir(os.path.join(output_dir, d)) and d not in ['videos', 'frames', 'csvs']]
 
     if not subdirs:
-        print("No inference output subfolder found.")
+        logger.info("No inference output subfolder found.")
         return
 
     data_dir = os.path.join(output_dir, subdirs[0])
@@ -48,7 +48,7 @@ def sort_and_merge_outputs(config: Dict):
                 df['track_id'] = df['track_id'] + current_max_track_id
                 current_max_track_id = df['track_id'].max() + 1
             else:
-                print(f"Warning: 'track_id' not found in {file}, skipping track ID offset.")
+                logger.info(f"Warning: 'track_id' not found in {file}, skipping track ID offset.")
 
             if 'image_name' in df.columns and 'treatment' not in df.columns:
                 df['treatment'] = df['image_name'].apply(lambda x: str(x).split('_')[0])
@@ -56,7 +56,7 @@ def sort_and_merge_outputs(config: Dict):
             merged_data.append(df)
 
     if not merged_data:
-        print("No CSVs to merge.")
+        logger.info("No CSVs to merge.")
         return
 
     final_df = pd.concat(merged_data, ignore_index=True).sort_values(by='track_id')
@@ -67,5 +67,5 @@ def sort_and_merge_outputs(config: Dict):
         if not os.listdir(folder):
             os.rmdir(folder)
 
-    print(f"Merged results saved to {output_path}")
+    logger.info(f"Merged results saved to {output_path}")
     return output_path

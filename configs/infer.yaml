@@ -1,13 +1,13 @@
-images_dir: /home/bohbot/workspace/projects/borneol/row_data/DEE
+images_dir: /home/ziv/Downloads/mosqs/Images-20250708T091042Z-1-001/Images
 
 model:
   conf_threshold: 0.5
   iou_threshold: 0.5
   task: track
   vid_stride: 200
-  weights: /home/bohbot/Evyatar/runs/detect/test_caht_parametrs2/weights/last.pt
+  weights: /home/ziv/Downloads/mosqs/MosquitoDetector_2.pt
 
-output_dir: /home/bohbot/workspace/projects/test_1
+output_dir: /home/ziv/Downloads/mosqs/test_1
 
 sahi:
   overlap_ratio: 0.2

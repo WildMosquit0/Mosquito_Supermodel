@@ -18,8 +18,9 @@ from src.utils.common import export_middle_frame
 #        print(f"Failed to download weights: {e}")
 #
 class Inferer:
-    def __init__(self, config: Dict) -> None:
+    def __init__(self, config: Dict, logger) -> None:
         self.config = config
+        self.logger = logger
         #ensure_weights()
 
         # Model and task parameters
@@ -79,7 +80,7 @@ class Inferer:
                 exist_ok=True
             )
        
-        print(f"Results saved to: {self.output_dir}")
+        self.logger.info(f"Results saved to: {self.output_dir}")
         return results
 
 

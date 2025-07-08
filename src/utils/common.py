@@ -64,12 +64,7 @@ def export_middle_frame(input_path: Union[str, List[str]], output_dir: str, task
         if success:
             output_filename = os.path.splitext(os.path.basename(video_path))[0] + "_middle_frame.jpg"
             output_file_path = os.path.join(task_dir, output_filename)
-            output_filename = os.path.splitext(os.path.basename(video_path))[0] + "_middle_frame.jpg"
-            output_file_path = os.path.join(task_dir, output_filename)
             cv2.imwrite(output_file_path, frame)
-        else:
-            print(f"Could not read middle frame from {video_path}")
-
         else:
             print(f"Could not read middle frame from {video_path}")
 
