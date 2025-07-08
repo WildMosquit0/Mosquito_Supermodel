@@ -56,6 +56,9 @@ def main(task: str, test_mode: bool = False) -> None:
     if test_mode:
         logger.info("Test mode enabled: overriding images_dir to tests/images")
         config["images_dir"] = "tests/images"
+        conf_yaml_path = f"tests/test.yaml"
+        with open(conf_yaml_path, "w") as f:
+            yaml.safe_dump(config, f)
 
     logger.info(f"Loaded config: {conf_yaml_path}")
     logger.info(f"Starting task: {task}")
@@ -105,6 +108,9 @@ if __name__ == "__main__":
                     
             logger.info("✅ TEST PASSED: All steps completed successfully.")
             print("✅ TEST PASSED: All steps completed successfully.")
+            with open(conf_yaml_path, "r") as f:
+                yaml_content = f.read()
+            logger.info("\n=== YAML config used ===\n" + yaml_content)
     else:
         logger.info("Running without profiling.")
         main(args.task, test_mode=False)

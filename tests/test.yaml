@@ -1,0 +1,16 @@
+change_analyze_conf: true
+images_dir: tests/images
+input_csv: /home/ziv/Downloads/mosqs/test_1/results.csv
+model:
+  conf_threshold: 0.5
+  iou_threshold: 0.5
+  task: track
+  vid_stride: 200
+  weights: /home/ziv/Downloads/mosqs/MosquitoDetector_2.pt
+output_dir: /home/ziv/Downloads/mosqs/test_1
+sahi:
+  overlap_ratio: 0.2
+  save_animations: false
+  slice_size: 640
+  track: false
+save_animations: true
