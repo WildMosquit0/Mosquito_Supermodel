@@ -78,8 +78,9 @@ class sahi_usage:
         for idx, obj_pred in enumerate(object_predictions):
             x, y, w, h = obj_pred.bbox.to_xywh()
             confidence = obj_pred.score.value
+            label = obj_pred.category.id
             source_identifier = source_identifier.split('.')[0]
-            predictions.append((idx, x, y, w, h, confidence, source_identifier, frame_index, img_height, img_width))
+            predictions.append((idx, x, y, w, h, confidence,label, source_identifier, frame_index, img_height, img_width))
         return predictions
 
     # --- Video Processing ---
@@ -156,7 +157,7 @@ class sahi_usage:
 
     # --- CSV Saving ---
     def save_predictions_to_csv(self, predictions, csv_file_path):
-        headers = ['box_idx', 'x', 'y', 'w', 'h', 'confidence', 'image_idx', 'frame_index', 'img_h', 'img_w']
+        headers = ['box_idx', 'x', 'y', 'w', 'h', 'confidence','labels', 'image_idx', 'frame_index', 'img_h', 'img_w']
         with open(csv_file_path, mode='w', newline='') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow(headers)

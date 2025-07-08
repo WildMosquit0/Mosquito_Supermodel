@@ -44,13 +44,32 @@ def export_middle_frame(input_path: Union[str, List[str]], output_dir: str, task
 
         middle_frame_idx = total_frames // 2
         cap.set(cv2.CAP_PROP_POS_FRAMES, middle_frame_idx)
+
+        if not cap.isOpened():
+            print(f"Failed to open {video_path}")
+            continue
+
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        if total_frames <= 0:
+            print(f"No frames in video: {video_path}")
+            cap.release()
+            continue
+
+        middle_frame_idx = total_frames // 2
+        cap.set(cv2.CAP_PROP_POS_FRAMES, middle_frame_idx)
         success, frame = cap.read()
         cap.release()
+
 
         if success:
             output_filename = os.path.splitext(os.path.basename(video_path))[0] + "_middle_frame.jpg"
             output_file_path = os.path.join(task_dir, output_filename)
+            output_filename = os.path.splitext(os.path.basename(video_path))[0] + "_middle_frame.jpg"
+            output_file_path = os.path.join(task_dir, output_filename)
             cv2.imwrite(output_file_path, frame)
+        else:
+            print(f"Could not read middle frame from {video_path}")
+
         else:
             print(f"Could not read middle frame from {video_path}")
 

@@ -324,7 +324,7 @@ class ImageSetupAnalyzer:
 
 
 if __name__ == "__main__":
-    folder_path = "/home/bohbot/ultralytics/datasets/mos/all_mos_new/images/train"
+    folder_path = "/home/bohbot/workspace/datasets/mos/all_mos_new/images/train"
     output_folder = "./output_images"
 
     analyzer = ImageSetupAnalyzer(folder_path, output_folder)

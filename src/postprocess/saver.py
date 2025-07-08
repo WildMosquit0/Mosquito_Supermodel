@@ -71,9 +71,9 @@ class ResultsParser:
                 'img_h', 'img_w'
             ])
             for pred in predictions:
-                (box_idx, x, y, w, h, confidence,
+                (box_idx, x, y, w, h, confidence, label,
                     source_identifier, frame_index, img_h, img_w) = pred
-                label = 1     # Default label
+                #label = 1     # Default label
                 track_id = None  # Default track id
 
                 writer.writerow([
