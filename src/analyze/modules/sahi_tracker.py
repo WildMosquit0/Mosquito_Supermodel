@@ -250,7 +250,7 @@ def main(csv_file='results.csv', output_dir='.'):
         print("Error reading CSV file:", e)
         return
 
-    print("Columns found:", df.columns.tolist())
+    
     
     # --- STEP 2: Prepare the detection data ---
     # If your frame numbers (image_idx) start at 0, add 1 to start at 1.
@@ -287,6 +287,6 @@ def main(csv_file='results.csv', output_dir='.'):
     df['track_id'] = output_tracks
 
     # Build the full output CSV file path.
-    output_csv = os.path.join(output_dir, 'tracked_output.csv')
-    df.to_csv(output_csv, index=False)
-    print("Tracking results saved to '{}'.".format(output_csv))
+    
+    df.to_csv(csv_file, index=False)
+    

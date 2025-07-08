@@ -1,76 +1,99 @@
+# src/analyze/modules/duration.py
+
 import os
 import pandas as pd
 import numpy as np
-from plotnine import ggplot, aes, geom_boxplot, theme_classic, labs, geom_point
-from src.utils.config import load_config
+from plotnine import (
+    ggplot, aes, geom_boxplot, geom_jitter, geom_errorbar, geom_point, geom_line,
+    theme_classic, labs, scale_x_continuous
+)
+from .base_module import BaseModule
+from src.utils.common_analyze import fill_0_values, assign_intervals,save_and_rename,check_groupby_dupication_duration,check_groupby_dupication
 from src.utils.common import create_output_dir
 
+class Duration(BaseModule):
+    """Compute total duration (s) per time interval."""
+    name = 'duration'
 
-
-
-class Duration:
     def __init__(self, config):
-        self.config = config
-        self.data_path = self.config["input_csv"]
-        self.plot_path = f"{self.config['output_dir']}/plots"
-        self.results_output = self.config["output_dir"]
-        self.time_intervals = float(self.config["average_visits"]["time_intervals"])
-        self.fps = float(self.config["average_visits"]["fps"])
+        super().__init__(config)
+        s = config['settings']
+        self.dir = config['output_dir']
+        self.fps    = float(s['fps'])
+        self.interval = float(s['time_intervals'])
+        self.unit   = s.get('interval_unit', 'minutes')
+        self.filter_max = s.get('filter_time_intervals', None)
+        self.data_path    = config['input_csv']
+        self.treatment_col = s.get('treatment_or_image_name', 'treatment')
+        self.ld = check_groupby_dupication_duration(self.treatment_col)
+        self.l = check_groupby_dupication(self.treatment_col)
 
-    def load_data(self):
-        return pd.read_csv(self.data_path)
-
-    def calculate_Duration(self, df):
-        
-        # Calculate duration (in terms of frame indices) for each track_id
-        track_durations = (
-            df.groupby('track_id')
-            .agg(
-                min_idx=('image_idx', 'min'),
-                max_idx=('image_idx', 'max'),
-                image_name=('image_name', 'min')
-            )
-            .assign(duration=lambda df: df['max_idx'] - df['min_idx'])
-            .reset_index()
-            .rename(columns={'min_idx': 'min', 'max_idx': 'max', 'duration':'duration(frames)'})
-)
-        
-        return track_durations
-
-    def save_new_df(self, track_durations):
-        """
-        Save the processed DataFrame to a CSV file.
-        """
-        create_output_dir(self.results_output)  # Ensure the directory exists
-        output_csv = os.path.join(self.results_output, "duration.csv")
-        track_durations.to_csv(output_csv, index=False)
-        print(f"Results saved to {output_csv}")
-
-    def plot_results(self, track_durations):
-        """
-        Plot the trajectory counts as a barplot.
-        """
-        plot = (
-            ggplot(track_durations, aes(x="image_name", y="duration(frames)"))
-            + geom_boxplot()
-            + geom_point(alpha=0.6)
-            + theme_classic()
-            + labs(
-                title=f"duration for each trajectory",
-                x="Treatment",
-                y="Duration (Frames)",
-            )
+    def compute(self, df: pd.DataFrame = None) -> pd.DataFrame:
+        # 1) load
+        if df is None:
+            df = pd.read_csv(self.data_path)
+        # 2) bin into time intervals
+        df = assign_intervals(df, 'image_idx', self.fps, self.interval, self.unit)
+        # 3) calculate per-track durations in seconds
+        df['track_id'] = pd.to_numeric(df['track_id'], errors='coerce')
+        df = df.dropna(subset=['track_id'])
+        agg = (
+            df.groupby(self.ld)
+              .agg(start=('image_idx','min'), end=('image_idx','max'))
+              .reset_index()
         )
-        output_path = os.path.join(self.plot_path, "duration.png")
+        agg['duration_sec'] = (agg['end'] - agg['start'] + 1) / self.fps
+        # 4) collapse to per-interval
+        df_raw = (
+            agg.groupby(self.l)
+               .agg(value=('duration_sec','sum'))
+               .reset_index()
+        )
+        # 5) fill zeros & filter
+        df_raw = fill_0_values(df_raw)
+        if self.filter_max is not None:
+            df_raw = df_raw[df_raw['time_interval'] <= self.filter_max]
+        return df_raw
+
+    def summarize(self, df_raw: pd.DataFrame) -> pd.DataFrame:
+        summary = (
+            df_raw
+              .groupby([self.treatment_col, 'time_interval'])['value']
+              .agg(['mean','std','count'])
+              .reset_index()
+        )
+        summary['se']    = summary['std'] / np.sqrt(summary['count'])
+        summary['upper'] = summary['mean'] + summary['se']
+        summary['lower'] = summary['mean'] - summary['se']
+        return summary
+
+    def plot(self, df_box, df_time) -> None:
         create_output_dir(self.plot_path)
-        plot.save(output_path)
-        print(f"Plot saved to {output_path}")
+        # boxplot of summary means
+        p1 = (
+            ggplot(df_box, aes(x=self.treatment_col, y='value', fill=self.treatment_col))
+            + geom_boxplot(outlier_alpha=0.4)
+            + geom_jitter(width=0.2)
+            + theme_classic()
+            + labs(x='', y='Duration (s)', title='Duration by Treatment')
+        )
+        p1.save(os.path.join(self.plot_path,'duration_box.jpg'))
 
-    def __call__(self):
-        
-        df = self.load_data()
-        track_durations = self.calculate_Duration(df)
-        self.save_new_df(track_durations)
-        self.plot_results(track_durations)
+        # time-series plot with conditional SE
+        p2 = (
+            ggplot(df_time, aes(x='time_interval', y='mean', color=self.treatment_col))
+            + geom_point()
+            + geom_line()
+            + theme_classic()
+            + labs(x=f'Time ({self.unit})', y='Duration (s)', title='Duration Over Time')
+            + scale_x_continuous(limits=[0, df_time['time_interval'].max()])
+        )
+        if self.treatment_col == 'treatment':
+            p2 += geom_errorbar(
+                df_time,
+                aes(x='time_interval', ymin='lower', ymax='upper'),
+                width=0.2
+            )
+        p2.save(os.path.join(self.plot_path,'duration_time.jpg'))
 
-
+        save_and_rename(df_box,df_time,self.dir,'duration')

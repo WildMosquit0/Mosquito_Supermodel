@@ -1,23 +1,25 @@
-average_visits:
-  filter_time_intervals: 1440
-  fps:  0.05
-  interval_unit: minutes
-  time_intervals: 180
-duration:
-  fps: 4
 heatmap:
-  grid_size: null
-  image_path: /home/wildmosquit0/workspace/projects/Neta/Trap/predict
-  min_count: null
+  grid_size: 30
+  image_path: /home/bohbot/workspace/projects/test_1/frames
+  min_count: 1
   true_axis: true
-input_csv: /home/wildmosquit0/workspace/projects/Neta/Trap/filtered_data.csv
-output_dir: /home/wildmosquit0/workspace/projects/Neta/Trap/results
+input_csv: /home/bohbot/workspace/projects/test_1/roi_results.csv
+output_dir: /home/bohbot/workspace/projects/test_1
 plotxy:
-  id_OR_class: track_id
-  teratment_or_rep: treatment
+  id_OR_class: class
+  treatment_or_image_name: image_name
   true_axis: true
+settings:
+  filter_time_intervals: 15
+  fps: 1
+  interval_unit: minute
+  stat: sum
+  time_intervals: 1
+  treatment_or_image_name: treatment
+  use_track_id: true
 task:
-  average_visits: true
-  duration: false
+  distance: true
+  duration: true
   heatmap: true
   plotxy: true
+  visits: true

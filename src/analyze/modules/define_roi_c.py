@@ -5,7 +5,7 @@ import os
 
 # Global variables for interactive ROI selection
 center = None
-radius = 400  # Default radius
+
 image = None
 clone = None
 selected_rois = {}  # Dictionary to store ROIs per image
@@ -63,7 +63,7 @@ def filter_csv(csv_path, selected_rois):
     for image_name, (center, radius) in selected_rois.items():
         # Remove extension before filtering (e.g., control_1.jpg → control_1)
         base_name = os.path.splitext(image_name)[0]
-
+        base_name = base_name.split("_middle_frame")[0]
         img_df = df[df["image_name"].str.startswith(base_name)].copy()
         
         if img_df.empty:
@@ -104,7 +104,7 @@ def process_images(image_dir, csv_path, output_dir):
 
         cv2.imshow("Select Circle ROI", image)
         cv2.setMouseCallback("Select Circle ROI", draw_circle)
-        cv2.createTrackbar("Radius", "Select Circle ROI", radius, 500, update_radius)
+        cv2.createTrackbar("Radius", "Select Circle ROI", radius, 600, update_radius)
 
         print(f"🟢 Processing {img_file}: Click to set the center, adjust radius, then press 'c' to confirm.")
 
@@ -135,8 +135,9 @@ def process_images(image_dir, csv_path, output_dir):
         print(f"✅ Filtered CSV saved: {filtered_csv_path}")
 
 if __name__ == "__main__":
-    image_dir = "/home/wildmosquit0/workspace/projects/Neta/Trap/predict"  # Change to your image directory
-    csv_path = "/home/wildmosquit0/workspace/projects/Neta/Trap/results/roi_results.csv"  # Change to your CSV file
-    output_dir = "/home/wildmosquit0/workspace/projects/Neta/Trap"  # Directory to save cropped images and filtered CSV
+    radius = 600  # Default radius
+    image_dir = "/home/bohbot/workspace/project/Dborneol/cnt_csv/crop_bigger"  # Change to your image directory
+    csv_path = "/home/bohbot/workspace/project/Dborneol/cnt_csv/crop_bigger/results.csv"  # Change to your CSV file
+    output_dir = "/home/bohbot/workspace/project/Dborneol/cnt_csv/crop_bigger"  # Directory to save cropped images and filtered CSV
     
     process_images(image_dir, csv_path, output_dir)

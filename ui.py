@@ -179,7 +179,7 @@ def run_main():
     # Run main.py
     python_exe = sys.executable
     script_path = os.path.join(os.path.dirname(__file__), "main.py")
-    subprocess.run([python_exe, script_path, "--task_name", task_name])
+    subprocess.run([python_exe, script_path, "--task", task_name])
 
 def on_tab_switch():
     """
@@ -236,15 +236,15 @@ entry_weights = ctk.CTkEntry(infer_tab, width=300)
 entry_weights.grid(row=row_idx, column=1, sticky="w", padx=10, pady=5)
 row_idx += 1
 
-lbl_task = ctk.CTkLabel(infer_tab, text="Model Action:")
+lbl_task = ctk.CTkLabel(infer_tab, text="Model path:")
 lbl_task.grid(row=row_idx, column=0, sticky="e", padx=10, pady=5)
-om_infer_task = ctk.CTkOptionMenu(infer_tab, values=["track", "predict"])
+om_infer_task = ctk.CTkOptionMenu(infer_tab, values=["Track", "Predict"])
 om_infer_task.grid(row=row_idx, column=1, sticky="w", padx=10, pady=5)
 row_idx += 1
 
 lbl_object_size = ctk.CTkLabel(infer_tab, text="Object Size:")
 lbl_object_size.grid(row=row_idx, column=0, sticky="e", padx=10, pady=5)
-om_infer_object_size = ctk.CTkOptionMenu(infer_tab, values=["small", "big"])
+om_infer_object_size = ctk.CTkOptionMenu(infer_tab, values=["Small", "Big"])
 om_infer_object_size.grid(row=row_idx, column=1, sticky="w", padx=10, pady=5)
 row_idx += 1
 
@@ -254,13 +254,13 @@ entry_conf_threshold = ctk.CTkEntry(infer_tab, width=100)
 entry_conf_threshold.grid(row=row_idx, column=1, sticky="w", padx=10, pady=5)
 row_idx += 1
 
-lbl_iou = ctk.CTkLabel(infer_tab, text="IOU Threshold:")
+lbl_iou = ctk.CTkLabel(infer_tab, text="NMS Threshold:")
 lbl_iou.grid(row=row_idx, column=0, sticky="e", padx=10, pady=5)
 entry_iou_threshold = ctk.CTkEntry(infer_tab, width=100)
 entry_iou_threshold.grid(row=row_idx, column=1, sticky="w", padx=10, pady=5)
 row_idx += 1
 
-lbl_stride = ctk.CTkLabel(infer_tab, text="Vid Stride:")
+lbl_stride = ctk.CTkLabel(infer_tab, text="Frame sampling:")
 lbl_stride.grid(row=row_idx, column=0, sticky="e", padx=10, pady=5)
 entry_vid_stride = ctk.CTkEntry(infer_tab, width=100)
 entry_vid_stride.grid(row=row_idx, column=1, sticky="w", padx=10, pady=5)

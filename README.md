@@ -1,113 +1,159 @@
+# 🦟 Mosquito Supermodel
 
-# Mosquito Supermodel
+**Universal YOLO-based mosquito detection, slicing, tracking, and behavioral analysis pipeline**
 
-The **Mosquito Supermodel** project aims to create a general detector for mosquitoes (any species) using the YOLO framework. This standalone open-source project provides accessible tools, including detector weights and training data, for anyone interested in detecting and exploring mosquito behaviors.
-
----
-
-## Table of Contents
-1. [Overview](#overview)
-2. [Setup and Installation](#setup-and-installation)
-3. [Usage](#usage)
-4. [Features](#features)
-5. [File Structure](#file-structure)
-6. [Contact](#contact)
-7. [Future Enhancements](#future-enhancements)
-
----
-
-## Overview
-
-The **Mosquito Supermodel** project is designed for researchers, developers, and the general public, offering tools to detect mosquitoes and analyze their behavior. It is entirely open source, allowing anyone to:
-- Access the detector weights.
-- Explore and use the training data.
-- Perform mosquito detection and behavioral analysis.
-
----
-
-## Setup and Installation
-
-### Prerequisites
-- Python (version TBD)
-- Libraries specified in `requirements.txt`.
-- OpenCV library (install separately).
-
-### Installation
-1. Clone this repository:
-   ```bash
-   git clone -b feature/analyzer https://github.com/WildMosquit0/Mosquito_Supermodel.git
-   cd Mosquito_Supermodel
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   pip install opencv-python
-   ```
-
----
-
-## Usage
-
-### Configuration
-- The repository includes a JSON configuration file that controls all arguments, including:
-  - Prediction types (`predict` or `track`).
-  - Analysis parameters.
-- Default values are provided but can be adjusted for specific use cases, such as varying video frame rates.
-
-### Running the Project
-- To predict or track:
-  ```bash
-  python main.py
-  ```
-- Input formats:
-  - Video folder for prediction.
-  - CSV file for analysis.
-- Outputs:
-  - CSV files.
-  - Plots.
+This repository provides a flexible, end-to-end pipeline for detecting and analyzing mosquito behavior using YOLOv11, with support for slicing, multi-video tracking, and postprocessing.
 
 ---
 
 ## Features
 
-1. **Prediction and Tracking**
-   - Framework functions to predict and track mosquito movements using YOLOv11.
-
-2. **Analysis**
-   - Tools for analyzing YOLOv8 output, providing detailed insights through CSV files and plots.
-
----
-
-## File Structure
-
-- **Main Files and Directories**:
-  - `vids/` or `images/`: Input video or image files.
-  - `main.py`: The main script for running predictions and analyses.
-  - Configuration files: JSON files controlling various project parameters.
-
-- **Modifications**:
-  - Users can modify any file if needed; there are no strict restrictions.
-  - Clear separation of functionality may be updated over time.
+-  **Inference** with YOLOv11
+-  **SAHI slicing** for small-object detection
+-  **Track ID continuity** across frames/videos
+-  **Behavioral metrics** (visit count, duration, distance — available in tracking mode)
+-  **Config-based execution** (no hardcoded paths)
+-  **Plotting & heatmap visualization**
 
 ---
 
-## Contact
+## 📦 Setup Instructions
 
-For questions or issues, feel free to reach out via email:
+### Pip
+```bash
+python -m venv venv
+source venv/bin/activate
+cd path/to/Mosquito_Supermodel
+pip install -r requirements.txt
+```
 
-**Evyatar Sar-Shalom**  
-📧 [evyatar.sar-shalom@mail.huji.ac.il](mailto:evyatar.sar-shalom@mail.huji.ac.il)
+---
+
+## ⚙️ Configuration
+
+All operations are driven by YAML files in the `configs/` folder:
+
+- `infer.yaml`: defines model weights, paths, task type
+- `analyze.yaml`: defines analysis logic
 
 ---
 
-## Future Enhancements
+## Inference and Analysis Pipeline
 
-- **Planned Features**:
-  - Uploading links to datasets and weights.
-  - Introducing a GUI interface for easier use.
+### 🔹 `infer` task
 
-- **Project Updates**:
-  - Updates will occur occasionally.
-  - Users are encouraged to create their own branches for contributions or customizations.
+The `infer` task performs object detection or tracking on a single video or a folder of videos.
+
+#### 🔧 `infer.yaml` structure:
+```yaml
+images_dir: path/to/video/or/folder
+model:
+  weights: path/to/model.pt
+  conf_threshold: confidence threshold for predictions
+  iou_threshold: IoU threshold for NMS
+  task: track / predict / slice
+  vid_stride: 5  # Predict every Nth frame. Lower = more accurate tracking
+
+output_dir: path/to/save/project  # Created automatically if not exists
+
+sahi:
+  slice_size: 640          # Slice each frame into 640×640 patches (recommended for this model)
+  overlap_ratio: 0.2       # 20% overlap between adjacent slices for better detection coverage
+  track: true              # Enable tracking across sliced frames
+
+save_animations: true      # Save predicted video
+change_analyze_conf: true  # Automatically update configs/analyze.yaml
+```
+
+#### 📂 Expected input format for batch mode:
+```
+input_folder/
+├── deet_rep1.mp4
+├── deet_rep2.mp4
+├── control_rep1.mp4
+...
+```
+
+Each video should be named as:
+```text
+<treatment>_repX.mp4
+```
+
+When `change_analyze_conf: true`, the analyzer config is automatically updated based on inference results.
 
 ---
+
+### 🔹 `analyze` task
+
+The `analyze` task processes output from inference and computes behavioral metrics.
+
+#### 🔧 `analyze.yaml` structure:
+```yaml
+input_csv: path/to/inference/results.csv  # Auto-filled if infer used with change_analyze_conf: true
+output_dir: path/to/output/folder
+
+settings:
+  interval_unit: minutes  # or 'seconds'
+  filter_time_intervals: 15  # Limit duration of analysis
+  fps: 25  # Original FPS ÷ vid_stride
+
+  stat: sum  # How to summarize: sum, mean, or median
+  time_intervals: 1  # Time binning (e.g. every 1 min)
+  treatment_or_image_name: treatment  # Use treatment or replicates in plots
+
+heatmap:
+  grid_size: 30  # Higher = finer resolution (smaller grid cells)
+  image_path: path/to/project/frames
+  min_count: 1  # Minimum visits to display
+  true_axis: true  # Plot in real pixel space
+
+plotxy:
+  id_OR_class: class  # 'id' = unique trajectories, 'class' = object type
+  treatment_or_image_name: image_name
+  true_axis: true
+
+task:
+  distance: true
+  duration: true
+  heatmap: true
+  plotxy: true
+  visits: true
+```
+
+---
+
+## 📈 Analysis Outputs
+
+- **Visits** per time interval
+- **Duration** of object presence
+- **Distance** traveled
+- **Heatmaps** showing visit density
+- **X vs Y scatter plots** of object positions
+
+All results are saved as `.csv` summaries and visual plots in the configured output directory.
+
+---
+
+## Usage
+
+### Run Inference
+```bash
+python main.py --task_name infer
+```
+
+### Run Analysis
+```bash
+python main.py --task_name analyze
+```
+
+---
+
+## 📁 Output Structure
+
+- `results.csv`: merged behavior metrics
+- `videos/`, `frames/`, `csvs/`: organized intermediate outputs
+- `.png` plots: for visits, heatmaps, trajectories
+
+
+
+
