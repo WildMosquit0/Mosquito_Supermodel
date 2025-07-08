@@ -1,4 +1,4 @@
-images_dir: /home/ziv/Downloads/mosqs/Images-20250708T091042Z-1-001/Images
+images_dir: /home/ziv/Downloads/mosqs/Images
 
 model:
   conf_threshold: 0.5
