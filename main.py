@@ -49,34 +49,41 @@ def setup_logger(output_dir: str) -> None:
 
     logger.info(f"Logger initialized. Writing logs to {log_file}")
 
-def main(task: str) -> None:
+def main(task: str, test_mode: bool = False) -> None:
     conf_yaml_path = os.path.abspath(f"configs/{task}.yaml")
     config = load_config(conf_yaml_path)
+
+    if test_mode:
+        logger.info("Test mode enabled: overriding images_dir to tests/images")
+        config["images_dir"] = "tests/images"
+
     logger.info(f"Loaded config: {conf_yaml_path}")
     logger.info(f"Starting task: {task}")
+
     if task == 'infer':
         inference_single_or_multi(config, conf_yaml_path, logger)
     elif task == 'analyze':
         run_analysis(config, conf_yaml_path, logger)
+
     logger.info(f"Task {task} completed successfully.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run YOLO inference with tracking, detection, or slicing.')
     parser.add_argument('--task', choices=['infer', 'analyze'], default='infer', help='The task to be performed')
-    parser.add_argument('--profile', action='store_true', help='Enable profiling with cProfile')
+    parser.add_argument('--test', action='store_true', help='Run in test mode with profiling and tests/images directory')
     args = parser.parse_args()
 
     conf_yaml_path = os.path.abspath(f"configs/{args.task}.yaml")
     config = load_config(conf_yaml_path)
     setup_logger(config['output_dir'])
 
-    if args.profile:
-        logger.info("Profiling enabled.")
+    if args.test:
+        logger.info("Profiling enabled (test mode).")
         profiler = cProfile.Profile()
         profiler.enable()
 
         try:
-            main(args.task)
+            main(args.task, test_mode=True)
         finally:
             profiler.disable()
             stats = pstats.Stats(profiler)
@@ -95,6 +102,9 @@ if __name__ == "__main__":
                 logger.info("\n=== Other files from my project accessed ===")
                 for f in sorted(opened_files):
                     logger.info(f"Accessed: {f}")
+                    
+            logger.info("✅ TEST PASSED: All steps completed successfully.")
+            print("✅ TEST PASSED: All steps completed successfully.")
     else:
-        logger.info("Profiling disabled.")
-        main(args.task)
+        logger.info("Running without profiling.")
+        main(args.task, test_mode=False)

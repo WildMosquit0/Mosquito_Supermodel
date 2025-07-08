@@ -14,3 +14,4 @@ ultralytics
 sahi
 umap-learn
 filterpy
+pytest
