@@ -1,18 +1,18 @@
 heatmap:
   grid_size: 30
-  image_path: /home/bohbot/workspace/projects/test_1/frames
+  image_path: /home/bohbot/workspace/projects/indole2/frames
   min_count: 1
   true_axis: true
-input_csv: /home/bohbot/workspace/projects/test_1/roi_results.csv
-output_dir: /home/bohbot/workspace/projects/test_1
+input_csv: /home/bohbot/workspace/projects/indole2/results.csv
+output_dir: /home/bohbot/workspace/projects/indole2
 plotxy:
-  id_OR_class: class
+  id_OR_class: id
   treatment_or_image_name: image_name
   true_axis: true
 settings:
-  filter_time_intervals: 15
-  fps: 1
-  interval_unit: minute
+  filter_time_intervals: 10
+  fps: 15
+  interval_unit: minutes
   stat: sum
   time_intervals: 1
   treatment_or_image_name: treatment
