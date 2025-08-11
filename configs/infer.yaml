@@ -1,19 +1,18 @@
-images_dir: /home/bohbot/workspace/projects/borneol/row_data/DEE
+images_dir: /home/bohbot/workspace/projects/old_ODR/raw
 
 model:
   conf_threshold: 0.5
   iou_threshold: 0.5
-  task: track
-  vid_stride: 200
-  weights: /home/bohbot/Evyatar/runs/detect/test_caht_parametrs2/weights/last.pt
+  task: slice
+  vid_stride: 500
+  weights: /home/bohbot/Evyatar/runs/detect/1000_each/weights/last.pt
 
 output_dir: /home/bohbot/workspace/projects/test_1
 
 sahi:
   overlap_ratio: 0.2
-  save_animations: false
-  slice_size: 640
-  track: false
+  slice_size: 800
+  track: true
 
 change_analyze_conf: true
 save_animations: true

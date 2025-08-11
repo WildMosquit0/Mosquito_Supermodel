@@ -19,7 +19,7 @@ class sahi_usage:
         
         # Other settings.
         self.images_dir = config.get('images_dir')
-        self.output_dir = os.path.join(config['output_dir'], self.task)
+        self.output_dir = os.path.join(config['output_dir'])
         self.csv_filename = config.get('csv_filename', 'results.csv')
         self.save_animations = config.get('save_animations', False)
 
@@ -162,7 +162,7 @@ class sahi_usage:
             writer.writerow(headers)
             for pred in predictions:
                 writer.writerow(pred)
-        print(f"Predictions saved to {csv_file_path}")
+        
 
     # --- Main Processing ---
     def run_command(self, source):
