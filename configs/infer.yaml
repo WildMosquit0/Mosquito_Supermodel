@@ -1,17 +1,19 @@
-images_dir: /home/bohbot/workspace/projects/old_ODR/raw
+images_dir: /home/bohbot/Evyatar/runs/w.MOV
 
 model:
-  conf_threshold: 0.5
+  conf_threshold: 0.2
   iou_threshold: 0.5
-  task: slice
-  vid_stride: 500
+  task: track
+  vid_stride: 50
   weights: /home/bohbot/Evyatar/runs/detect/1000_each/weights/last.pt
 
 output_dir: /home/bohbot/workspace/projects/test_1
 
 sahi:
-  overlap_ratio: 0.2
-  slice_size: 800
+  overlap_ratio: 0.1
+  slice_size_h: 384
+  slice_size_w: 640
+  
   track: true
 
 change_analyze_conf: true

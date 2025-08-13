@@ -2,9 +2,10 @@ import os
 from typing import Dict
 from src.inference.inference_pipeline import run_inference
 from src.postprocess.sort_multi_videos import sort_and_merge_outputs
+from src.postprocess.sort_multi_videos import clean_empty_folders
 from src.utils.config_ops import export_config
 from src.utils.config_ops import update_analyze_config
-from src.utils.save_sahi_animation import save_sahi_animation  
+
 def inference_single_or_multi(config,conf_yaml_path):
     
     export_config(conf_yaml_path)
@@ -24,9 +25,7 @@ def inference_single_or_multi(config,conf_yaml_path):
         run_inference(config)
 
     sort_and_merge_outputs(config)
-    if config.get('save_animations', False) and config['model']['task'] == 'slice':
-            save_sahi_animation(config).run()
-
+    clean_empty_folders(config)
     if update_analyze:
         update_analyze_config(conf_yaml_path)
    

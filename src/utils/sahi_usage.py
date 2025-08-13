@@ -14,7 +14,8 @@ class sahi_usage:
         self.vid_strides = config['model'].get('vid_stride', 1)
         
         # SAHI-specific settings from "sahi" section.
-        self.slice_size = config.get('sahi', {}).get('slice_size', 640)
+        self.slice_size_h = config.get('sahi', {}).get('slice_size_h', 640)
+        self.slice_size_w = config.get('sahi', {}).get('slice_size_w', 640)
         self.overlap_ratio = config.get('sahi', {}).get('overlap_ratio', 0.2)
         
         # Other settings.
@@ -54,9 +55,9 @@ class sahi_usage:
                      slice_height=None, slice_width=None,
                      overlap_height_ratio=None, overlap_width_ratio=None):
         if slice_height is None:
-            slice_height = self.slice_size
+            slice_height = self.slice_size_h
         if slice_width is None:
-            slice_width = self.slice_size
+            slice_width = self.slice_size_w
         if overlap_height_ratio is None:
             overlap_height_ratio = self.overlap_ratio
         if overlap_width_ratio is None:

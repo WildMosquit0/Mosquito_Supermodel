@@ -10,62 +10,109 @@ def sort_and_merge_outputs(config: Dict):
     videos_dir = os.path.join(output_dir, "videos")
     frames_dir = os.path.join(output_dir, "frames")
     csvs_dir = os.path.join(output_dir, "csvs")
-
     os.makedirs(videos_dir, exist_ok=True)
     os.makedirs(frames_dir, exist_ok=True)
     os.makedirs(csvs_dir, exist_ok=True)
 
-    # Detect first-level output subdir (e.g., predict, track, slice)
-    subdirs = [d for d in os.listdir(output_dir)
-               if os.path.isdir(os.path.join(output_dir, d)) and d not in ['videos', 'frames', 'csvs']]
+    # File type sets
+    video_exts = {".avi", ".mp4", ".mov", ".mkv", ".m4v"}
+    frame_exts = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"}
 
-    if not subdirs:
-        print("No inference output subfolder found.")
-        return
+    # Protected files
+    def is_protected(fname: str) -> bool:
+        f = fname.lower()
+        return f.startswith("conf")
 
-    data_dir = os.path.join(output_dir, subdirs[0])
+    skip_dirs = {os.path.abspath(videos_dir), os.path.abspath(frames_dir), os.path.abspath(csvs_dir)}
 
-    # Move files to respective folders
-    for fname in os.listdir(data_dir):
-        full_path = os.path.join(data_dir, fname)
-        if fname.endswith(".avi"):
-            shutil.move(full_path, os.path.join(videos_dir, fname))
-        elif fname.endswith(".jpg"):
-            shutil.move(full_path, os.path.join(frames_dir, fname))
-        elif fname.endswith(".csv") and fname != "results.csv":
-            shutil.move(full_path, os.path.join(csvs_dir, fname))
+    # Ensure unique path if file already exists
+    def unique_path(target_dir: str, name: str) -> str:
+        base, ext = os.path.splitext(name)
+        candidate = os.path.join(target_dir, name)
+        i = 1
+        while os.path.exists(candidate):
+            candidate = os.path.join(target_dir, f"{base}__{i}{ext}")
+            i += 1
+        return candidate
 
-    # Merge CSVs from csvs_dir while updating track_id
+    found_results_csv = None
+
+    # Walk all files
+    for root, dirs, files in os.walk(output_dir, topdown=True):
+        dirs[:] = [d for d in dirs if os.path.abspath(os.path.join(root, d)) not in skip_dirs]
+
+        for fname in files:
+            src = os.path.join(root, fname)
+
+            # results.csv handling → move to root
+            if fname.lower() == "results.csv":
+                if os.path.abspath(root) != os.path.abspath(output_dir):
+                    dst = os.path.join(output_dir, "results.csv")
+                    shutil.move(src, dst)
+                found_results_csv = os.path.join(output_dir, "results.csv")
+                continue
+
+            if is_protected(fname):
+                continue
+
+            ext = os.path.splitext(fname)[1].lower()
+            if ext in video_exts:
+                shutil.move(src, unique_path(videos_dir, fname))
+            elif ext in frame_exts:
+                shutil.move(src, unique_path(frames_dir, fname))
+            elif ext == ".csv":
+                shutil.move(src, unique_path(csvs_dir, fname))
+
+    # Merge CSVs from csvs_dir
     merged_data = []
     current_max_track_id = 0
 
     for file in sorted(os.listdir(csvs_dir)):
-        if file.endswith('.csv'):
-            file_path = os.path.join(csvs_dir, file)
+        if not file.lower().endswith(".csv"):
+            continue
+        file_path = os.path.join(csvs_dir, file)
+        try:
             df = pd.read_csv(file_path)
+        except Exception as e:
+            print(f"Warning: failed reading {file_path}: {e}")
+            continue
 
-            if 'track_id' in df.columns:
-                df['track_id'] = df['track_id'] + current_max_track_id
+        if 'track_id' in df.columns:
+            df['track_id'] = pd.to_numeric(df['track_id'], errors='coerce').fillna(0).astype(int)
+            df['track_id'] = df['track_id'] + current_max_track_id
+            if len(df):
                 current_max_track_id = df['track_id'].max() + 1
-            else:
-                print(f"Warning: 'track_id' not found in {file}, skipping track ID offset.")
+        else:
+            print(f"Warning: 'track_id' not found in {file}, skipping track ID offset.")
 
-            if 'image_name' in df.columns and 'treatment' not in df.columns:
-                df['treatment'] = df['image_name'].apply(lambda x: str(x).split('_')[0])
+        if 'image_name' in df.columns and 'treatment' not in df.columns:
+            df['image_name'] = df['image_name'].astype(str)
+            df['treatment'] = df['image_name'].apply(lambda x: x.split('_')[0] if '_' in x else x)
 
-            merged_data.append(df)
+        merged_data.append(df)
 
     if not merged_data:
         print("No CSVs to merge.")
         return
 
-    final_df = pd.concat(merged_data, ignore_index=True).sort_values(by='track_id')
+    final_df = pd.concat(merged_data, ignore_index=True)
+    if 'track_id' in final_df.columns:
+        final_df = final_df.sort_values(by='track_id')
+
     output_path = os.path.join(output_dir, "results.csv")
     final_df.to_csv(output_path, index=False)
 
-    for folder in [videos_dir, frames_dir, csvs_dir,data_dir]:
-        if not os.listdir(folder):
-            os.rmdir(folder)
 
-    print(f"Merged results saved to {output_path}")
-    return output_path
+def clean_empty_folders(config: Dict):
+    output_dir = config["output_dir"]
+
+    for root, dirs, files in os.walk(output_dir, topdown=False):
+        
+        try:
+            if not os.listdir(root):
+                os.rmdir(root)
+                print(f"Removed empty folder: {root}")
+        except OSError as e:
+            print(f"Could not remove {root}: {e}")
+
+    return output_dir
