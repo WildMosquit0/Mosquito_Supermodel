@@ -99,3 +99,14 @@ def check_groupby_dupication_duration(col_conf):
     else:
         l = ['time_interval','image_name', 'treatment','track_id']
     return l
+
+
+def check_self_treastment_col(df,self):
+
+    if not pd.api.types.is_string_dtype(df[self.treatment_col]):
+        
+        df[self.treatment_col] = df[self.treatment_col].astype(str)
+
+
+
+    return df

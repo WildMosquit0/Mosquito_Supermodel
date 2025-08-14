@@ -1,18 +1,18 @@
 heatmap:
   grid_size: 30
-  image_path: /home/bohbot/workspace/projects/test_1/frames
+  image_path: /home/bohbot/workspace/projects/arad/r/frames
   min_count: 1
   true_axis: true
-input_csv: /home/bohbot/workspace/projects/test_1/results.csv
-output_dir: /home/bohbot/workspace/projects/test_1
+input_csv: /home/bohbot/workspace/projects/arad/r/results.csv
+output_dir: /home/bohbot/workspace/projects/arad/r
 plotxy:
   id_OR_class: class
   treatment_or_image_name: image_name
   true_axis: true
 settings:
-  filter_time_intervals: 15
-  fps: 1
-  interval_unit: minute
+  filter_time_intervals: 16
+  fps: 15
+  interval_unit: minutes
   stat: sum
   time_intervals: 1
   treatment_or_image_name: treatment

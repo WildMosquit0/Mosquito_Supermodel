@@ -8,7 +8,7 @@ from plotnine import (
     theme_classic, labs, scale_x_continuous
 )
 from .base_module import BaseModule
-from src.utils.common_analyze import fill_0_values, assign_intervals,save_and_rename,check_groupby_dupication_duration,check_groupby_dupication
+from src.utils.common_analyze import fill_0_values, check_self_treastment_col, assign_intervals,save_and_rename,check_groupby_dupication_duration,check_groupby_dupication
 from src.utils.common import create_output_dir
 
 class Duration(BaseModule):
@@ -32,6 +32,8 @@ class Duration(BaseModule):
         # 1) load
         if df is None:
             df = pd.read_csv(self.data_path)
+            df = check_self_treastment_col(df,self)
+
         # 2) bin into time intervals
         df = assign_intervals(df, 'image_idx', self.fps, self.interval, self.unit)
         # 3) calculate per-track durations in seconds
@@ -68,6 +70,7 @@ class Duration(BaseModule):
         return summary
 
     def plot(self, df_box, df_time) -> None:
+        #check comman issues
         create_output_dir(self.plot_path)
         # boxplot of summary means
         p1 = (
