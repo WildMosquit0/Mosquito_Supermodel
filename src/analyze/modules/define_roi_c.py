@@ -135,9 +135,8 @@ def process_images(image_dir, csv_path, output_dir):
         print(f"✅ Filtered CSV saved: {filtered_csv_path}")
 
 if __name__ == "__main__":
-    radius = 600  # Default radius
-    image_dir = "/home/bohbot/workspace/project/Dborneol/cnt_csv/crop_bigger"  # Change to your image directory
-    csv_path = "/home/bohbot/workspace/project/Dborneol/cnt_csv/crop_bigger/results.csv"  # Change to your CSV file
-    output_dir = "/home/bohbot/workspace/project/Dborneol/cnt_csv/crop_bigger"  # Directory to save cropped images and filtered CSV
-    
+    radius = 300  # Default radius
+    image_dir = "/home/bohbot/workspace/projects/arad/r/frames"  # Change to your image directory
+    csv_path = "/home/bohbot/workspace/projects/arad/r/results.csv"  # Change to your CSV file
+    output_dir = "/home/bohbot/workspace/projects/arad/r"  # Directory to save cropped images and filtered CSV
     process_images(image_dir, csv_path, output_dir)

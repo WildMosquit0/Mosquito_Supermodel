@@ -29,6 +29,7 @@ class Visits(BaseModule):
         self.treatment_col = s.get('treatment_or_image_name', 'treatment')
         self.use_track = s.get('use_track_id', True)
         self.l = check_groupby_dupication(self.treatment_col)
+        self.stat =  s.get('stat','mean')
         
 
     def compute(self, df: pd.DataFrame = None) -> pd.DataFrame:
@@ -54,7 +55,7 @@ class Visits(BaseModule):
         else:
             df['box_idx'] = pd.to_numeric(df['box_idx'], errors='coerce')
             df = df.dropna(subset=['box_idx'])
-            df_raw = (
+            df_raw = ( 
                 df.groupby(['time_interval', self.treatment_col])
                   .agg(value=('box_idx', 'nunique'))
                   .reset_index()

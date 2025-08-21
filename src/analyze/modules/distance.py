@@ -26,6 +26,7 @@ class Distance(BaseModule):
         self.data_path     = config['input_csv']
         self.treatment_col = s.get('treatment_or_image_name', 'treatment')
         self.l = check_groupby_dupication(self.treatment_col)
+        self.stat =  s.get('stat','mean')
 
     def compute(self, df: pd.DataFrame = None) -> pd.DataFrame:
         # 1) load

@@ -1,10 +1,10 @@
 heatmap:
   grid_size: 30
-  image_path: /home/bohbot/workspace/projects/arad/r/frames
+  image_path: /home/bohbot/workspace/projects/test_sahi/frames
   min_count: 1
   true_axis: true
-input_csv: /home/bohbot/workspace/projects/arad/r/results.csv
-output_dir: /home/bohbot/workspace/projects/arad/r
+input_csv: /home/bohbot/workspace/projects/test_sahi/results.csv
+output_dir: /home/bohbot/workspace/projects/test_sahi
 plotxy:
   id_OR_class: class
   treatment_or_image_name: image_name
@@ -13,13 +13,17 @@ settings:
   filter_time_intervals: 16
   fps: 15
   interval_unit: minutes
-  stat: sum
+  stat: mean
   time_intervals: 1
   treatment_or_image_name: treatment
   use_track_id: true
 task:
   distance: true
   duration: true
-  heatmap: true
+  heatmap: false
   plotxy: true
   visits: true
+
+
+
+yolo track model=/home/bohbot/workspace/weight/nectar.pt source=/home/bohbot/workspace/images/albo_date save_txt=true line_width=1 conf=0.7

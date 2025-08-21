@@ -27,12 +27,13 @@ class Duration(BaseModule):
         self.treatment_col = s.get('treatment_or_image_name', 'treatment')
         self.ld = check_groupby_dupication_duration(self.treatment_col)
         self.l = check_groupby_dupication(self.treatment_col)
+        self.stat =  s.get('stat','mean')
 
     def compute(self, df: pd.DataFrame = None) -> pd.DataFrame:
         # 1) load
         if df is None:
             df = pd.read_csv(self.data_path)
-            df = check_self_treastment_col(df,self)
+        df = check_self_treastment_col(df,self)
 
         # 2) bin into time intervals
         df = assign_intervals(df, 'image_idx', self.fps, self.interval, self.unit)
@@ -48,7 +49,7 @@ class Duration(BaseModule):
         # 4) collapse to per-interval
         df_raw = (
             agg.groupby(self.l)
-               .agg(value=('duration_sec','sum'))
+               .agg(value=('duration_sec',self.stat))
                .reset_index()
         )
         # 5) fill zeros & filter
