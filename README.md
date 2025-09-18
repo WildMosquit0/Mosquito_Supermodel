@@ -1,4 +1,4 @@
-# 🦟 Mosquito Supermodel
+# 🦟 YOLito
 
 **Universal YOLO-based mosquito detection, slicing, tracking, and behavioral analysis pipeline**
 
