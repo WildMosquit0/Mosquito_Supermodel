@@ -5,7 +5,7 @@ model:
   iou_threshold: 0.5
   task: track
   vid_stride: 200
-  weights: /home/bohbot/Evyatar/runs/detect/test_caht_parametrs2/weights/last.pt
+  weights: /home/bohbot/Evyatar/runs/detect/weights/last.pt
 
 output_dir: /home/bohbot/workspace/projects/test_1
 
